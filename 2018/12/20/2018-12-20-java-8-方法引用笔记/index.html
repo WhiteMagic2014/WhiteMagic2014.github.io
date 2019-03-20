@@ -1,0 +1,756 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="java8,lambda,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp; 序&amp;emsp;&amp;emsp; 在看lambda的时候，经常看到 :: 这个双冒号符号，合着也不是c那一系列的语言，这玩意什么意思？百度了很久，原来是java8的新特性——方法引用。网上的看来看去就几篇，有几篇貌似还有冲突，现在总结一下自己的理解。 正文&amp;emsp;&amp;emsp; 首先，很重要的一点，方法引用是一个（精简的）lambda表达式。这就使得本被lambda精简过的代">
+<meta name="keywords" content="java8,lambda">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java 8 方法引用笔记">
+<meta property="og:url" content="http://yoursite.com/2018/12/20/2018-12-20-java-8-方法引用笔记/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="&amp;emsp;&amp;emsp; 序&amp;emsp;&amp;emsp; 在看lambda的时候，经常看到 :: 这个双冒号符号，合着也不是c那一系列的语言，这玩意什么意思？百度了很久，原来是java8的新特性——方法引用。网上的看来看去就几篇，有几篇貌似还有冲突，现在总结一下自己的理解。 正文&amp;emsp;&amp;emsp; 首先，很重要的一点，方法引用是一个（精简的）lambda表达式。这就使得本被lambda精简过的代">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-21T07:21:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java 8 方法引用笔记">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp; 序&amp;emsp;&amp;emsp; 在看lambda的时候，经常看到 :: 这个双冒号符号，合着也不是c那一系列的语言，这玩意什么意思？百度了很久，原来是java8的新特性——方法引用。网上的看来看去就几篇，有几篇貌似还有冲突，现在总结一下自己的理解。 正文&amp;emsp;&amp;emsp; 首先，很重要的一点，方法引用是一个（精简的）lambda表达式。这就使得本被lambda精简过的代">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/20/2018-12-20-java-8-方法引用笔记/">
+
+
+
+
+
+  <title> java 8 方法引用笔记 | Magic Space </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/20/2018-12-20-java-8-方法引用笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WhiteMagic2014">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/magicavatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                java 8 方法引用笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-20T11:53:29+08:00">
+                2018-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;</p>
+<h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>&emsp;&emsp; 在看lambda的时候，经常看到 :: 这个双冒号符号，合着也不是c那一系列的语言，这玩意什么意思？百度了很久，原来是java8的新特性——方法引用。网上的看来看去就几篇，有几篇貌似还有冲突，现在总结一下自己的理解。</p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><p>&emsp;&emsp; 首先，很重要的一点，<strong>方法引用是一个（精简的）lambda表达式</strong>。这就使得本被lambda精简过的代码更加精简了，让人摸不着头脑。（-&gt; :: 尝尝给我一种我在看c++代码的错觉）所以，方法引用是一个函数式接口的实现（简化），由此当看的很懵逼的时候，把他还原有助于理解<br>&emsp;&emsp;ok，现在说说4种方法引用，这个网上有很多很多版本（叫法），看得我有点…这边我按照我的理解分一下。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>形式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 静态方法的引用</td>
+<td>类名::静态方法名</td>
+</tr>
+<tr>
+<td>2 构造方法的引用</td>
+<td>类名::new</td>
+</tr>
+<tr>
+<td>3 实例对象的成员方法的引用</td>
+<td>实例对象::成员方法名</td>
+</tr>
+<tr>
+<td>4 类的成员方法的引用</td>
+<td>类名::成员方法名</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp; 为什么要用方法引用？lambda意在精简，那么有时候我们仅仅是需要调用一个已存在的方法，如果使用方法引用就可以进一步精简（到丧心病狂的地步） 在详细解释之前，先来创造一个试验对象，然后详细的解释</p>
+<h2 id="试验对象"><a href="#试验对象" class="headerlink" title="试验对象"></a>试验对象</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">// 实验对象</span><br><span class="line">public class Person &#123;</span><br><span class="line">    String name;</span><br><span class="line">    Integer age;</span><br><span class="line"></span><br><span class="line">    public Person() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Person(Integer age) &#123;</span><br><span class="line">        this(&quot;default&quot;, age);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Person(String name, Integer age) &#123;</span><br><span class="line">        super();</span><br><span class="line">        this.name = name;</span><br><span class="line">        this.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Integer getAge() &#123;</span><br><span class="line">        return age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setAge(Integer age) &#123;</span><br><span class="line">        this.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void playWith(Person another) &#123;</span><br><span class="line">        System.out.println(this.name+ &quot; play with &quot; + another.getName());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return &quot;Person [name=&quot; + name + &quot;, age=&quot; + age + &quot;]&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//测试类</span><br><span class="line">class magicTest&#123;</span><br><span class="line"></span><br><span class="line">    List&lt;Person&gt; pList = new ArrayList&lt;Person&gt;();</span><br><span class="line"></span><br><span class="line">    @Before</span><br><span class="line">    public void init()&#123;</span><br><span class="line">        pList.add(new Person(&quot;a&quot;, 1));</span><br><span class="line">        pList.add(new Person(&quot;b&quot;, 2));</span><br><span class="line">        pList.add(new Person(&quot;c&quot;, 3));</span><br><span class="line">        pList.add(new Person(&quot;d&quot;, 23));</span><br><span class="line">        pList.add(new Person(&quot;e&quot;, 33));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="静态方法的引用"><a href="#静态方法的引用" class="headerlink" title="静态方法的引用"></a>静态方法的引用</h2><p>&emsp;&emsp; 首先是最容易理解的，静态方法的引用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">class magicTest&#123;</span><br><span class="line">    ......</span><br><span class="line"></span><br><span class="line">    //一个静态方法</span><br><span class="line">    public static void staticMethod(Person person)&#123;</span><br><span class="line">         System.out.println(&quot;this is &quot;+person.getName() + &quot;,now is &quot;+person.getAge()+&quot; years old&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void t1()&#123;</span><br><span class="line"></span><br><span class="line">        //type 1</span><br><span class="line">        //最原始的方法 直接创建一个实现类</span><br><span class="line">        Consumer&lt;Person&gt; consumer = new Consumer&lt;Person&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void accept(Person t) &#123;</span><br><span class="line">                magicTest.staticMethod(t);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        //然后在需要使用的地方使用自己创建的类</span><br><span class="line">        pList.stream().forEach(consumer);</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">        //type 2</span><br><span class="line">        //简化一下 用了内部匿名类</span><br><span class="line">        pList.stream().forEach(new Consumer&lt;Person&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void accept(Person t) &#123;</span><br><span class="line">                magicTest.staticMethod(t);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        //用lambda 简化</span><br><span class="line">        pList.stream().forEach(p-&gt;magicTest.staticMethod(p));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        //方法引用 再次简化</span><br><span class="line">        pList.stream().forEach(magicTest::staticMethod);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 我在刚刚看方法应用的时候，经常会报错，各种各样的错。踩了很多坑之后，发现了一个要点：<strong>使用方法引用，必须注意入参与返回参</strong>，正文第一句话，强调过他其实是一个lambda表达式，所以<strong>该表达式实现的接口 ，引用方法，以及 接口调用处（使用 lambda表达式/方法引用表达式 的地方）的入参 与 返回参 的类型必须是要一致的。</strong><br>&emsp;&emsp; 用上面的代码来解释看看，首先我用的方法是Stream下的forEach方法，这个方法接收的是一个 Consumer的实现类 ，forEach内Consumer 默认的入参是 Stream转化前Collection的定义时传入的泛型类，在上面的代码中就是 Person。<br>&emsp;&emsp;  1.接口调用处 入参 person ，同时实现的接口 入参 person 返回 void<br>&emsp;&emsp;  2.再看看那个静态方法，入参 person 返回 void<br>&emsp;&emsp;  3.ojbk</p>
+<h2 id="构造方法的引用"><a href="#构造方法的引用" class="headerlink" title="构造方法的引用"></a>构造方法的引用</h2><p>&emsp;&emsp; 构造方法的引用看起来应该是最简单的，但是我在摸索的时候也进了很多坑，不过记住上面说的 入参 出参 保持一致，那应该就不会出什么问题了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">//首先是java8系统提供的一个函数式接口Supplier，没有入参，获得一个泛型指定类型的对象，这对应的一般是默认的构造方法：无入参，返回对象</span><br><span class="line">@FunctionalInterface</span><br><span class="line">public interface Supplier&lt;T&gt; &#123;</span><br><span class="line">    /**</span><br><span class="line">    * Gets a result.</span><br><span class="line">    *</span><br><span class="line">    * @return a result</span><br><span class="line">    */</span><br><span class="line">    T get();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class magicTest&#123;</span><br><span class="line">    ......</span><br><span class="line">    </span><br><span class="line">    @Test</span><br><span class="line">    public void t2()&#123;</span><br><span class="line">    </span><br><span class="line">        //默认的构造方法</span><br><span class="line">        Supplier&lt;Person&gt; s1 = new Supplier&lt;Person&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public Person get() &#123;</span><br><span class="line">                return new Person();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        //方法引用简化</span><br><span class="line">        Supplier&lt;Person&gt; s1plus = Person::new;</span><br><span class="line"></span><br><span class="line">        //怎么用呢？stream中确实有几个需要Supplier的方法，不过不在这边展开，和方法引用关系不大，是stream的事情，简单的使用就像这样</span><br><span class="line">        Person p = s1plus.get();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;说道这，就有问题了，构造函数有入参呢？我也不能再new后面加个括号写参数啊！<strong>注意啊，方法引用是只写方法名的，不要(能)写括号和参数。</strong>回忆一下，方法引用是啥？是lambda表达式，是函数式接口的实现！所以这个这个问题可以自己定义函数式接口来解决。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//先自己定义一个函数式接口:只能有一个方法，用@FunctionalInterface标注</span><br><span class="line">@FunctionalInterface</span><br><span class="line">public interface MagicInterface &#123;</span><br><span class="line">    Person create(String name, Integer age);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class magicTest&#123;</span><br><span class="line">    .....</span><br><span class="line">    @Test</span><br><span class="line">    public void t3()&#123;</span><br><span class="line">        //用自定义的函数式接口来使用</span><br><span class="line">        MagicInterface mi = Person::new;</span><br><span class="line">        Person p2 = mi.create(&quot;test&quot;, 1);</span><br><span class="line">        </span><br><span class="line">        //好了，这仅仅是一个演示，不具备实际使用价值，一般会在Stream中用方法引用来精简</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="实例对象的成员方法的引用"><a href="#实例对象的成员方法的引用" class="headerlink" title="实例对象的成员方法的引用"></a>实例对象的成员方法的引用</h2><p>&emsp;&emsp;实例对象的引用,这个顾名思义，就是引用一个实例的方法，不多废话上代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class magicTest&#123;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void t4()&#123;</span><br><span class="line"></span><br><span class="line">        //创建了一个实例对象</span><br><span class="line">        Person boy = new Person(&quot;magic&quot;, 26);</span><br><span class="line">        </span><br><span class="line">        //依然使用consumer</span><br><span class="line">        Consumer&lt;Person&gt; c1 = new Consumer&lt;Person&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void accept(Person t) &#123;</span><br><span class="line">                boy.playWith(t);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        </span><br><span class="line">        //精简一下就是</span><br><span class="line">        Consumer&lt;Person&gt; c1plus = boy::playWith;</span><br><span class="line">    </span><br><span class="line">        //在stream中的使用</span><br><span class="line">        pList.stream().forEach(boy::playWith);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="类的成员方法的引用"><a href="#类的成员方法的引用" class="headerlink" title="类的成员方法的引用"></a>类的成员方法的引用</h2><p>&emsp;&emsp;好了，终于到这里了。仔细看看这个标题，有没有违和感？类的成员方法的引用。一般来说的话，除了静态方法，有见过直接用类调用方法的么？？？没有吧！这tm就很蛋疼了，网上百度方法引用，全部直接给你个例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//假设 O是类</span><br><span class="line">list.stream().forEach(o-&gt;o.method());</span><br><span class="line">//可以简化成</span><br><span class="line">list.forEach(O::method);</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;这样的文章看了很多篇，经常还是第一个讲这种引用方式，给人一种很简单的感觉。先思考一下，下面的代码有没有问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class magicTest&#123;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void t5()&#123;</span><br><span class="line">        pList.stream().forEach(Person::playWith);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;好像也没什么问题嘛…playWith的方法接受一个person作为入参，而forEach正好提供了一个person，是不是？不是！把他还原出来看看问题就出来了！<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class magicTest&#123;</span><br><span class="line">    @Test</span><br><span class="line">    public void t6()&#123;</span><br><span class="line">        Consumer&lt;Person&gt; c2 = Person::playWith; //这是不行的</span><br><span class="line">        </span><br><span class="line">        Consumer&lt;Person&gt; c2plus  = new Consumer&lt;Person&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void accept(Person t) &#123;</span><br><span class="line">                //关键在这里</span><br><span class="line">               t.playWith(&quot;????&quot;);</span><br><span class="line">               xxx.playWith(t);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;真的是坑死我了，为什么？为什么刚刚的实例调用没问题，现在用类调用就有问题？对比一下accept的实现方法看看：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//对象方法引用</span><br><span class="line">public void accept(Person t) &#123;</span><br><span class="line">    boy.playWith(t);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//类方法引用</span><br><span class="line">public void accept(Person t) &#123;</span><br><span class="line">    t.playWith(&quot;????&quot;);</span><br><span class="line">    xxx.playWith(t);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;一目了然，在对象方法引用的时候，接受的参数person很明显的作为对象boy的成员方法palyWith的入参，这实在是太正常了，让人不假思索就这样认为了。而类方法引用时就出了一点问题，貌似…一个参数不够啊？forEach提供了一个person，这一个person到底作为方法的调用者呢？还是方法的参数呢？ 不可确定…<br>&emsp;&emsp;好，现在回过头去执行一下上一节的T4方法得输出到结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">magic play with a</span><br><span class="line">magic play with b</span><br><span class="line">magic play with c</span><br><span class="line">magic play with d</span><br><span class="line">magic play with e</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;这输出结果和我们还原的实现方法一样！实例对象的引用没问题了，现在接着刚刚的话题，类方法所需对象少了一个。如果执行一个不需要的入参的方法会怎么样？在person类中新增一个成员方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public class Person &#123;</span><br><span class="line">    ...</span><br><span class="line">    public void play() &#123;</span><br><span class="line">        System.out.println(this.name+ &quot; play with himself&quot; );</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class magicTest&#123;</span><br><span class="line">    @Test</span><br><span class="line">    public void t7()&#123;</span><br><span class="line">        //类方法引用</span><br><span class="line">        Consumer&lt;Person&gt; c3 = Person::play;</span><br><span class="line">        //扩产缩写</span><br><span class="line">        Consumer&lt;Person&gt; c3plus  = new Consumer&lt;Person&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void accept(Person t) &#123;</span><br><span class="line">                t.play();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        //使用测试</span><br><span class="line">        pList.stream().forEach(Person::play);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">输出结果：</span><br><span class="line">a play with himself</span><br><span class="line">b play with himself</span><br><span class="line">c play with himself</span><br><span class="line">d play with himself</span><br><span class="line">e play with himself</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;由此可见，forEach中提供的参数person确实是被当做了类方法的调用者，由于Consumer在stream中使用的很频繁，那么做一个不负责的总结：<strong>实现Consumer的 类方法引用，那个类必须是Consumer的泛型类，并且方法不可接受参数</strong>，换句刷说就是  Consumer<t> c = T::method ，method不接受入参。<br>&emsp;&emsp;继续思考这个问题，假如我就是要在用playWith方法的时候（有入参的方法）用类方法引用呢？刚刚已经想到了他缺了一个参数，那试验的方向就很明显了…<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">//首先自建一个函数接口</span><br><span class="line">@FunctionalInterface</span><br><span class="line">public interface MyInterface &#123;</span><br><span class="line">    void method(Person p1 ,Person p2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class magicTest&#123;</span><br><span class="line">    @Test</span><br><span class="line">    public void t8()&#123;</span><br><span class="line">        Person p1 = new Person(&quot;p1&quot;, 1);</span><br><span class="line">        Person p2 = new Person(&quot;p2&quot;, 1);</span><br><span class="line">    </span><br><span class="line">        MyInterface m = Person::playWith;</span><br><span class="line">   </span><br><span class="line">        //由于是自己创建的函数式接口，就简单的手动调用一下吧</span><br><span class="line">        m.method(p1, p2);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">输出结果：</span><br><span class="line">p1 play with p2</span><br></pre></td></tr></table></figure></t></p>
+<p>&emsp;&emsp;到了这里就几乎已经有一个答案呼之欲出了，首先再次验证了在静态方法引用那一节归纳的，需要满足入参和出参对应一致。然后在做一个猜测：<strong>在stream.forEach中Consumer用类成员方法引用实现的时候，java可能已经隐式的替我们传入了一个对象，那一个对象作为consumer实现方法的执行者。</strong> 上面的几个试验也确实验证了这个猜测，无参方法（play）使用forEach传入的对象作为执行者。有参方法（playWith）仅有执行者无执行对象所以会报错，而使用了自定义的双参函数接口后，可以正常使用。<br>&emsp;&emsp;说道这里，回到本节开头，类的方法引用没有没违和感？有！确实，类不能直接使用成员方法（static除外），但是 类的成员方法引用 其实用了第一个接受的参数（该类的实例对象）作为方法的执行者，类并没有直接调用方法。所以在使用类方法引用的时候一定要注意，要提供该类的实例（验证就请各位自己验证吧，如果说错了请记得联系我打我脸）。</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>&emsp;&emsp;这篇文章把自己在看方法引用的时候遇到的问题，思考的过程，个人的总结都记录了下来，以防自己忘记。<br>&emsp;&emsp;由于我没有给网站配置搜索和留言，这文在搜索引擎应该是搜不到的。如果有人能看到这篇文章，并且有疑问的话，可以联系我的qq 418379149.</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java8/" rel="tag"># java8</a>
+          
+            <a href="/tags/lambda/" rel="tag"># lambda</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/24/2018-11-24-abstract-void-thinking/" rel="next" title="abstract void thinking">
+                <i class="fa fa-chevron-left"></i> abstract void thinking
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/magicavatar.jpg" alt="WhiteMagic2014">
+          <p class="site-author-name" itemprop="name">WhiteMagic2014</p>
+           
+              <p class="site-description motion-element" itemprop="description">This is my space to record something.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序"><span class="nav-number">1.</span> <span class="nav-text">序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#正文"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#试验对象"><span class="nav-number">2.1.</span> <span class="nav-text">试验对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态方法的引用"><span class="nav-number">2.2.</span> <span class="nav-text">静态方法的引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构造方法的引用"><span class="nav-number">2.3.</span> <span class="nav-text">构造方法的引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例对象的成员方法的引用"><span class="nav-number">2.4.</span> <span class="nav-text">实例对象的成员方法的引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类的成员方法的引用"><span class="nav-number">2.5.</span> <span class="nav-text">类的成员方法的引用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#后记"><span class="nav-number">3.</span> <span class="nav-text">后记</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

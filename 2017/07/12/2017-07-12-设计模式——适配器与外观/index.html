@@ -1,0 +1,733 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="技术,java,设计模式,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;这次是两个模式，适配器模式 &amp;amp; 外观模式，为什么一下子写两个模式呢？来想想上次讲的装饰模式的功能是什么？我个人感觉：他将一个有相同超类的类进行包装，从而使其获得新的功能；而在看完适配器模式和外观模式之后，我觉得他们三者很像：一个通过包装增加功能，另一个通过包装改变接口，最后一个通过包装简化接口。这样一看可能会觉得比较绕，没事，接下来我会理清这">
+<meta name="keywords" content="技术,java,设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式——适配器与外观">
+<meta property="og:url" content="http://yoursite.com/2017/07/12/2017-07-12-设计模式——适配器与外观/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;这次是两个模式，适配器模式 &amp;amp; 外观模式，为什么一下子写两个模式呢？来想想上次讲的装饰模式的功能是什么？我个人感觉：他将一个有相同超类的类进行包装，从而使其获得新的功能；而在看完适配器模式和外观模式之后，我觉得他们三者很像：一个通过包装增加功能，另一个通过包装改变接口，最后一个通过包装简化接口。这样一看可能会觉得比较绕，没事，接下来我会理清这">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/Adapter.png">
+<meta property="og:updated_time" content="2017-07-21T07:07:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式——适配器与外观">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;这次是两个模式，适配器模式 &amp;amp; 外观模式，为什么一下子写两个模式呢？来想想上次讲的装饰模式的功能是什么？我个人感觉：他将一个有相同超类的类进行包装，从而使其获得新的功能；而在看完适配器模式和外观模式之后，我觉得他们三者很像：一个通过包装增加功能，另一个通过包装改变接口，最后一个通过包装简化接口。这样一看可能会觉得比较绕，没事，接下来我会理清这">
+<meta name="twitter:image" content="http://yoursite.com/images/Adapter.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/12/2017-07-12-设计模式——适配器与外观/">
+
+
+
+
+
+  <title> 设计模式——适配器与外观 | Magic Space </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/12/2017-07-12-设计模式——适配器与外观/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WhiteMagic2014">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/magicavatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                设计模式——适配器与外观
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-12T16:36:35+08:00">
+                2017-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;<br>&emsp;&emsp;这次是两个模式，适配器模式 &amp; 外观模式，为什么一下子写两个模式呢？来想想上次讲的装饰模式的功能是什么？我个人感觉：他将一个有相同超类的类进行包装，从而使其获得新的功能；而在看完适配器模式和外观模式之后，我觉得他们三者很像：一个通过包装增加功能，另一个通过包装改变接口，最后一个通过包装简化接口。这样一看可能会觉得比较绕，没事，接下来我会理清这3者之间的相似与不同。依然会用到那个例子，你问我那个？看看前面几章就知道了…<br>&emsp;&emsp;</p>
+<h1 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h1><p>&emsp;&emsp;<br>&emsp;&emsp;<strong>适配器模式：将一个类的接口，转换成客户期望的另一个接口。让原本接口不兼容的类可以合作。</strong></p>
+<h2 id="常见的适配器"><a href="#常见的适配器" class="headerlink" title="常见的适配器"></a>常见的适配器</h2><p>&emsp;&emsp;适配器这个概念应该很好理解，现实中也有很常见的例子，比如各种数据线的转接头。更具体的说：电脑上都有usb插口，这就是一个接口，而任何实现了这个接口的对象都可以和电脑进行连接，比如U盘。那么如果手机想和电脑连接怎么办呢，手机也没有实现usb接口啊（没有符合usb接口的插头），所以手机没法直接和电脑连接（手机没法像U盘那样直接插在电脑上）。<br>&emsp;&emsp;你可能会说，这不是有数据线么？ 对，数据线就可以当做是适配器，一头是usb插头连接电脑，另一头是符合你的手机的接头，他完成了将两个不同的头转换的功能。那么将其抽象，手机和电脑就是 原有类 和 目标类，（哪个是哪个无所谓，只需知道他们的接口不同就好了），而数据线就是 适配器类。</p>
+<h2 id="请假的厨师"><a href="#请假的厨师" class="headerlink" title="请假的厨师"></a>请假的厨师</h2><p>&emsp;&emsp;天气无比的热，这40多度的天气真不是人能承受的，尤其是在厨房啊！所以啊，Pizza店的厨师中暑无法工作（真是个悲伤的故事）可是店依旧得开下去，怎么办呢？只能先随便找个人顶上去！于是你去隔壁的酒楼花了不少money“借”了个厨师，让他先顶上。人是借到了，但是现在来不及给他培训了怎么办呢？由于比较紧急，“那就安你会做的东西来做！”你这样对厨师说道。他一拍胸脯“这事包我身上了”（最近一有空就在看武林外传…）<br>&emsp;&emsp;先来对比一下这两位厨师的类吧（突然感觉能把人抽象好可怕…）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 这个可以算是目标接口</span><br><span class="line"> */</span><br><span class="line">public interface PizzaChef&#123;</span><br><span class="line">    public void doughFlat();</span><br><span class="line">    public void addOutside();</span><br><span class="line">    public void bake();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 你原来的厨师</span><br><span class="line"> */</span><br><span class="line">public class ChefPizza implements PizzaChef&#123;</span><br><span class="line"></span><br><span class="line">    public void doughFlat()&#123;</span><br><span class="line">        System.out.println(&quot;pizza的揉面团方法，做个面饼&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void addOutside()&#123;</span><br><span class="line">        System.out.println(&quot;在面饼上放上各种素材&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void bake()&#123;</span><br><span class="line">        System.out.println(&quot;烘烤pizza&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 新来的那个，会降龙十巴掌那个...</span><br><span class="line"> */</span><br><span class="line">public class ChefTongfu&#123;</span><br><span class="line"></span><br><span class="line">    public void doughRound()&#123;</span><br><span class="line">        System.out.println(&quot;还能怎么办呢，瞎揉呗&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void steamedBun()&#123;</span><br><span class="line">        System.out.println(&quot;做包子&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void steamed()&#123;</span><br><span class="line">        System.out.println(&quot;蒸包子&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;可以看到 以上两个厨师里的方法完完全全不一样，在现在的程序体系中使用ChefPizza的方法，新的ChefTongfu没有，所以需要一个适配器来进行转接。下面就看看这个适配器该怎么写，看完你会发现原来这么简单。。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class Adapter implements PizzaChef&#123;</span><br><span class="line">    ChefTongfu cheftongfu;</span><br><span class="line">    </span><br><span class="line">    public Adapter(ChefTongfu obj)&#123;</span><br><span class="line">        this.cheftongfu = obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void doughFlat()&#123;</span><br><span class="line">        cheftongfu.doughRound();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void addOutside()&#123;</span><br><span class="line">        cheftongfu.steamedBun();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void bake()&#123;</span><br><span class="line">        cheftongfu.steamed();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;首先这个适配器实现了目标接口，理解上就是：你这个适配器是将其他对象转换成 满足PizzaChef 这个接口的东西的，然后是将什么东西转换呢？看构造方法，在上面的构造方法中，接受了ChefTongfu类型的对象，将其保存。然后在PizzaChef接口所需实现的方法中，调用ChefTongfu中对应要转换的方法。由于其实现了PizzaChef接口，所以对外那些面向接口编程的代码中，Adapter对象可以当做是一个PizzaChef来使用，他的具体方法一一对应到了他构造方法接受到的对象的那些方法。<br>&emsp;&emsp;说了这么多绕口的，下面直接写一下具体的使用也比较清晰<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class Simulator&#123;</span><br><span class="line">    public static void main(String args[])&#123;</span><br><span class="line">        ChefTongfu lidazui = new ChefTongfu();//这个是待转对象</span><br><span class="line">        Adapter exlidazui = new Adapter(lidazui);//这个就是转换过的对象</span><br><span class="line"></span><br><span class="line">        //可使用目标接口的方法了</span><br><span class="line">        exlidazui.doughFlat();</span><br><span class="line">        exlidazui.addOutside();</span><br><span class="line">        exlidazui.bake();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;现在已经成功的让新来的厨师去工作了，虽然他做出的东西可能并不是你想要的，但是。。。他至少顶上了这一天不是么？至于效果就不要多追究了。。。<br>最后看一下适配器模式的类图<br><img src="/images/Adapter.png" alt="img"></p>
+<h2 id="双向适配器"><a href="#双向适配器" class="headerlink" title="双向适配器"></a>双向适配器</h2><p>&emsp;&emsp;上面写的这些，从功能上来说，是单向适配器，何为单向？就字面理解，他只能讲一种类转换成目标类。那双向适配器就很容易的理解了，可以支持双向转换。在深透理解了单向适配器后就很容易去写了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">public interface TongfuChef&#123;</span><br><span class="line">    public void doughRound();</span><br><span class="line">    public void steamedBun();</span><br><span class="line">    public void steamed();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class ChefTongfu implements TongfuChef&#123;</span><br><span class="line"></span><br><span class="line">    public void doughRound()&#123;</span><br><span class="line">        System.out.println(&quot;还能怎么办呢，瞎揉呗&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void steamedBun()&#123;</span><br><span class="line">        System.out.println(&quot;做包子&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void steamed()&#123;</span><br><span class="line">        System.out.println(&quot;蒸包子&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public TwoWayAdapter implements PizzaChef，TongfuChef&#123;</span><br><span class="line">    TongfuChef tongfu;</span><br><span class="line">    PizzaChef pizza;</span><br><span class="line"></span><br><span class="line">    public TwoWayAdapter(TongfuChef obj)&#123;</span><br><span class="line">        this.tongfu = obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public TwoWayAdapter(PizzaChef obj)&#123;</span><br><span class="line">        this.pizza = obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public TwoWayAdapter(TongfuChef obj1,PizzaChef obj2)&#123;</span><br><span class="line">        this.tongfu = obj1;</span><br><span class="line">        this.pizza = obj2;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    //TongfuChef 转 PizzaChef</span><br><span class="line">    public void doughFlat()&#123;</span><br><span class="line">        tongfu.doughRound();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void addOutside()&#123;</span><br><span class="line">        tongfu.steamedBun();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void bake()&#123;</span><br><span class="line">        tongfu.steamed();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //PizzaChef 转 TongfuChef</span><br><span class="line">    public void doughRound()&#123;</span><br><span class="line">        pizza.doughFlat();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void steamedBun()&#123;</span><br><span class="line">        pizza.addOutside();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void steamed()&#123;</span><br><span class="line">        pizza.bake();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;因为现在是双向适配器，所以所谓的目标类又多了一个，我就给原先的ChefTongfu 做了一个接口TongfuChef，取名字反了一下（这个是我的错，我想不出有什么名字了，所以在看的时候一定一定要分清是 接口 还是 类）。然后在双向适配器TwoWayAdapter中，我写了3个构造方法，第一个是在单向适配器中已经解释过了的，第二个同理，反向的一个构造方法。这里我解释一下第三个，他可以同时担任两者的适配器。有人可能会说，有了第一个和第二个构造方法，第三个还有必要么？ 我举个例子：有一条单行道，他既可以从左往右（第一种构造），也可以从右往左（第二种构造），但无论是哪一种，他同一时刻只能担任一种角色，若要给2个同时做适配，那就需要多创建一个实例。我突发奇想，同时接受2个参数的话，就可以同时当做2种对象来用了，这样很cooooooooool不是么。。（虽然我不是很推荐这样干。。）在最后写的是2种类具体的转换，详细的不多赘述，在单向中已经说过了。<br>&emsp;&emsp;至于双相适配器的类图嘛、、大家想想应该是什么样子的呢？探索一下吧<br>&emsp;&emsp;</p>
+<h2 id="java中的适配器"><a href="#java中的适配器" class="headerlink" title="java中的适配器"></a>java中的适配器</h2><p>&emsp;&emsp;在java中如果使用过集合set，那么肯定对Iterator不陌生，迭代器。他可以方便的让你遍历集合类型中的元素。但是，在Iterator之前还有一个Enumeration枚举器这个东西，不过已经很久不用了。但是如果要处理一些历史遗留代码（一些老程序）可能他用的就是enum，这时候就可以自己写一个适配器了。现在已知Iterator接口中有hasNext(),next(),remove()方法、在Enumeration中有hasMoreElements(),nextElement()方法，那么试试看如何写一个适配器呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class EnumerationIterator implements Iterator&#123;</span><br><span class="line">    Enumeration enum;</span><br><span class="line"></span><br><span class="line">    public EnumerationIterator(Enumeration obj)&#123;</span><br><span class="line">        this.enum = obj</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean hasNext()&#123;</span><br><span class="line">        return enum.hasMoreElements();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Object next()&#123;</span><br><span class="line">        return enum.nextElement();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void remove()&#123;</span><br><span class="line">        return new UnsupportedOperationException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;在写适配器的时候最重要的就是在两者之间找到映射关系，这里看上面的remove方法，由于在enum中没有可以转换的方法，但是空着不写也不行（不写的话就不会执行任何东西，客户会觉得是代码哪里出错了“我按了啊？怎么没反应呢？”）所以在这里抛出一个运行时的异常，通知外部这里的情况。</p>
+<p>&emsp;&emsp;</p>
+<h2 id="对象适配器和类适配器"><a href="#对象适配器和类适配器" class="headerlink" title="*对象适配器和类适配器"></a>*对象适配器和类适配器</h2><p>&emsp;&emsp;以上说的全部都是对象适配器，类适配器涉及到了多重继承，而在java中是没有多种继承的，所以我并不很清楚这到底是什么。不过根据参考资料所说，类适配器与对象适配器唯一的区别就是，类适配器<strong>继承</strong>了Target 和 Adaptee。而对象适配器利用<strong>组合</strong>的方法来将请求传递给别适配者。如果有兴趣的可自己去查阅一下这方面的资料。<br>&emsp;&emsp;</p>
+<h1 id="外观模式"><a href="#外观模式" class="headerlink" title="外观模式"></a>外观模式</h1><p>好了 外观严意义上来说是另一个模式吧。那下周更吧。。</p>
+<h1 id="三方会谈"><a href="#三方会谈" class="headerlink" title="三方会谈"></a>三方会谈</h1><p>这里主要是 写 装饰者 外观 适配器 三个的比较下周再说</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/技术/" rel="tag"># 技术</a>
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/05/2017-07-05-杂谈一/" rel="next" title="杂谈一">
+                <i class="fa fa-chevron-left"></i> 杂谈一
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/08/2017-11-08-“简谈单车智能锁的攻与防”/" rel="prev" title="简谈单车智能锁的攻与防">
+                简谈单车智能锁的攻与防 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/magicavatar.jpg" alt="WhiteMagic2014">
+          <p class="site-author-name" itemprop="name">WhiteMagic2014</p>
+           
+              <p class="site-description motion-element" itemprop="description">This is my space to record something.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#适配器模式"><span class="nav-number">1.</span> <span class="nav-text">适配器模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见的适配器"><span class="nav-number">1.1.</span> <span class="nav-text">常见的适配器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请假的厨师"><span class="nav-number">1.2.</span> <span class="nav-text">请假的厨师</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#双向适配器"><span class="nav-number">1.3.</span> <span class="nav-text">双向适配器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java中的适配器"><span class="nav-number">1.4.</span> <span class="nav-text">java中的适配器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象适配器和类适配器"><span class="nav-number">1.5.</span> <span class="nav-text">*对象适配器和类适配器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#外观模式"><span class="nav-number">2.</span> <span class="nav-text">外观模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三方会谈"><span class="nav-number">3.</span> <span class="nav-text">三方会谈</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

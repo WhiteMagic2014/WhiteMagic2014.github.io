@@ -1,0 +1,746 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="技术,android,gradle,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;gradle是什么？我也不知道，自从我接触android以来，一提到这东西就我头疼。因为被qiang的原因，每次去网上找一些学习代码、git上弄来一些有用的工具类、找个demo之类的，导入的时候95%会给我卡gradle。在初学的时候真的是吃够了苦头，试想：你还是个萌新，基本上得看着教程学，然后你下载的教程打不开，好不容易打开了满脸都是红的提示框，你还有学下去的欲望吗。。。">
+<meta name="keywords" content="技术,android,gradle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AndroidStudio中gradle到底是什么?">
+<meta property="og:url" content="http://yoursite.com/2017/04/06/2017-04-06-AndroidStudio中gradle到底是什么/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;gradle是什么？我也不知道，自从我接触android以来，一提到这东西就我头疼。因为被qiang的原因，每次去网上找一些学习代码、git上弄来一些有用的工具类、找个demo之类的，导入的时候95%会给我卡gradle。在初学的时候真的是吃够了苦头，试想：你还是个萌新，基本上得看着教程学，然后你下载的教程打不开，好不容易打开了满脸都是红的提示框，你还有学下去的欲望吗。。。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-06-12T10:28:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AndroidStudio中gradle到底是什么?">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;gradle是什么？我也不知道，自从我接触android以来，一提到这东西就我头疼。因为被qiang的原因，每次去网上找一些学习代码、git上弄来一些有用的工具类、找个demo之类的，导入的时候95%会给我卡gradle。在初学的时候真的是吃够了苦头，试想：你还是个萌新，基本上得看着教程学，然后你下载的教程打不开，好不容易打开了满脸都是红的提示框，你还有学下去的欲望吗。。。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/06/2017-04-06-AndroidStudio中gradle到底是什么/">
+
+
+
+
+
+  <title> AndroidStudio中gradle到底是什么? | Magic Space </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/06/2017-04-06-AndroidStudio中gradle到底是什么/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WhiteMagic2014">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/magicavatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                AndroidStudio中gradle到底是什么?
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-06T15:45:09+08:00">
+                2017-04-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;gradle是什么？我也不知道，自从我接触android以来，一提到这东西就我头疼。因为被qiang的原因，每次去网上找一些学习代码、git上弄来一些有用的工具类、找个demo之类的，导入的时候95%会给我卡gradle。在初学的时候真的是吃够了苦头，试想：你还是个萌新，基本上得看着教程学，然后你下载的教程打不开，好不容易打开了满脸都是红的提示框，你还有学下去的欲望吗。。。。<br>&emsp;&emsp;现在，我们去百度看一眼<a href="http://baike.baidu.com/link?url=vmCytFQ0HbC3IRFbyuCK2Ks0vFnYmUDYQPvJK-ANs8WCFEoZCry6LQJKbhUikledlAxd5d7VCKVOVjJ7ekoxbq" target="_blank" rel="noopener">gradle</a>，看懂了么、、反正我没看懂。现在的水平也就只能想几个法子，来应对一下AndroidStudio使用过程中gradle可能会出现的麻烦。</p>
+<h2 id="麻烦-下载别人的代码AS打不开？"><a href="#麻烦-下载别人的代码AS打不开？" class="headerlink" title="麻烦! 下载别人的代码AS打不开？"></a>麻烦! 下载别人的代码AS打不开？</h2><p>&emsp;&emsp;经常在csdn，或者git上面找来的as工程代码，然后打开始会卡在 building gradle 这一步，因为在下载的项目文件夹中 bulid.gradle文件的配置是原作者使用的gradle版本，换了个编译环境，gradle版本变了，所以AS会去自动下载符合的gradle，那个下载的地址可以在/gradle/wrapper/gradle-wrapper.properties 中看到，由于被qiang的情况下，基本上是等到死都下载不完的。<br>&emsp;&emsp;这个解决方法就是在打开项目之前就手动去修改这些设置，首先随便找一个你能打开的项目（一般来说新建一个新的项目就好了），左边的显示模式选为android</p>
+<h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><p>&emsp;&emsp;去找到build.gradle(你的项目名)，将其中的dependence复制 (主要是 classpath 这一条后面的内容 比如’com.android.tools.build:gradle:2.2.3’)，去替换你要打开的项目对应的那一条，文件路径为/bulid.gradle。</p>
+<h3 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h3><p>&emsp;&emsp;找到gradle-wrapper.properties，其中最后一条，distributionUrl=xxxx ，将这一条复制，去替换你要打开的项目中对应的那个地址，路径为上面提到过的/gradle/wrapper/gradle-wrapper.properties</p>
+<h3 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h3><p>&emsp;&emsp;打开build.gradle(app)，这个括号里的app其实就是module名，打开它，找到android 这个block，其中 buildToolsVersion 后面的版本复制下来。然后同样的，去替换掉你要打开的项目的对应条，具体路径为/app/build.gradle <strong>注意!!!</strong> 这个app仅仅是module名，实际替换的时候你要找到目标代码的module，因为这个名字不是固定的，app只是一个默认的名字。同样的，如果目标module依赖了其他的library，则需要将所有被依赖的lib中的build.gradle，中的buildToolsVersion 都替换。<br>&emsp;&emsp; 经过这以上3步，则可以打开项目了，但并不代表一定能跑起来，可能还得根据编译器的提示做进一步的工作。不过已经打开了这个项目了，那么剩下的工作也已经不是什么大问题了。</p>
+<h2 id="指定jniLibs地址"><a href="#指定jniLibs地址" class="headerlink" title="指定jniLibs地址"></a>指定jniLibs地址</h2><p>&emsp;&emsp;曾经做过一个项目，其中用到的jar库需要用到一些so文件，也就是c那边的一些源码，可能涉及到ndk 我不是很懂了。 但是仅仅就将so文件放在lib文件加下的话，也许，也许并没有什么卵用，得去指定一下文件的路径，指定方法为：找到该module的build.gradle文件,然后android block中添加以下代码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">   ...</span><br><span class="line">   sourceSets.main &#123;</span><br><span class="line">      jniLibs.srcDirs = [<span class="string">'libs'</span>]     //设置目标的so存放路径</span><br><span class="line">      jni.srcDirs = [] //<span class="built_in">disable</span> automatic ndk-build call</span><br><span class="line">   &#125;</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="多渠道打包的小应用"><a href="#多渠道打包的小应用" class="headerlink" title="多渠道打包的小应用"></a>多渠道打包的小应用</h2><p>&emsp;&emsp;有时候一份代码写出来，可能要给不同的客户演示，但是你总不能把客户A家的logo，给客户B看吧。所以得区分开，最蠢的方法就是吧代码完全的复制一份，修改一些特性化的地方（真的蠢，我一开始就是这么干的），但是随着版本的更新，我发现我要开始维护2份代码了，虽然是相同的代码，但是写ctrlCV一遍也很累啊，而且容易弄混，A家的app里面跑着跑着出现的B家的图片，每次更新很是痛苦。直到有一天，我们有了客户C。。。<br>&emsp;&emsp;我觉得是时候根治这个问题了，在网上查询很久，最后看到了productFlavors，这个功能普遍被用来实现多渠道打包，将一份代码打上不同渠道的标识。思索很久，也看了很多教程，我打算将他修改一下…<br>&emsp;&emsp;一个例子：我打算将一个自己写的小游戏，light，打包成2个不同的app light1，和light2，同时他们有不同的app图标，不同的app包名(其实是appid)，以及不同的ui，不同的素材等等…但是他们的根本，代码文件是一样的。OK，开始吧！</p>
+<h3 id="第一步-独立的文件"><a href="#第一步-独立的文件" class="headerlink" title="第一步 独立的文件"></a>第一步 独立的文件</h3><p>&emsp;&emsp;首先将左边的文件试图模式由默认的android改为project，在app/src下新建文件夹light1和light2，注意这2个文件夹应该与main是同一级别，作为存放不同的 个性化的文件夹。<br>&emsp;&emsp;现在我将预先写好的 2个xml layout文件分别放在light1 和light2中，<strong>注意，所有资源的路径应该与main下的路径一致，且名字相同</strong>。在构建app时，main下所有的文件是作为默认文件，但是构建light1时，当检测到light1下也有相同的文件时，会优先使用light1下的文件。<br>&emsp;&emsp;值得注意的是，所有资源文件的性质是<strong>替换</strong>，而代码文件的性质则是<strong>合并</strong>。这有什么区别呢？举个例子，main，lghit1，light2下都有 以下文件 MainActivity.java，main_layout.xml，icon.png。那么编译的时候会发生什么呢？ 答案是无法编译，出错！<br>&emsp;&emsp;main_layout.xml，icon.png 是资源文件所以没有问题。编译不同模块的时候会使用不同模块下的这2个文件，但是java文件不是这样，编译器会提示你：已经有了java文件了，为什么还会存在2个同名的文件！！！！在所有的文件下，不能有重复的java文件，因此一般想实现代码上的不同，可以在java文件中写一个判断，来检测现在编译的是什么，分别给不同的情况写上不用的代码即可。</p>
+<h3 id="第二步-manifests配置"><a href="#第二步-manifests配置" class="headerlink" title="第二步 manifests配置"></a>第二步 manifests配置</h3><p>&emsp;&emsp;打开manifests，这里就演示一下替换图标（其实我不会）<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android:icon=<span class="string">"<span class="variable">$&#123;app_icon&#125;</span>"</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="第三步-buildgradle中的设置"><a href="#第三步-buildgradle中的设置" class="headerlink" title="第三步 buildgradle中的设置"></a>第三步 buildgradle中的设置</h3><p>&emsp;&emsp;打开module的build.gradle，在android block中增加代码块 productFlavors</p>
+<pre><code class="bash">android {
+   ....
+    productFlavors {
+        light1 {
+            applicationId <span class="string">"com.magic.light1"</span>
+            resValue <span class="string">"string"</span>, <span class="string">"app_name"</span>, <span class="string">"light1"</span>
+            manifestPlaceholders = [app_icon   : <span class="string">"@mipmap/icon_light1"</span>]
+            }
+
+        light2 {
+            applicationId <span class="string">"com.magic.light2"</span>
+            resValue <span class="string">"string"</span>, <span class="string">"app_name"</span>, <span class="string">"light2"</span>
+            manifestPlaceholders = [app_icon   : <span class="string">"@mipmap/icon_light2"</span>]
+            }
+    }
+   .....
+}
+</code></pre>
+<p>&emsp;&emsp;其中 light1 和 light2 是我要区别打包的2个对象（这里要注意，light1 和 light2 的这2个名字虽然是自定义的，但是必须和第一步中在project下新建的文件夹名对应相同），每一个中设置了相关的信息，就以上面的为例：applicationId这一行 是设置本模块的appid（不同的appid）。resValue 一行是在打包时设置app的名字（不同的名字）。最后一行是设置manifests中的替换部分，这里是使用了不同的资源文件(不同的图标)。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/技术/" rel="tag"># 技术</a>
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+            <a href="/tags/gradle/" rel="tag"># gradle</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/14/2017-03-14-华为迷之闪退问题/" rel="next" title="华为迷之闪退问题">
+                <i class="fa fa-chevron-left"></i> 华为迷之闪退问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/30/2017-04-30-新坑！设计模式学习-一/" rel="prev" title="新坑！设计模式学习(一)">
+                新坑！设计模式学习(一) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/magicavatar.jpg" alt="WhiteMagic2014">
+          <p class="site-author-name" itemprop="name">WhiteMagic2014</p>
+           
+              <p class="site-description motion-element" itemprop="description">This is my space to record something.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#麻烦-下载别人的代码AS打不开？"><span class="nav-number">1.</span> <span class="nav-text">麻烦! 下载别人的代码AS打不开？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步"><span class="nav-number">1.1.</span> <span class="nav-text">第一步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步"><span class="nav-number">1.2.</span> <span class="nav-text">第二步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三步"><span class="nav-number">1.3.</span> <span class="nav-text">第三步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定jniLibs地址"><span class="nav-number">2.</span> <span class="nav-text">指定jniLibs地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多渠道打包的小应用"><span class="nav-number">3.</span> <span class="nav-text">多渠道打包的小应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步-独立的文件"><span class="nav-number">3.1.</span> <span class="nav-text">第一步 独立的文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步-manifests配置"><span class="nav-number">3.2.</span> <span class="nav-text">第二步 manifests配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三步-buildgradle中的设置"><span class="nav-number">3.3.</span> <span class="nav-text">第三步 buildgradle中的设置</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,756 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="技术,java,设计模式,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;这坑挖了这么久，终于想到填坑了。首先工厂模式并不是我第一个开始看的模式，但为什么放在第一个讲呢？首先，工厂模式里面的细节比较多，根据我的理解还分了3个小块。其次，工厂模式和装饰模式个人感觉可以在一起使用，所以放在一起讲(难道不应该先讲装饰模式么？算了这个细节不去管了= =)。最后，也是最重要的一点，我看到现在工厂模式中一些细节是没法一下子全部接受的，所以也是为了自己的巩固，">
+<meta name="keywords" content="技术,java,设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式——工厂模式">
+<meta property="og:url" content="http://yoursite.com/2017/06/06/2017-06-06-设计模式——工厂模式/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;这坑挖了这么久，终于想到填坑了。首先工厂模式并不是我第一个开始看的模式，但为什么放在第一个讲呢？首先，工厂模式里面的细节比较多，根据我的理解还分了3个小块。其次，工厂模式和装饰模式个人感觉可以在一起使用，所以放在一起讲(难道不应该先讲装饰模式么？算了这个细节不去管了= =)。最后，也是最重要的一点，我看到现在工厂模式中一些细节是没法一下子全部接受的，所以也是为了自己的巩固，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/SimpleFactory.png">
+<meta property="og:image" content="http://yoursite.com/images/Factory.png">
+<meta property="og:image" content="http://yoursite.com/images/AbstractFactory.png">
+<meta property="og:updated_time" content="2017-06-14T04:49:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式——工厂模式">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;这坑挖了这么久，终于想到填坑了。首先工厂模式并不是我第一个开始看的模式，但为什么放在第一个讲呢？首先，工厂模式里面的细节比较多，根据我的理解还分了3个小块。其次，工厂模式和装饰模式个人感觉可以在一起使用，所以放在一起讲(难道不应该先讲装饰模式么？算了这个细节不去管了= =)。最后，也是最重要的一点，我看到现在工厂模式中一些细节是没法一下子全部接受的，所以也是为了自己的巩固，">
+<meta name="twitter:image" content="http://yoursite.com/images/SimpleFactory.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/06/2017-06-06-设计模式——工厂模式/">
+
+
+
+
+
+  <title> 设计模式——工厂模式 | Magic Space </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/06/2017-06-06-设计模式——工厂模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WhiteMagic2014">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/magicavatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                设计模式——工厂模式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-06T12:43:39+08:00">
+                2017-06-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;这坑挖了这么久，终于想到填坑了。首先工厂模式并不是我第一个开始看的模式，但为什么放在第一个讲呢？首先，工厂模式里面的细节比较多，根据我的理解还分了3个小块。其次，<strong>工厂模式</strong>和<strong>装饰模式</strong>个人感觉可以在一起使用，所以放在一起讲(难道不应该先讲装饰模式么？算了这个细节不去管了= =)。最后，也是最重要的一点，我看到现在工厂模式中一些细节是没法一下子全部接受的，所以也是为了自己的巩固，所以先把工厂梳理一下比较好。</p>
+<p>&emsp;&emsp;在工厂模式中，由浅入深的接触了 <strong>简单工厂</strong>，<strong>工厂模式</strong>，<strong>抽象工厂</strong>。在一开始看简单工厂的时候我感觉我理解了，不过如此嘛；看到工厂模式，喵喵喵？怎么又来一个？；看到抽象工厂，嗯？所以和前面有区别么？我也是看了很久的uml图，网上查了很多资料，做了对比和总结。</p>
+<p>&emsp;&emsp;这里其实会有一个疑问，是针对所有设计模式的疑问：只不过是把这段代码从这边，写到了另一边，到底有什么用？？？从代码量来说，根本没有少，反而变多了啊？（我赌5毛，萌萌肯定会这样说），在这边其实我自己也有疑问，但是最近学下来养成了一个习惯，不同功能的代码分工给不同的对象去做，一目了然，修改起来也方便。其次，在工作中，不可能是所有代码都给客户的，所以，客户端的代码必须与其他代码解耦，使用接口编程。(这一段是我自己编的。。随便看看就好)</p>
+<h1 id="为什么要用工厂Factory"><a href="#为什么要用工厂Factory" class="headerlink" title="为什么要用工厂Factory"></a>为什么要用工厂Factory</h1><p>&emsp;&emsp;<br>&emsp;&emsp;要引入这个概念首先得先扯点其他的，java面向对象中有一个原则：<strong>针对接口编程，而不针对实现编程</strong>。在我们使用“new”的时候，这时候就会实例化一个具体的类，这时候已经脱离了针对接口了。当代码捆绑着具体类的时候，就会很脆弱，缺乏了弹性。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Human human = new Man();//在这里Man是Human的一个子类</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;当有一群相关的具体类的时候，那么就会像这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Human human;</span><br><span class="line">if(做饭)&#123;</span><br><span class="line">    human = new Chef();</span><br><span class="line">&#125;else if(教育)&#123;</span><br><span class="line">    human = new Teacher();</span><br><span class="line">&#125;else if(开车)&#123;</span><br><span class="line">    human = new Driver();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;在这里，具体要实例化哪一个类，要在运行时的一些条件来决定，但是当需要扩展的时候，就需要重新修改这段代码，以这里为例，就需要新增一个else if语句。</p>
+<p><strong>new 有什么问题？</strong><br>&emsp;&emsp;在技术上来说没任何问题，毕竟是java。但是由于要应对<strong>扩展</strong>和<strong>改变</strong>，当代码使用大量的具体类时，一旦加入新的具体类，那就肯定要动这代码了。针对接口编程，可以隔离掉以后系统可能发生的一堆改变和扩展。</p>
+<p>&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;<br><strong>&lt;为了形象的说明问题，在下面都用一个例子来说明 Pizza店(来源于head first,这个比喻很适合)&gt;</strong></p>
+<h1 id="简单工厂-SimpleFactory"><a href="#简单工厂-SimpleFactory" class="headerlink" title="简单工厂 SimpleFactory"></a>简单工厂 SimpleFactory</h1><p>&emsp;&emsp;<br>&emsp;&emsp;定义:通过专门定义一个类来负责创建其他类的实例，被创建的实例通常都具有共同的父类。以此来将<strong>创建实例的过程</strong>封装。<br>&emsp;&emsp;现在pizza店有一个订餐的功能：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Pizza orderPizza()&#123;</span><br><span class="line">    Pizza pizza = new Pizza();</span><br><span class="line"></span><br><span class="line">    pizza.prepare();//准备</span><br><span class="line">    pizza.bake();//烘烤</span><br><span class="line">    pizza.cut();//切块</span><br><span class="line">    pizza.box();//装箱</span><br><span class="line"></span><br><span class="line">    return pizza;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;但是仅仅这样是不够的，需求增加了，现在多了3种可以让订餐的用户选择的种类<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Pizza orderPizza(String type)&#123;</span><br><span class="line">    Pizza pizza = new Pizza();</span><br><span class="line"></span><br><span class="line">    if(type.equals(&quot;cheese&quot;))&#123;</span><br><span class="line">        pizza = new CheesePizza();</span><br><span class="line">    &#125;else if(type.equals(&quot;chicken&quot;))&#123;</span><br><span class="line">        pizza = new ChikenPizza();</span><br><span class="line">    &#125;else if(type.equals(&quot;fish&quot;))&#123;</span><br><span class="line">        pizza = new FishPizza();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pizza.prepare();//准备</span><br><span class="line">    pizza.bake();//烘烤</span><br><span class="line">    pizza.cut();//切块</span><br><span class="line">    pizza.box();//装箱</span><br><span class="line"></span><br><span class="line">return pizza;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;暂时这样看上去没什么问题，但是和刚刚说的一样，如果要再来几种pizza的种类，那么这份代码就又要新增几个else if语句块。并且，这个方法已经有点繁杂了，他如果只负责pizz的准备—&gt;装箱,具体制作pizza的任务交给工厂来做，岂不美哉？好，现在来一个简单工厂！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class SimplePizzaFactory&#123;</span><br><span class="line">    public Pizza createPizza(String style)&#123;</span><br><span class="line">        Pizza pizza = null;</span><br><span class="line"></span><br><span class="line">        if(type.equals(&quot;cheese&quot;))&#123;</span><br><span class="line">            pizza = new CheesePizza();</span><br><span class="line">        &#125;else if(type.equals(&quot;chicken&quot;))&#123;</span><br><span class="line">            pizza = new ChikenPizza();</span><br><span class="line">        &#125;else if(type.equals(&quot;fish&quot;))&#123;</span><br><span class="line">            pizza = new FishPizza();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return pizza;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;<br>Q:ヾ(｡｀Д´｡)窝草！这搞毛呢？这只是把问题搬到另一个对象里啊…<br>A:咳咳!这里把创造出pizza的功能分离出来了，不管是谁都能通过工厂实例去调用。当需要扩展或者改变时，只要去找这个类就好了。<br>&emsp;&emsp;<br><strong>静态工厂:</strong><br>有一个类似的设计方式，直接把这里的SimplePizzaFactory类定义成静态类，这样就是静态工厂。优点是不用实例化直接使用，缺点是没法通过继承来改变或者创建方法。 具体的就不扯了，都是些静态类的概念了。</p>
+<p>&emsp;&emsp;啊！好了，话题接着刚才的，现在有了工厂，那么就可以用起来啦。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class PizzaStore &#123;</span><br><span class="line">    SimplePizzaFactory  factory;</span><br><span class="line">    //构造方法来接收工厂</span><br><span class="line">    public PizzaStore(SimplePizzaFactory factory)&#123;</span><br><span class="line">        this.factory = factory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Pizza orderPizza(String style)&#123;</span><br><span class="line">        Pizza pizza = factory.createPizza(style);</span><br><span class="line"></span><br><span class="line">        pizza.prepare();</span><br><span class="line">        pizza.bake();</span><br><span class="line">        pizza.cut();</span><br><span class="line">        pizza.box();</span><br><span class="line"></span><br><span class="line">        return pizza;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;到这里简单工厂就说完了，其实真的很简单。简单工厂其实严格意义上来说，算不上是一个模式，只是一个习惯。。。来看一下uml图（我tm找了半天找不到一个合适的画类图的软件，哎~ 手绘咯）</p>
+<p><img src="/images/SimpleFactory.png" alt="img"></p>
+<p>&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;</p>
+<h1 id="工厂方法模式-Factory"><a href="#工厂方法模式-Factory" class="headerlink" title="工厂方法模式 Factory"></a>工厂方法模式 Factory</h1><p>&emsp;&emsp;<br>&emsp;&emsp;定义:定义了一个创建对象的接口，但由子类决定要实例化的类是哪一个。工厂方法让类的实例化推迟到子类。<br>&emsp;&emsp;好了，通过简单工厂已经将实例化对象的动作交给了工厂去完成，客户端(PizzaStore)已经不需要关注Pizza对象的生成了。Pizza店越开越大，终于需要开分店了:现在需要在A,B,C三个不同的城市开3个分店，但由于地区差异，每个地方对Pizza对象的生产有着不同的要求(对象的创建)，比如ABC三个城市不同特色的chickenPizza，那现在怎么做呢？<br>&emsp;&emsp;如果利用上面说到的SimpleFactory，那么我们需要写3个不同的工厂CityASimplePizzaFactory，CityBSimplePizzaFactory，CityCSimplePizzaFactory来分别生产不同特色的同类型Pizza。在具体使用的时候：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">CityASimplePizzaFactory factoryA = new CityASimplePizzaFactory();</span><br><span class="line">PizzaStore storeA = new PizzaStore(factoryA);</span><br><span class="line">storeA.orderPizza(&quot;chicken&quot;);</span><br><span class="line"></span><br><span class="line">CityBSimplePizzaFactory factoryB = new CityBSimplePizzaFactory();</span><br><span class="line">PizzaStore storeB = new PizzaStore(factoryB);</span><br><span class="line">storeB.orderPizza(&quot;chicken&quot;);</span><br><span class="line"></span><br><span class="line">CityCSimplePizzaFactory factoryC = new CityCSimplePizzaFactory();</span><br><span class="line">PizzaStore storeC = new PizzaStore(factoryC);</span><br><span class="line">storeC.orderPizza(&quot;chicken&quot;);</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;现在总店提供的方法显得有点笨重，在使用的时候需要告诉每一家分店具体该去用哪一个工厂来生产Pizza(该去如何创建对象)。这样显然是有些…这里有一个面向对象原则:<strong>开闭原则:对扩展开放，对修改关闭。</strong>那么怎么能将不同的分店(指让不同的Store可以有不同的 对Pizza的操作)和创建Pizza(指如何创建Pizza对象)绑在一起，有保持弹性呢？(最早在使用简单工厂之前的store确实将这两者绑在了一起，但是完全没有弹性)<br>&emsp;&emsp;再回过头去读一下上面的定义:<strong>定义了一个创建对象的接口，但由子类决定要实例化的类是哪一个。工厂方法让类的实例化推迟到子类。</strong>好了，现在将createPizza放回总店PizzaStore中，但是写成抽象方法，具体的实现要求其子类去实现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public abstract class PizzaStore&#123;</span><br><span class="line">    public Pizza orderPizza(String style)&#123;</span><br><span class="line">        Pizza pizza;</span><br><span class="line">        pizza = createPizza(style);</span><br><span class="line"></span><br><span class="line">        pizza.prepare();</span><br><span class="line">        pizza.bake();</span><br><span class="line">        pizza.cut();</span><br><span class="line">        pizza.box();</span><br><span class="line"></span><br><span class="line">        return pizza;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //现在 实例化对象的工作被分散到了这个方法中，这个方法就相当于是一个工厂</span><br><span class="line">    public abstract Pizza createPizza(String style);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;这样又什么好处呢？因为将总店写成了超类，所以总店的一套完整的订单系统(orderPizza方法)可以被分店(子类)直接使用。子类通过实现父类的createPizza可以来自定义的创造Pizza，更进一步来说，orderPizza方法对Pizza对象做了很多的事情，但是由于Pizza对象是抽象的，他并不知道哪些实际的类参与了进来，这，就是解耦。下面来具体写一个分店类看看：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class CityAStore extends PizzaStore&#123;</span><br><span class="line">    Pizza createPizza(String style)&#123;</span><br><span class="line">        Pizza pizza = null;</span><br><span class="line"></span><br><span class="line">        if(style.equals(&quot;cheese&quot;))&#123;</span><br><span class="line">            pizza = new CityACheesePizza();</span><br><span class="line">        &#125;else if(style.equals(&quot;chicken&quot;))&#123;</span><br><span class="line">            pizza = new CityAChickenPizza();</span><br><span class="line">        &#125;else if(style.equals(&quot;fish&quot;))&#123;</span><br><span class="line">            pizza = new CityAFishPizza();</span><br><span class="line">        &#125;</span><br><span class="line">        return pizza;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//B,C与A类似不写了</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;工厂方法可以封装<strong>具体类型的实例化过程</strong>，看下面的类图，抽象的Creator提供了一个创建对象的方法接口，也称为“工厂方法”。在抽象的Creator中任何其他实现的方法，都可能使用到这个工厂方法所制造出来的产品，但只有这个子类真正实现这个工厂方法并创建产品。如同在定义中说的，工厂方法让子类决定要实例化的类是哪一个。 这里不要产生误解，“决定”并不是指模式允许子类本身在运行的时候做决定，而是指在编写创建者类时，不需要知道实际创建的产品是哪一个。选择了使用哪个子类，那么自然就决定了实际创建的对象是什么。</p>
+<p><img src="/images/Factory.png" alt="img"></p>
+<p>&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;</p>
+<h1 id="依赖倒置原则"><a href="#依赖倒置原则" class="headerlink" title="依赖倒置原则"></a>依赖倒置原则</h1><p>&emsp;&emsp;<br>&emsp;&emsp;在说抽象工厂之前，先停一下，来说说依赖倒置。直接说明可能会有些麻烦，所以我们还是一步步来:如果从来没有听说过工厂，下面的案例就没有使用工厂模式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class DependentPizzaStore&#123;</span><br><span class="line">    public Pizza createPizza(String style,String city)&#123;</span><br><span class="line">        if(city.equals(&quot;cityA&quot;))&#123;</span><br><span class="line">            if(style.equals(&quot;chicken&quot;))&#123;</span><br><span class="line">                pizza = new CityAChickenPizza();</span><br><span class="line">            &#125;else if(style.equals(&quot;cheese&quot;))&#123;</span><br><span class="line">                pizza = new CityACheesePizza();</span><br><span class="line">            &#125;else if(style.equals(&quot;fish&quot;))&#123;</span><br><span class="line">                pizza = new CityAFishPizza();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;else if(city.equals(&quot;cityB&quot;))&#123;</span><br><span class="line">            if(style.equals(&quot;chicken&quot;))&#123;</span><br><span class="line">                pizza = new CityBChickenPizza();</span><br><span class="line">            &#125;else if(style.equals(&quot;cheese&quot;))&#123;</span><br><span class="line">                pizza = new CityBCheesePizza();</span><br><span class="line">            &#125;else if(style.equals(&quot;fish&quot;))&#123;</span><br><span class="line">                pizza = new CityBFishPizza();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            System.out.println(&quot;非常抱歉，没有符合的种类&quot;);</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        pizza.prepare();</span><br><span class="line">        pizza.bake();</span><br><span class="line">        pizza.cut();</span><br><span class="line">        pizza.box();</span><br><span class="line"></span><br><span class="line">        return pizza;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;敲上面这些代码的时候我都快炸了。（没法自动对齐）当直接实例化一个对象时，就是在依赖具体类，很明显的，当代码中减少对具体类的依赖是一件“好事”。这在设计模式中就被称为依赖倒置原则。<br><strong>依赖倒置原则：要依赖抽象，不要依赖具体类</strong><br>&emsp;&emsp;这个原则乍一看很像是“针对接口编程，不要针对实现编程” 他们确实很相似，但是这里更加强调“抽象”。不能让高层组件依赖低层组件，而且不管是高层组件还是低层组件，都应该依赖与抽象。<br>&emsp;&emsp;这里说的是不是有点“抽象”，结合上面的例子看，PizzaStore相当于高层组件，ChickenPizza，FishPizza,CheesePizza就相当于低层组件，很明显，PizzaStore依赖这些具体的Pizza类。如果将他们画成一张图，那就是这样的（因为比较简单 这里就不画出来了）：PizzaStore→许多不同种类的Pizza<br>&emsp;&emsp;现在，看到这个倒置原则，要怎么做呢？让高层对象和低层对象都依赖抽象类，而不去依赖具体类。<br>&emsp;&emsp;虽然，上面的例子已经有了Pizza类作为所有不同种类Pizza的抽象，但在具体使用的时候仍然创建了具体的pizza。我们用了工厂方法来解决这个问题，因此现在图是这样的：PizzaStore→Pizza←许多不同种类的Pizza。<br>&emsp;&emsp;<br>以下几点可以帮助遵守依赖倒置原则:<br><strong>变量不可以持有具体类的引用</strong><br>&emsp;&emsp;如果使用如果使用new，就会持有具体类的引用，可以使用工厂方法来避开这样的做法<br><strong>不要让类派生自具体类</strong><br>&emsp;&emsp;如果派生自具体类，就会依赖具体类，请派生自一个抽象（抽象类或者接口）<br><strong>不要覆盖基类中已经实现的方法</strong><br>&emsp;&emsp;如果覆盖基类已经实现的方法，那么这个基类就不是一个真正适合被继承的抽象，基类中已经实现的方法，应由所有的子类共享。</p>
+<p>&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;</p>
+<h1 id="抽象工厂-AbstractFactory"><a href="#抽象工厂-AbstractFactory" class="headerlink" title="抽象工厂 AbstractFactory"></a>抽象工厂 AbstractFactory</h1><p>&emsp;&emsp;<br>&emsp;&emsp;定义:提供一个接口，用于创建相关或依赖对象的家族，而不需要明确指定类。<br>&emsp;&emsp;现在，Pizza店已经开的红红火火，总店开始担忧一个问题，那么多分店，要是有一家做Pizza用的原料稍微有点偷工减料，那总店的名声都被糟蹋了怎么破？不行，我得造一个原料工厂，原料工厂由总店管控，将生产的原料送给分店。怎么一来似乎不错，但还有一点需要额外注意，不同的城市对原料的要求可能不同，城市A喜欢玉米粉，城市B喜欢面粉；城市A靠海，那fish就新鲜的鱼，城市B在内陆地区，fish就是鱼罐头了。<br>&emsp;&emsp;好，就着这个思路，我们开始规划一下原料工厂，每个工厂需要生产：面团，酱料，芝士，蔬菜，特色佐料等<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public interface PizzaIngredientFactory&#123;</span><br><span class="line">    public Dough createDough();//面团</span><br><span class="line">    public Sauce createSause();//酱料</span><br><span class="line">    public Cheese createCheese();//芝士</span><br><span class="line">    public Meat createMeat();//肉</span><br><span class="line">    public Veggies[] createVeggies();//蔬菜</span><br><span class="line">    public Fish createFish();//鱼</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;上面给工厂定义了一个接口，这个接口负责创建所有的原料，下面就是这个接口的具体实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public class CityAPizzaIngredientFactory implements PizzaIngredientFactory&#123;</span><br><span class="line">    public Dough createDough()&#123;</span><br><span class="line">        return new CityADough();</span><br><span class="line">    &#125;</span><br><span class="line">    public Sauce createSause()&#123;</span><br><span class="line">        return new CityASause();</span><br><span class="line">    &#125;</span><br><span class="line">    public Cheese createCheese()&#123;</span><br><span class="line">        return new CityACheese();</span><br><span class="line">    &#125;</span><br><span class="line">    public Meat createMeat()&#123;</span><br><span class="line">        return new CityAMeat();</span><br><span class="line">    &#125;</span><br><span class="line">    public Veggies[] createVeggies()&#123;</span><br><span class="line">        Veggies CityAVeggies[] = &#123; 各种cityA城市洗好的蔬菜 &#125;；</span><br><span class="line">        return CityAVeggies;</span><br><span class="line">    &#125;</span><br><span class="line">    public Fish createFish()&#123;</span><br><span class="line">        return new CityAFish();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;上面写了城市A的原料工厂，BC类似省略。现在我们来写一下Pizza抽象类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Pizza&#123;</span><br><span class="line">    String name;</span><br><span class="line">    Dough dough;</span><br><span class="line">    Sauce sauce;</span><br><span class="line">    Cheese cheese;</span><br><span class="line">    Meat meat;</span><br><span class="line">    Veggies veggies[];</span><br><span class="line">    Fish fish;</span><br><span class="line"></span><br><span class="line">    abstract void prepare();</span><br><span class="line"></span><br><span class="line">    void bake()&#123;</span><br><span class="line">        System.out.println(&quot;烘烤中&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    void cut()&#123;</span><br><span class="line">        System.out.println(&quot;切块中&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    void box()&#123;</span><br><span class="line">        System.out.println(&quot;装箱中&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    void setName (String name)&#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    public String getName()&#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;上面写了一个抽象的pizza，这个抽象的pizza类规定了一个pizza可能所用到的原料，一鼓作气，现在来做个海鲜pizza试试吧<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class FishPizza extends Pizza&#123;</span><br><span class="line">    PizzaIngredientFactory ingredientFactory;</span><br><span class="line"></span><br><span class="line">    public FishPizza(PizzaIngredientFactory ingredientFactory)&#123;</span><br><span class="line">        this.ingredientFactory = ingredientFactory;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    void prepare()&#123;</span><br><span class="line">        System.out.println(&quot;Preparing&quot; + name);</span><br><span class="line">        douth = ingredientFactory.createDough();</span><br><span class="line">        sause = ingredientFactory.createSause();</span><br><span class="line">        cheese = ingredientFactory.createCheese();</span><br><span class="line">        fish = ingredientFactory.createFish();//如果是城市A 那么就会用新鲜的鱼，如果是城市B 则用鱼罐头</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;上面写了一个fishpizza，其他类型一样，只需要重写父类的prepare类，用本类型所用得到的原料就好了，现在回到pizza分店，看看怎么运作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class CityAStore extends PizzaStore&#123;</span><br><span class="line"></span><br><span class="line">   public Pizza createPizza(String style)&#123;</span><br><span class="line">        Pizza pizza = null;</span><br><span class="line">        PizzaIngredientFactory ingredientFactory = new CityAPizzaIngredientFactory();</span><br><span class="line"></span><br><span class="line">        if(type.equals(&quot;cheese&quot;))&#123;</span><br><span class="line">            pizza = new CheesePizza(ingredientFactory);</span><br><span class="line">        &#125;else if(type.equals(&quot;chicken&quot;))&#123;</span><br><span class="line">            pizza = new ChikenPizza(ingredientFactory);</span><br><span class="line">        &#125;else if(type.equals(&quot;fish&quot;))&#123;</span><br><span class="line">            pizza = new FishPizza(ingredientFactory);</span><br><span class="line">        &#125;</span><br><span class="line">            return pizza;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;现在的分店被指定了该地区“总店认证”的原料工厂，好了，现在就不用担心分店偷工减料了O(∩_∩)O</p>
+<p><strong>一系列的操作，我们到底做了什么？</strong><br>&emsp;&emsp;我们引入了新类型的工厂，也就是所谓的抽象工厂，来创建pizza的原料家族。通过抽象工厂所提供的接口，可以创建产品家族，利用这个接口来写代码，我们的代码将从实际的工厂中解耦，以便在不用的地方实现各种各样的工厂。由于代码从实际的产品中解耦了，所以我们可以替换不同的工厂来取得不同的行为。<br>&emsp;&emsp;现在我们在回头看一下定义:<strong>提供一个接口，用于创建相关或依赖对象的家族，而不需要明确指定类。</strong>抽象工厂允许客户使用抽象接口来创建一组相关的产品，而不需要知道实际产出的产品是什么，这样一来客户就从具体的产品中被解耦。<br>下面我们来看一下类图:<br><img src="/images/AbstractFactory.png" alt="img"><br>本案例的图就不画拉，就当做练习，看到这篇文章的时候再想想吧！<br>（其实是抽象工厂的图相比之前的有点大，一页画不下这么多，而且本案例和标准类图差不多，我就懒得动手了，画一下也好累的。。。）</p>
+<p>&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>&emsp;&emsp;<br>&emsp;&emsp;抽象工厂往往会通过工厂方法来实现，抽象工厂的任务是：<strong>定义一个负责创建一组产品的接口</strong>，这个接口内的每个方法都负责创建一个具体的产品。我们利用实现抽象工厂的子类来实现具体的方法，所以会经常产生一些混淆。下面我对工厂方法和抽象工厂来做一下区分：<br>&emsp;&emsp;工厂方法 和 抽象工厂 的任务都是负责创建对象，但 工厂方法用的是<strong>继承</strong>，而抽象工厂则是通过对象的<strong>组合</strong>（组合模式我应该先讲的TAT）。所以这意味着，使用工厂方法时，需要扩展一个类（extends也就是继承），并且覆盖他的工厂方法，其实整个工厂方法，只不过就是通过子类来创建对象。用这种做法客户只需要知道他们所使用的抽象类型就可以了，而由子类来负责具体类型，换句话说，工厂方法<strong>只负责将客户从具体类型中解耦</strong>。再看抽象工厂，他提供了一个用来创建一个产品家族的抽象类型（接口或抽象类），这个类型的子类定义了产品被产生的方法，要想使用这个抽象工厂，必须实例化他，然后将它传入一些针对抽象类型所写的代码中。因此和工厂方法一样，抽象工厂也能将客户从具体类型中解耦，同时，抽象工厂可以将一群相关的产品集合起来。但是有利有弊，当要扩展这组产品的时候，就要动这个接口（OMG）<br>&emsp;&emsp;再来说一下具体什么时候使用吧，其实仁者见仁智者见智，但一般来说：当<strong>需要创建产品家族</strong>和<strong>想让自导的相关产品集合起来</strong>时，使用抽象工厂；当<strong>要把客户代码从需要实例化的具体类中解耦</strong>或者<strong>目前还不知道将来需要实例化哪些具体类时</strong>，使用工厂方法。<br>&emsp;&emsp;<br>&emsp;&emsp;最后，在网上看到一个对于3个工厂的解释，我觉得非常形象，在这理贴一下：<br>&emsp;&emsp;不能说简单工厂模式”对于增加新的产品，无能为力“，因为如果简单工厂是用来生产”东西“的，那任何”东西“的子类，比如汽车，自行车，轮船，洗发水都是可以被生产的，但此处简单工厂的压力太大了啊，任何”东西“的子类都可以被生产，负担太重，所以一般对简单工厂类也有种称呼，叫”上帝类“。<br>&emsp;&emsp;而工厂方法模式就很好的减轻了工厂类的负担，把某一类/某一种东西交由一个工厂生产，同时增加某一类”东西“并不需要修改工厂类，只需要添加生产这类”东西“的工厂即可，使得工厂类符合开放-封闭原则。<br>&emsp;&emsp;对于”东西“的分类，有时候不能光是横向的分类，从另一个角度也是可以分类的，不知道这句话的意思能不能懂，打个比方：汽车可以根据品牌分为奔驰、奥迪，也可以根据类别分为普通三厢车和SUV车，如果用工厂方法来描述的话，奔驰车工厂有一个方法即生产奔驰车，奥迪车工厂有一个方法生产奥迪车，但在有多重分类的情形下，这样写已经不够用，不符合实际了，这个时候需要用到抽象工厂模式，即奥迪车工厂有两个方法，一个方法是生产普通三厢奥迪车，另一个方法是生产SUV奥迪车。奔驰车工厂有两个方法，一个方法是生产普通三厢奔驰车，另一个方法是生产SUV奔驰车。<br>&emsp;&emsp;上面即工厂方法模式和抽象工厂模式的应用场景，因为这两者很像，所以概念上不容易区分，可以这么说，工厂方法模式是一种极端情况的抽象工厂模式，而抽象工厂模式可以看成是工厂方法模式的一种推广。<br>&emsp;&emsp;再说下抽象工厂模式，此处的抽象工厂接口应该是有两个方法，一个是生成普通三厢车，一个是生产SUV车，可以说，生产的”东西“已经被限定住了，因此你不能生产某品牌汽车外的其他”东西“，因而可以理解成使用抽象工厂模式不能新增新的”东西“（在简单工厂和工厂方法中理论上都是可以新增任意”东西“的）<br>&emsp;&emsp;<br>&emsp;&emsp;<br>&emsp;&emsp;</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>&emsp;&emsp;我的妈！终于是写完了！其实写完了我感觉：写错拉！！！还是应该先写组合模式的！！！个人感觉组合是最适合将设计模式引入的一个模式，而且对于多态，针对接口编程等概念都有使用（可能是我第一个看的是组合的缘故吧）<br>&emsp;&emsp;算了写也写完了，我在想给自己来点奖励，比如说去fgo氪他个1单？？？？OMG我的花钱罪恶感又上来了。。。。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/技术/" rel="tag"># 技术</a>
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/30/2017-04-30-新坑！设计模式学习-一/" rel="next" title="新坑！设计模式学习(一)">
+                <i class="fa fa-chevron-left"></i> 新坑！设计模式学习(一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/14/2017-06-14-设计模式——单例模式/" rel="prev" title="设计模式——单例模式">
+                设计模式——单例模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/magicavatar.jpg" alt="WhiteMagic2014">
+          <p class="site-author-name" itemprop="name">WhiteMagic2014</p>
+           
+              <p class="site-description motion-element" itemprop="description">This is my space to record something.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么要用工厂Factory"><span class="nav-number">1.</span> <span class="nav-text">为什么要用工厂Factory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简单工厂-SimpleFactory"><span class="nav-number">2.</span> <span class="nav-text">简单工厂 SimpleFactory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#工厂方法模式-Factory"><span class="nav-number">3.</span> <span class="nav-text">工厂方法模式 Factory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖倒置原则"><span class="nav-number">4.</span> <span class="nav-text">依赖倒置原则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#抽象工厂-AbstractFactory"><span class="nav-number">5.</span> <span class="nav-text">抽象工厂 AbstractFactory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#后记"><span class="nav-number">7.</span> <span class="nav-text">后记</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

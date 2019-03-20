@@ -1,0 +1,737 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="技术,java,设计模式,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="前言&amp;emsp;&amp;emsp;面试中…A：&amp;emsp;知道设计模式吗？Q：&amp;emsp;了解过一点..A：&amp;emsp;那，给我讲讲什么是单例模式？Q：&amp;emsp;啊？ 尴尬…&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp; 是的，单例是面试的时候最喜欢问的，几乎提到设计模式，就会提到他。他是乍一看最简单的，但是他真的很简单吗？我并不这么感觉，应该这么说，单例模式本身简单，但当你需要用到这个模式的时候，">
+<meta name="keywords" content="技术,java,设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式——单例模式">
+<meta property="og:url" content="http://yoursite.com/2017/06/14/2017-06-14-设计模式——单例模式/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="前言&amp;emsp;&amp;emsp;面试中…A：&amp;emsp;知道设计模式吗？Q：&amp;emsp;了解过一点..A：&amp;emsp;那，给我讲讲什么是单例模式？Q：&amp;emsp;啊？ 尴尬…&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp; 是的，单例是面试的时候最喜欢问的，几乎提到设计模式，就会提到他。他是乍一看最简单的，但是他真的很简单吗？我并不这么感觉，应该这么说，单例模式本身简单，但当你需要用到这个模式的时候，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-06-23T08:48:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式——单例模式">
+<meta name="twitter:description" content="前言&amp;emsp;&amp;emsp;面试中…A：&amp;emsp;知道设计模式吗？Q：&amp;emsp;了解过一点..A：&amp;emsp;那，给我讲讲什么是单例模式？Q：&amp;emsp;啊？ 尴尬…&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp; 是的，单例是面试的时候最喜欢问的，几乎提到设计模式，就会提到他。他是乍一看最简单的，但是他真的很简单吗？我并不这么感觉，应该这么说，单例模式本身简单，但当你需要用到这个模式的时候，">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/14/2017-06-14-设计模式——单例模式/">
+
+
+
+
+
+  <title> 设计模式——单例模式 | Magic Space </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/14/2017-06-14-设计模式——单例模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WhiteMagic2014">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/magicavatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                设计模式——单例模式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-14T14:26:48+08:00">
+                2017-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp;<br><strong>面试中…</strong><br>A：&emsp;知道设计模式吗？<br>Q：&emsp;了解过一点..<br>A：&emsp;那，给我讲讲什么是单例模式？<br>Q：&emsp;啊？ 尴尬…<br>&emsp;&emsp;<br>&emsp;&emsp; 是的，单例是面试的时候最喜欢问的，几乎提到设计模式，就会提到他。他是乍一看最简单的，但是他真的很简单吗？我并不这么感觉，应该这么说，单例模式本身简单，但当你需要用到这个模式的时候，你面对的情景已经不简单了。因为他往往伴随着线程、同步等问题一起出现，那么 开始吧!</p>
+<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>&emsp;&emsp;<br>&emsp;&emsp;首先，来看一下他的定义：<br>&emsp;&emsp;<strong>单例模式（Single Pattern）：确保一个类只有一个实例，并提供一个全局访问点。</strong><br>&emsp;&emsp;由我自己的理解来概述一下单例模式，就是：不允许外部创建对象实例而是在类内部创建实例，外部通过get方法来获得此实例。这么说可能有点抽象，不便于理解，那么依然配合例子来说吧：</p>
+<h2 id="一个巨大的仓库"><a href="#一个巨大的仓库" class="headerlink" title="一个巨大的仓库"></a>一个巨大的仓库</h2><p>&emsp;&emsp;工厂模式中开的Pizza店十分成功，我们开了Pizza原料工厂，总店以及各种Pizza的分店。但是很快发现，我们需要一个仓库，一个巨大的仓库，能将购买的各种制作pizza的原料都存放在这个大仓库里。来吧！盖一个仓库!<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">public class Warehouse&#123;</span><br><span class="line">    private ArrayList&lt;ProductA&gt; productAList;//记录存放货物A的list</span><br><span class="line">    private ArrayList&lt;ProductB&gt; productBList;</span><br><span class="line">    private ArrayList&lt;ProductC&gt; productCList;</span><br><span class="line"></span><br><span class="line">    //构造方法</span><br><span class="line">    public Warehouse()&#123;</span><br><span class="line">        productAList = null;//在刚刚建完仓库的时候，是没有货物的</span><br><span class="line">        productBList = null;</span><br><span class="line">        productCList = null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //存放 ProductA</span><br><span class="line">    public void addProductA(ProductA obj)&#123;</span><br><span class="line">        this.productAList.add(obj);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //取出 ProductA</span><br><span class="line">    public ProductA getProductA(String id)&#123;</span><br><span class="line">        ProductA obj = null;</span><br><span class="line">        for (int i = 0; i &lt; this.productAList.size(); i++) &#123;</span><br><span class="line">            if (productAList.get(i).getId().equals(id)) &#123;</span><br><span class="line">                //.getId()是在ProductA中的方法，怎么实现不重要，和本文知识点没什么关系，你只要知道有这个方法就可以了</span><br><span class="line">                obj = productAList.get(i);</span><br><span class="line">                productAList.remove(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;  </span><br><span class="line">        return obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //查询还有多少货物A</span><br><span class="line">    public int checkProductA()&#123;</span><br><span class="line">        return this.productAList.size()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //这里应该还有货物B、C的存取方法，与A类似省略...</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;仓库造完了，嘿嘿，看起来还不错呢？总感觉有点怪怪的？应该是我多心了？走！实地考察看看分店用这个仓库感觉如何！<br>&emsp;&emsp;<br>&emsp;&emsp;</p>
+<h2 id="谁的错？"><a href="#谁的错？" class="headerlink" title="谁的错？"></a>谁的错？</h2><p>&emsp;&emsp;你来到分店A，发现店门口2个人在争吵着，周围围着一群吃瓜群众…..<br>&emsp;&emsp;“怎么了！怎么了！”作为老板你走上前去，有些不快。走进发现，原来是你的采购员与A地区的工厂管理员。<br>&emsp;&emsp;-采购员：那天我买好的货物全都存进仓库了？<br>&emsp;&emsp;-A管理员：我去仓库提货的时候什么都没有！现在已经没原料了，工厂没原料加工，pizza店没有pizza卖！<br>&emsp;&emsp;-采购员：天哪！难道你是想说我在骗你？<br>&emsp;&emsp;-A管理员：我可没这么说，不过采购的费用确实是笔大数字，谁知道..<br>&emsp;&emsp;“够了！安静！”你打断了他们的争吵，具体情况大致了解了，你仔细想了想，眉头一皱，似乎发现了什么…<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">//采购员</span><br><span class="line">public class Purchaser&#123;</span><br><span class="line">    Warehouse warehouse;</span><br><span class="line">    public Purchaser()&#123;</span><br><span class="line">        warehouse = new Warehouse;</span><br><span class="line">    &#125;</span><br><span class="line">    //购买完的货物直接存到仓库中去</span><br><span class="line">    public void buyProductA()&#123;</span><br><span class="line">        ProductA productA= new ProductA;</span><br><span class="line">        warehouse.addProductA(productA);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//工厂</span><br><span class="line">public class FactoryA&#123;</span><br><span class="line">    ProductA productA;</span><br><span class="line">    Warehouse warehouse;</span><br><span class="line"></span><br><span class="line">    public FactoryA ()&#123;</span><br><span class="line">        productA = null;</span><br><span class="line">        warehouse = new Warehouse;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void work()&#123;</span><br><span class="line">        productA = warehouse.getProductA(&quot;NO.2014&quot;);</span><br><span class="line">        //以下是对productA的加工等操作</span><br><span class="line">        ....</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;果然之前的预感是对的！这里出现了问题，在Purchaser中实例化了一个仓库Warehouse，同时在FactoryA中也实例化了一个Warehouse，这就是问题的所在。每个类在运行的时候内部的变量作用域仅在其内部，就算名字相同其实也仅仅是名字一样罢了，在内存中是不同的2个地址。换句话说！在运作的时候实例化了2个工厂！<br>&emsp;&emsp;<br>&emsp;&emsp;</p>
+<h2 id="紧急会议"><a href="#紧急会议" class="headerlink" title="紧急会议"></a>紧急会议</h2><p>&emsp;&emsp;你火急火燎的赶回总部，召开了会议，想解决这个问题。<br>&emsp;&emsp;会议上大家议论纷纷，突然有人提议”为什么不在运行的时候实例化仓库，并将其传递给工厂与采购员呢？这样就能保证他们使用的是一个仓库了！“说罢，大家纷纷向他投去了赞赏的目光，你低头沉思，这样似乎确实能解决目前的问题。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//将 class Purchaser，class FactoryA中的构造方法改写一下</span><br><span class="line">    public Purchaser(Warehouse obj)&#123;</span><br><span class="line">        warehouse = obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public FactoryA (Warehouse obj)&#123;</span><br><span class="line">        productA = null;</span><br><span class="line">        warehouse = obj;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;这样改写后，那么在使用的时候就需要传入参数，虽然解决的眼下的问题，但是如果有其他的采购员，其他的工厂，你都需要将仓库作为参数传递进去，这样简直太麻烦了！！！在你苦恼的时候，会议室的门突然被推开了，一个男子缓缓走进门，你看着他，但头脑中依然在思考着要不要使用刚刚的提议。<br>&emsp;&emsp;”我能解决你的麻烦！“那人说道。 众人交头接耳，议论着什么。”你是谁！“作为老板，你开了口。<br>&emsp;&emsp;男子微微一笑”SinglePattern，在下单例模式！“<br>&emsp;&emsp;<br>&emsp;&emsp;</p>
+<h2 id="突然的帮手"><a href="#突然的帮手" class="headerlink" title="突然的帮手"></a>突然的帮手</h2><p>&emsp;&emsp;那位陌生人说出了一套令人无法拒绝的方案:将Warehouse类的构造函数写为private的，这样在外部就没有人可以使用Warehouse的构造器，同时，在Warehouse类内部写一个静态方法，由这个静态方法来返回Warehouse的实例。由于这个是静态方法，那么在全局都可以使用，当调用这个方法时，会判断如果已经有了实例，就会直接返回，这样就不会重复创建对象了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">public class Warehouse&#123;</span><br><span class="line">    private ArrayList&lt;ProductA&gt; productAList;</span><br><span class="line">    private ArrayList&lt;ProductB&gt; productBList;</span><br><span class="line">    private ArrayList&lt;ProductC&gt; productCList;</span><br><span class="line"></span><br><span class="line">    private static Warehouse singleWarehouse;</span><br><span class="line"></span><br><span class="line">    //构造方法 变为私有的</span><br><span class="line">    private Warehouse()&#123;</span><br><span class="line">        productAList = null;</span><br><span class="line">        productBList = null;</span><br><span class="line">        productCList = null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //获取Warehouse实例的方法</span><br><span class="line">    public static Warehouse getInstance()&#123;</span><br><span class="line">        if(singleWarehouse == null)&#123;</span><br><span class="line">            singleWarehouse = new Warehouse();</span><br><span class="line">        &#125;</span><br><span class="line">        return singleWarehouse;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void addProductA(ProductA obj)&#123;</span><br><span class="line">        this.productAList.add(obj);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public ProductA getProductA(String id)&#123;</span><br><span class="line">    ProductA obj = null;</span><br><span class="line">        for (int i = 0; i &lt; this.productAList.size(); i++) &#123;</span><br><span class="line">            if (productAList.get(i).getId().equals(id)) &#123;</span><br><span class="line">            obj = productAList.get(i);</span><br><span class="line">            productAList.remove(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;  </span><br><span class="line">        return obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int checkProductA()&#123;</span><br><span class="line">        return this.productAList.size()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;到这里，单例模式大展身手，完美的解决了之前的问题，你的巨大仓库得以能够正常工作。似乎就该这么画上完美的句点了。<br>&emsp;&emsp;<br>&emsp;&emsp;</p>
+<h1 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h1><p>&emsp;&emsp;<br>&emsp;&emsp;之前的一节主要引出了单例模式并且写了一个例子，我觉得与其让我用刻板的术语来说单例的好处，不如大家实际看起来直观，可以一步步的看到遇到的问题，解决的思路，单例模式能做到的事情显然意见了。这一节会针对单例模式在多线程时所遇到的一些问题来说。好的、继续吧！<br>（我突然发现编故事也挺好玩的。。。）</p>
+<h2 id="两个采购员"><a href="#两个采购员" class="headerlink" title="两个采购员"></a>两个采购员</h2><p>&emsp;&emsp;经过了之前的问题，大家现在又回到了工作中，你看着你的采购员每天辛辛苦苦的为这个”巨大”仓库补货，感觉太辛苦他了，于是你打算再招一个采购员，当他们一起合作。一开始他们合作的也比较顺利，直到有一天…<br>&emsp;&emsp;你新推出了一种pizza，他是那么的火爆，库存的那些原料在短短的1周就全部用完了！你十分高兴，一边看着财报，一边对你的采购员说，”你们2个，在下周前给我去采购共计10W份pizza的原料回来，回来就涨工资！“大家都十分兴奋，努力的工作去了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">public class Simulator&#123;</span><br><span class="line"></span><br><span class="line">    Purchaser purchaserA，purchaserB;//2个采购员</span><br><span class="line"></span><br><span class="line">    public Simulator()&#123;</span><br><span class="line">        purchaserA = new Purchaser();</span><br><span class="line">        purchaserB = new Purchaser();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //2个runnable操作</span><br><span class="line">    Runnable runnableA = new Runnable()&#123;</span><br><span class="line">        while(Warehouse.getInstance.checkProductA&lt;100000)&#123;</span><br><span class="line">            purchaserA.buyProductA();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    Runnable runnableB = new Runnable()&#123;</span><br><span class="line">        while(Warehouse.getInstance.checkProductB&lt;100000)&#123;</span><br><span class="line">            purchaserB.buyProductB();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    //在执行中开启2个线程，让他们去合作</span><br><span class="line">    public void execute()&#123;</span><br><span class="line">        new Thread(runnableA).start;</span><br><span class="line">        new Thread(runnableB).start;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;一周过后，你来到你的巨大仓库，惊讶的发现，眼前有着2个仓库！！！为什么！为什么！又出现了2个仓库！！！</p>
+<p>&emsp;&emsp;<br>&emsp;&emsp;</p>
+<h2 id="两个仓库"><a href="#两个仓库" class="headerlink" title="两个仓库"></a>两个仓库</h2><p>&emsp;&emsp;这回你冷静了很多，毕竟是经历过大场面的人了，你回想起线程的种种相关知识：<br>&emsp;&emsp;线程创建后就会自行开始运行，不再受控制，在上面写的方法中，由Warehouse.getInstance获得实例，第一次执行的时候是null，创建一个新的实例返回；第二次执行的时候不为null，应该返回上一个实例。但是，由于线程是同时执行的，所以第一次执行的时候有可能的情况是：A,B同时执行，当然这时候实例为null，所以他们分别创建了2个仓库实例。对于他们来说，确实是没有实例的情况下创建的！<br>&emsp;&emsp;这时候单例模式又出现了，他只和你说了几句话，你便松了一口气，他说了什么？<strong>synchronize！</strong><br>&emsp;&emsp;synchronize可以让其包括的代码块具有原子性，即在一个对象在执行这段代码中时，其他对象无法执行这段代码，只有当之前的人执行完毕。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">public class Warehouse&#123;</span><br><span class="line">    private ArrayList&lt;ProductA&gt; productAList;//记录存放货物A的list</span><br><span class="line">    private ArrayList&lt;ProductB&gt; productBList;</span><br><span class="line">    private ArrayList&lt;ProductC&gt; productCList;</span><br><span class="line"></span><br><span class="line">    private static Warehouse singleWarehouse;</span><br><span class="line"></span><br><span class="line">    private Warehouse()&#123;</span><br><span class="line">        productAList = null;</span><br><span class="line">        productBList = null;</span><br><span class="line">        productCList = null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static Warehouse getInstance()&#123;</span><br><span class="line"></span><br><span class="line">        synchronized(this)&#123;</span><br><span class="line">        //加一个对象锁，具体的知识点以后有机会再说吧</span><br><span class="line">            if(singleWarehouse == null)&#123;</span><br><span class="line">                singleWarehouse = new Warehouse();</span><br><span class="line">            &#125;</span><br><span class="line">            return singleWarehouse;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void addProductA(ProductA obj)&#123;</span><br><span class="line">        this.productAList.add(obj);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public ProductA getProductA(String id)&#123;</span><br><span class="line">        ProductA obj = null;</span><br><span class="line">        for (int i = 0; i &lt; this.productAList.size(); i++) &#123;</span><br><span class="line">            if (productAList.get(i).getId().equals(id)) &#123;</span><br><span class="line">                obj = productAList.get(i);</span><br><span class="line">                productAList.remove(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;  </span><br><span class="line">        return obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int checkProductA()&#123;</span><br><span class="line">        return this.productAList.size()</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="效率问题"><a href="#效率问题" class="headerlink" title="效率问题"></a>效率问题</h2><p>&emsp;&emsp;上面对于多线程时可能会遇到多次实例化的情况做出了解决，现在想一想，这样好吗？不是很好。。。<br>&emsp;&emsp;是不是很惊讶！我当时写到这里的时候觉得应该已经perfect了，但是有一个问题被疏忽了：效率。来看看上面的代码 由于synchronized（）{}的存在，所以每次在执行到这里的时候，都要去等前一个人将其执行完才能执行？有必要吗？确实，在Warehouse对象是null的时候，是需要的，因为要防止创建多个实例对象；但是当他不为null的时候，就不必要了。为什么？因为在已经有实例的情况下，不管是谁需要实例，都会返回当前已经有的那个实例，也就没必要去排队等待了。<br>&emsp;&emsp;为了解决这个效率问题，很多方式也被提出：</p>
+<h3 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//使用静态变量，在运行前就直接创建实例</span><br><span class="line">public class Singleton&#123;</span><br><span class="line">    private static Singleton uniqueInstance = new Singleton();</span><br><span class="line"></span><br><span class="line">    private Singleton&#123;&#125;</span><br><span class="line"></span><br><span class="line">    public static Singleton getInstance()&#123;</span><br><span class="line">        return uniqueInstance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="双重检查锁"><a href="#双重检查锁" class="headerlink" title="双重检查锁"></a>双重检查锁</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 双重检查锁，首先检查实例是不是已经创建了，如果未创建，才进行同步，这样只有第一次会同步</span><br><span class="line">public class Singleton&#123;</span><br><span class="line">    private static Singleton uniqueInstance;</span><br><span class="line"></span><br><span class="line">    private Singleton&#123;&#125;</span><br><span class="line"></span><br><span class="line">    public static Singleton getInstance()&#123;</span><br><span class="line">        if(uniqueInstance == null)&#123;</span><br><span class="line">            synchronized(this)&#123;</span><br><span class="line">                if(uniqueInstance == null)&#123;</span><br><span class="line">                    uniqueInstance = new Singleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;                </span><br><span class="line">        &#125;</span><br><span class="line">        return uniqueInstance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="内部静态类"><a href="#内部静态类" class="headerlink" title="内部静态类"></a>内部静态类</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">//这种好一些，既实现了线程安全，又避免了同步带来的性能影响</span><br><span class="line">class Singleton &#123;</span><br><span class="line">    private static class LazyHolder &#123;</span><br><span class="line">        private static final Singleton INSTANCE = new Singleton();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Singleton() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    public static final Singleton getInstance() &#123;</span><br><span class="line">        return LazyHolder.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;<br>&emsp;&emsp;</p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>&emsp;&emsp;终于写完了，编故事好累，中间改了很久，也算是编完了吧…单例大概也算是说完了，就觉得还少了点什么。什么？你说为什么没有类图？啊，看了这么多，自己想想吧！单例模式的类图只有一个类哦，就是他自己！里面有些什么呢？再翻翻上面的东西思考一下吧。。。<br>&emsp;&emsp;第二篇算是写完了，接下来。。什么时候更新呢、、真的写这个好累啊。估计2周后会有下一篇吧。是什么模式呢？我也没想好。<br>&emsp;&emsp;最近又开了个坑，想想还有点小激动呢！我要做游戏拉！！！啊哈哈哈哈！！！</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/技术/" rel="tag"># 技术</a>
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/06/2017-06-06-设计模式——工厂模式/" rel="next" title="设计模式——工厂模式">
+                <i class="fa fa-chevron-left"></i> 设计模式——工厂模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/03/2017-07-03-设计模式——装饰模式/" rel="prev" title="设计模式——装饰模式">
+                设计模式——装饰模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/magicavatar.jpg" alt="WhiteMagic2014">
+          <p class="site-author-name" itemprop="name">WhiteMagic2014</p>
+           
+              <p class="site-description motion-element" itemprop="description">This is my space to record something.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#单例模式"><span class="nav-number">2.</span> <span class="nav-text">单例模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一个巨大的仓库"><span class="nav-number">2.1.</span> <span class="nav-text">一个巨大的仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谁的错？"><span class="nav-number">2.2.</span> <span class="nav-text">谁的错？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#紧急会议"><span class="nav-number">2.3.</span> <span class="nav-text">紧急会议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#突然的帮手"><span class="nav-number">2.4.</span> <span class="nav-text">突然的帮手</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多线程"><span class="nav-number">3.</span> <span class="nav-text">多线程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#两个采购员"><span class="nav-number">3.1.</span> <span class="nav-text">两个采购员</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两个仓库"><span class="nav-number">3.2.</span> <span class="nav-text">两个仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效率问题"><span class="nav-number">3.3.</span> <span class="nav-text">效率问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#饿汉式"><span class="nav-number">3.3.1.</span> <span class="nav-text">饿汉式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双重检查锁"><span class="nav-number">3.3.2.</span> <span class="nav-text">双重检查锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内部静态类"><span class="nav-number">3.3.3.</span> <span class="nav-text">内部静态类</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结语"><span class="nav-number">4.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

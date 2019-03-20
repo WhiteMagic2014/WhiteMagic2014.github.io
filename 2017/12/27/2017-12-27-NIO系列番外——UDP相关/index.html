@@ -1,0 +1,726 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="java,udp,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;我本以为NIO已经差不多了，可谁想到… 今天在看upd的时候，惊人的发现了这个东西:DatagramChannel。嗯？ channel？NIO？ 对，没错。还真的有一个udp用的channel！ 我本身对这个东西是心有疑惑的，udp他本身就是一个异步性很强的东西，为什么还需要NIO呢？ 我自己暂时想不出个所以然来，但是本着一家人就要阵阵齐齐的心态，还是先整理为好，万一哪天">
+<meta name="keywords" content="java,udp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NIO系列番外——UDP相关">
+<meta property="og:url" content="http://yoursite.com/2017/12/27/2017-12-27-NIO系列番外——UDP相关/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;我本以为NIO已经差不多了，可谁想到… 今天在看upd的时候，惊人的发现了这个东西:DatagramChannel。嗯？ channel？NIO？ 对，没错。还真的有一个udp用的channel！ 我本身对这个东西是心有疑惑的，udp他本身就是一个异步性很强的东西，为什么还需要NIO呢？ 我自己暂时想不出个所以然来，但是本着一家人就要阵阵齐齐的心态，还是先整理为好，万一哪天">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-27T07:08:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NIO系列番外——UDP相关">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;我本以为NIO已经差不多了，可谁想到… 今天在看upd的时候，惊人的发现了这个东西:DatagramChannel。嗯？ channel？NIO？ 对，没错。还真的有一个udp用的channel！ 我本身对这个东西是心有疑惑的，udp他本身就是一个异步性很强的东西，为什么还需要NIO呢？ 我自己暂时想不出个所以然来，但是本着一家人就要阵阵齐齐的心态，还是先整理为好，万一哪天">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/27/2017-12-27-NIO系列番外——UDP相关/">
+
+
+
+
+
+  <title> NIO系列番外——UDP相关 | Magic Space </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/27/2017-12-27-NIO系列番外——UDP相关/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WhiteMagic2014">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/magicavatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                NIO系列番外——UDP相关
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-27T12:19:17+08:00">
+                2017-12-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NIO/" itemprop="url" rel="index">
+                    <span itemprop="name">NIO</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;我本以为NIO已经差不多了，可谁想到… 今天在看upd的时候，惊人的发现了这个东西:DatagramChannel。嗯？ channel？NIO？ 对，没错。还真的有一个udp用的channel！ 我本身对这个东西是心有疑惑的，udp他本身就是一个异步性很强的东西，为什么还需要NIO呢？ 我自己暂时想不出个所以然来，但是本着一家人就要阵阵齐齐的心态，还是先整理为好，万一哪天用上了呢？</p>
+<h1 id="DatagramChannel"><a href="#DatagramChannel" class="headerlink" title="DatagramChannel"></a>DatagramChannel</h1><p>&emsp;&emsp;首先，他是一个SelectableChannel，这也就意味着他可以和selector一起使用。具体和selector结合使用就不多说了，因为和其他的channel用起来差不多。</p>
+<h2 id="打开"><a href="#打开" class="headerlink" title="打开"></a>打开</h2><p>&emsp;&emsp;也是和其他的Channel很像，没有共有的构造函数，要使用静态方法来获得实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DatagramChannel channel = DatagramChannel.open();</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;接下来的操作也是十分熟悉：获得与channel关联的socket，将其与一个socketAddress绑定。同时和其他channel一样，在java 7之后channel可以直接绑定address。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">DatagramSocket socket = channel.socket();</span><br><span class="line">InetSocketAddress address = new InetSocketAddress(port);</span><br><span class="line">socket.bind(address);</span><br><span class="line"></span><br><span class="line">//java7之后可以这样写</span><br><span class="line">channel.bind(address);</span><br></pre></td></tr></table></figure></p>
+<h2 id="接收数据"><a href="#接收数据" class="headerlink" title="接收数据"></a>接收数据</h2><p>&emsp;&emsp;这里开始就和原来的channel有点不一样了，但是感觉又像DatagramSocket。可以使用receive()方法来接收数据，同时receive方法返回一个SocketAddress来表示数据发送方的地址。因为是channel，理所当然的应该使用bytebuffer来作为数据的载体。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public SocketAddress receive(Bytebuffer dst) throws IOException</span><br><span class="line"></span><br><span class="line">Bytebuffer buffer = Bytebuffer.allocate(SIZE);</span><br><span class="line">SocketAddress remoteAddress = channel.receive(buffer);</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;如果channel是阻塞的(默认状态)，这个方法在获取到数据包之前不会返回；如果channel是非阻塞的，没有包读取的情况下，会直接返回null。</p>
+<h2 id="发送数据"><a href="#发送数据" class="headerlink" title="发送数据"></a>发送数据</h2><p>&emsp;&emsp;send方法可以将一个数据包从bytebuffer 写入 channel：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public int send(Bytebuffer src, SocketAddress target) throws IOException</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;这个方法返回写入的字节数，第一个方法传入buffer，第二个方法传入目标地址。不过要记住，如果需要将buffer多次发送给不同的目标，不要忘记将buffer“倒带” rewind()</p>
+<h2 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h2><p>&emsp;&emsp; 这个连接就有一个很大的误区了。。。并非字面意思上的连接，而是和DatagramSocket的那个connect差不多。只是名字叫连接，并没有实际的建立连接，连接之后，channel只接受与之连接的地址 发送的数据包 同时也只像那个地址发送数据包。同时还有2个方法来检测channel是否连接/控制channel“断开”连接。但是他其实并不会断开连接，因为connect方法本身就没有建立连接…使用了这个方法后，channel会被允许再次向任何地址 接受/发送数据包<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">InetSocketAddress remoteAddress = new InetSocketAddress(remoteHostName,port);</span><br><span class="line">channel.connect(remoteAddress);</span><br><span class="line"></span><br><span class="line">public boolean isConnected()</span><br><span class="line">public DatagramChannel disconnect() throws IOException</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;其实乍一看这个方法并没有什么用，我也真的是这样认为的..不过在后面就会发现2个熟悉的东西，并且只有在connect之后才能只用。</p>
+<h2 id="read-write"><a href="#read-write" class="headerlink" title="read/write"></a>read/write</h2><p>&emsp;&emsp;说到channel怎么能少了这两个方法呢？？这两位才是读写操作的先祖啊。 之前说的receive 以及 send 是用于特殊用途的读写方法，所以channel当然可以用这些基本的方法，但是有一个条件，那就是上面提到的connect。read 和 write 方法仅能在已 connect的channel上使用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public abstract int read(ByteBuffer dst)</span><br><span class="line">    throws IOException</span><br><span class="line"></span><br><span class="line">public final long read(ByteBuffer[] dsts)</span><br><span class="line">    throws IOException</span><br><span class="line"></span><br><span class="line">public abstract long read(ByteBuffer[] dsts,int offset,int length)</span><br><span class="line">    throws IOException</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public abstract int write(ByteBuffer src)</span><br><span class="line">    throws IOException</span><br><span class="line"></span><br><span class="line">public final long write(ByteBuffer[] srcs)</span><br><span class="line">    throws IOException</span><br><span class="line"></span><br><span class="line">public abstract long write(ByteBuffer[] srcs,int offset,int length)</span><br><span class="line">    throws IOException</span><br></pre></td></tr></table></figure></p>
+<h2 id="关闭"><a href="#关闭" class="headerlink" title="关闭"></a>关闭</h2><p>&emsp;&emsp;有开就有关，总体来说差不多，可以通过调用close来关闭channel，但是还是用try-with-recources比较好<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public void close() throws IOException</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/udp/" rel="tag"># udp</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/26/2017-12-26-随记——内部类的实例化/" rel="next" title="随记——内部类的实例化">
+                <i class="fa fa-chevron-left"></i> 随记——内部类的实例化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/07/2018-03-07-动态代理是什么？/" rel="prev" title="动态代理是什么？">
+                动态代理是什么？ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/magicavatar.jpg" alt="WhiteMagic2014">
+          <p class="site-author-name" itemprop="name">WhiteMagic2014</p>
+           
+              <p class="site-description motion-element" itemprop="description">This is my space to record something.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DatagramChannel"><span class="nav-number">1.</span> <span class="nav-text">DatagramChannel</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#打开"><span class="nav-number">1.1.</span> <span class="nav-text">打开</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接收数据"><span class="nav-number">1.2.</span> <span class="nav-text">接收数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送数据"><span class="nav-number">1.3.</span> <span class="nav-text">发送数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#连接"><span class="nav-number">1.4.</span> <span class="nav-text">连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#read-write"><span class="nav-number">1.5.</span> <span class="nav-text">read/write</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关闭"><span class="nav-number">1.6.</span> <span class="nav-text">关闭</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

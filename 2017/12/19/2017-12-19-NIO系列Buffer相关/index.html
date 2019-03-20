@@ -1,0 +1,728 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="java,Buffer,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;今天在整理nio相关的知识的时候，突然想到还是把整理的东西写下了，方便今后自己忘记的时候参考。 1.position 位置&amp;emsp;&amp;emsp;缓冲区中将读取或写入的下一个位置。这个位置从0开始计，最大值等于缓冲区的大小。可以用以下方法获取和设置：12public final int    position()public final Buffer">
+<meta name="keywords" content="java,Buffer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NIO系列Buffer相关">
+<meta property="og:url" content="http://yoursite.com/2017/12/19/2017-12-19-NIO系列Buffer相关/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;今天在整理nio相关的知识的时候，突然想到还是把整理的东西写下了，方便今后自己忘记的时候参考。 1.position 位置&amp;emsp;&amp;emsp;缓冲区中将读取或写入的下一个位置。这个位置从0开始计，最大值等于缓冲区的大小。可以用以下方法获取和设置：12public final int    position()public final Buffer">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-23T12:43:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NIO系列Buffer相关">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;今天在整理nio相关的知识的时候，突然想到还是把整理的东西写下了，方便今后自己忘记的时候参考。 1.position 位置&amp;emsp;&amp;emsp;缓冲区中将读取或写入的下一个位置。这个位置从0开始计，最大值等于缓冲区的大小。可以用以下方法获取和设置：12public final int    position()public final Buffer">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/19/2017-12-19-NIO系列Buffer相关/">
+
+
+
+
+
+  <title> NIO系列Buffer相关 | Magic Space </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/19/2017-12-19-NIO系列Buffer相关/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WhiteMagic2014">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/magicavatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                NIO系列Buffer相关
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-19T13:33:37+08:00">
+                2017-12-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NIO/" itemprop="url" rel="index">
+                    <span itemprop="name">NIO</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;<br>&emsp;&emsp;今天在整理nio相关的知识的时候，突然想到还是把整理的东西写下了，方便今后自己忘记的时候参考。</p>
+<h1 id="1-position-位置"><a href="#1-position-位置" class="headerlink" title="1.position 位置"></a>1.position 位置</h1><p>&emsp;&emsp;缓冲区中将读取或写入的下一个位置。这个位置从0开始计，最大值等于缓冲区的大小。可以用以下方法获取和设置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public final int    position()</span><br><span class="line">public final Buffer position(int newPosition)</span><br></pre></td></tr></table></figure></p>
+<h1 id="2-capacity-容量"><a href="#2-capacity-容量" class="headerlink" title="2.capacity 容量"></a>2.capacity 容量</h1><p>&emsp;&emsp;缓冲区可以保存的元素的最大数量。容量值在创建缓冲区的时候设置，之后不能改变。可以用以下方法获取：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public final int capacity()</span><br></pre></td></tr></table></figure></p>
+<h1 id="3-limit-限度"><a href="#3-limit-限度" class="headerlink" title="3.limit 限度"></a>3.limit 限度</h1><p>&emsp;&emsp;缓冲区中可访问数据的末尾位置。只要不改变限度，就无法去读/写超过这个位置的数据，即使缓冲区的容量再大也没有用。限度可以用以下方法获取和设置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public final int    limit()</span><br><span class="line">public final Buffer limit(int newLimit)</span><br></pre></td></tr></table></figure></p>
+<h1 id="4-mark-标记"><a href="#4-mark-标记" class="headerlink" title="4.mark 标记"></a>4.mark 标记</h1><p>&emsp;&emsp; 缓冲区中的一个指定的索引。通过mark()可以标记设置为当前的位置，调用reset()可以将当前的位置返回到mark的位置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public final Buffer mark()</span><br><span class="line">public final Buffer reset()</span><br></pre></td></tr></table></figure></p>
+<p> &emsp;&emsp;因为mark和reset是一个用来回到过去（类似存档和读档）的一个返回操作，所以如果将position设置的低于mark的位置，那么会自动丢弃这个mark，说到这就不得不提一下，读取buffer块 和 inputstream等流 是有一些区别的,读取流中的数据会让流中的数据消失（被取走），而读取缓冲区的数据则不会以任何方式改变缓冲区内的数据。实际上只是向前或向后设置了position，从而可以从缓冲区中某个特定的位置开始读取数据。类似的，程序可以通过调整limit来控制要读取数据的末尾。总之，只有容量是限定的。</p>
+<h1 id="5-clear"><a href="#5-clear" class="headerlink" title="5.clear()"></a>5.clear()</h1><p>&emsp;&emsp;clear方法将position设置为0，并且将limit设置为capacity大小，从而将缓冲区“清空”，这样就能完全重新填充缓冲区了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public final buffer clear()</span><br></pre></td></tr></table></figure></p>
+<p> &emsp;&emsp;需要注意的是，clear并没有删除缓冲区的老数据。这些数据任然存在，可以使用绝对的get方法 或者 重新改变limit和position来进行读取</p>
+<h1 id="6-compact"><a href="#6-compact" class="headerlink" title="6.compact()"></a>6.compact()</h1><p>&emsp;&emsp; compact的概念有些复杂，他与上面的clear有些类似，clear通过重置position和limit来使buffer完全“清空”，而compact在清空数据时会“保留”未读取的数据。要知道读取buffer的本质 是读取 position与limit之间的数据，读取一个数据那么position的位置就+1，有点类似指针的意思。在执行compact操作时，position与limit之间如果有数据，那么这些未读的数据会被复制到buffer的开始，然后把段数据后+1的地方作为当前position也就是 position = limit - position。同时 会将limit的限定扩大至buffer的末尾 也就是  limit = capacity。</p>
+<h1 id="7-rewind"><a href="#7-rewind" class="headerlink" title="7.rewind()"></a>7.rewind()</h1><p>&emsp;&emsp; 将position设置为0，不改变limit。通过重置position来实现重新读取缓冲区<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public final Buffer rewind()</span><br></pre></td></tr></table></figure></p>
+<h1 id="8-flip"><a href="#8-flip" class="headerlink" title="8.flip()"></a>8.flip()</h1><p>&emsp;&emsp; 将limit设置为当前的position，position设置为0。通过这样可以通过channel输出buffer中刚刚写入的数据。一般在执行channel.wirte(buffer)之前使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public final Buffer flip()</span><br></pre></td></tr></table></figure></p>
+<h1 id="9-remain"><a href="#9-remain" class="headerlink" title="9.remain"></a>9.remain</h1><p>&emsp;&emsp;有2个方法来返回buffer内的信息，但不改变这些信息。remaining()返回position与limit之间的元素数，告知你是否还有数据未读。如果这个数据大于0，那么hasRemaining()方法返回true，反之亦然。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public final int remaining()</span><br><span class="line">public final boolean hasRemaining()</span><br></pre></td></tr></table></figure></p>
+<h1 id="10-duplicate"><a href="#10-duplicate" class="headerlink" title="10.duplicate()"></a>10.duplicate()</h1><p>&emsp;&emsp;复制；经常需要建立缓冲区的副本，从而将相同的信息分发到多个channel，那就需要用到duplicate。这里需要注意一点，duplicate并非建立了副本，而是共享了底层的数据。当修改了一个缓冲区，那么另一个缓冲区中的数据也会被修改，所以这个方法主要使用在只准备读取缓冲区的时候。尽管共享数据，但是初始和复制的缓冲区有着独立的position，limit，capacity。在需要通过多个通道并行传输相同数据的时候，这个方法就很有用了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public abstract ByteBuffer duplicate()</span><br><span class="line">//省略其他buffer类型</span><br></pre></td></tr></table></figure></p>
+<h1 id="11-slice"><a href="#11-slice" class="headerlink" title="11.slice()"></a>11.slice()</h1><p>&emsp;&emsp;分片；分片是上面复制的一个变形。分片也会创建一个新的缓冲区，与原缓冲区共享数据。不过与上面复制不同的是：分片的起始位置  等于 原缓冲区的当前位置， 分片的容量capacity最大不超过原缓冲区的limit。也就是说，分片是原缓冲区的一个子集，只包含从当前位置-&gt; limit 的所有元素。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public abstract ByteBuffer slice()</span><br><span class="line">//省略其他buffer类型</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/Buffer/" rel="tag"># Buffer</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/18/2017-12-18-杂谈二/" rel="next" title="杂谈二">
+                <i class="fa fa-chevron-left"></i> 杂谈二
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/23/2017-12-23-NIO系列channel相关/" rel="prev" title="NIO系列Channel相关">
+                NIO系列Channel相关 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/magicavatar.jpg" alt="WhiteMagic2014">
+          <p class="site-author-name" itemprop="name">WhiteMagic2014</p>
+           
+              <p class="site-description motion-element" itemprop="description">This is my space to record something.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-position-位置"><span class="nav-number">1.</span> <span class="nav-text">1.position 位置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-capacity-容量"><span class="nav-number">2.</span> <span class="nav-text">2.capacity 容量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-limit-限度"><span class="nav-number">3.</span> <span class="nav-text">3.limit 限度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-mark-标记"><span class="nav-number">4.</span> <span class="nav-text">4.mark 标记</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-clear"><span class="nav-number">5.</span> <span class="nav-text">5.clear()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-compact"><span class="nav-number">6.</span> <span class="nav-text">6.compact()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-rewind"><span class="nav-number">7.</span> <span class="nav-text">7.rewind()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-flip"><span class="nav-number">8.</span> <span class="nav-text">8.flip()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9-remain"><span class="nav-number">9.</span> <span class="nav-text">9.remain</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10-duplicate"><span class="nav-number">10.</span> <span class="nav-text">10.duplicate()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#11-slice"><span class="nav-number">11.</span> <span class="nav-text">11.slice()</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

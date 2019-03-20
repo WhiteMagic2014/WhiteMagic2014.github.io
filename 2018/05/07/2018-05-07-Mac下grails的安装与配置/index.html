@@ -1,0 +1,726 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="java,grails,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;因为剧情需要，哦不，是工作需要，要在mac下安装一下grails-2.4.3版本，指定这个版本 过程中遇到了一些坑，运气也不错，瞎猫碰上死耗子，很快就解决了，现在总结一下遇到的问题。&amp;emsp;&amp;emsp;首先放上grails的github下载地址 根据自己的需要的版本去找。 plan A&amp;emsp;&amp;emsp;一般下载安装代码之类的东西，那第一反应">
+<meta name="keywords" content="java,grails">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mac下grails的安装与配置">
+<meta property="og:url" content="http://yoursite.com/2018/05/07/2018-05-07-Mac下grails的安装与配置/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;因为剧情需要，哦不，是工作需要，要在mac下安装一下grails-2.4.3版本，指定这个版本 过程中遇到了一些坑，运气也不错，瞎猫碰上死耗子，很快就解决了，现在总结一下遇到的问题。&amp;emsp;&amp;emsp;首先放上grails的github下载地址 根据自己的需要的版本去找。 plan A&amp;emsp;&amp;emsp;一般下载安装代码之类的东西，那第一反应">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-05-07T14:23:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mac下grails的安装与配置">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;因为剧情需要，哦不，是工作需要，要在mac下安装一下grails-2.4.3版本，指定这个版本 过程中遇到了一些坑，运气也不错，瞎猫碰上死耗子，很快就解决了，现在总结一下遇到的问题。&amp;emsp;&amp;emsp;首先放上grails的github下载地址 根据自己的需要的版本去找。 plan A&amp;emsp;&amp;emsp;一般下载安装代码之类的东西，那第一反应">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/07/2018-05-07-Mac下grails的安装与配置/">
+
+
+
+
+
+  <title> Mac下grails的安装与配置 | Magic Space </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/07/2018-05-07-Mac下grails的安装与配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WhiteMagic2014">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/magicavatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Mac下grails的安装与配置
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-07T21:39:18+08:00">
+                2018-05-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/环境搭建/" itemprop="url" rel="index">
+                    <span itemprop="name">环境搭建</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;<br>&emsp;&emsp;因为剧情需要，哦不，是工作需要，要在mac下安装一下grails-2.4.3版本，<strong>指定这个版本</strong> 过程中遇到了一些坑，运气也不错，瞎猫碰上死耗子，很快就解决了，现在总结一下遇到的问题。<br>&emsp;&emsp;首先放上<a href="https://github.com/grails/grails-core/releases" target="_blank" rel="noopener">grails的github下载地址</a> 根据自己的需要的版本去找。</p>
+<h3 id="plan-A"><a href="#plan-A" class="headerlink" title="plan A"></a>plan A</h3><p>&emsp;&emsp;一般下载安装代码之类的东西，那第一反应就是homebrew，可以理解为是linux下的apt-get，yum这些管理安装的工具。本来应该是一条指令就解决的事情:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ brew install grails</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;可谁能想到brew死命的拉最新版（目前写这篇文章的时候，最新版是3.3.5）下载最新那也无可厚非，可是指定版本下载，竟然找不到？！明明git上就有你和我说找不到？不过有可能是在git上的名称不一定就叫grails-2.4.3，所以根据名字指定不一定可以指定到，但是我也不知道应该这么找。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ brew install grails-2.4.3</span><br></pre></td></tr></table></figure></p>
+<p>planA 失败。。。</p>
+<h3 id="plan-B"><a href="#plan-B" class="headerlink" title="plan B"></a>plan B</h3><p>&emsp;&emsp;直接在git上下载source自己编译。一切都很顺利，直到在最后报出一堆问题。。。不确定是否是编译的时候需要的一些源找不到，不管墙里墙外都找不到，无情的夭折。。。</p>
+<h3 id="plan-C"><a href="#plan-C" class="headerlink" title="plan C"></a>plan C</h3><p>&emsp;&emsp;突然想到brew貌似可以安装本地的包，于是去<a href="https://github.com/grails/grails-core/releases" target="_blank" rel="noopener">下载地址</a> 下载了zip，解压。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd /usr/local/Cellar</span><br><span class="line">$ mkdir -p grails/x.x.x  (x.x.x 为你下载的那个版本)</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;接下来把解压的文件夹里所有的东西，全部丢进 <strong>/usr/local/Cellar/grails/x.x.x</strong> 文件夹下（注意 是解压后文件夹下所有的东西，而不是把解压后的文件夹丢进x.x.x，其实也可以把解压后的文件夹重命名为x.x.x然后丢进/usr/local/Cellar/grail 看自己习惯），然后执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ brew switch grails 2.4.3 (我这用的是2.4.3)</span><br><span class="line"></span><br><span class="line">//以下为提示输出</span><br><span class="line">//Cleaning /usr/local/Cellar/grails/2.4.3</span><br><span class="line">//64 links created for /usr/local/Cellar/grails/2.4.3</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 运行下grails，不出意外的话是搞定了，不过意外总会是有的：一般来说mac默认的jdk并没有配置环境变量，所以得去配置一下，而且jdk的位置还挺难找。。。可以通过以下指令获得默认的jdk的位置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ /usr/libexec/java_home</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;然后配置环境变量：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ vim ~/.profile (或者 .bashrc  或者.bash_profile 看自己的电脑里有什么。。)</span><br><span class="line"></span><br><span class="line">JAVA_HOME=`/usr/libexec/java_home`</span><br><span class="line">export JAVA_HOME</span><br><span class="line"></span><br><span class="line">export CLASSPATH=.:$JAVA_HOME</span><br><span class="line">export PATH=$PATH:$JAVA_HOME/bin:$JAVA_HOME/jre/bin</span><br><span class="line">export CLASSPATH=.:$JAVA_HOME/lib:$CLASSPATH</span><br><span class="line"></span><br><span class="line">$ source ~/.profile (或者 .bashrc  或者.bash_profile)</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;全部搞定</p>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>&emsp;&emsp;在写这个总结的时候我才意识到我傻逼了，也许根本用不到brew，直接下载完zip解压就行了。.bash_profile里面 多配置一下grails_home应该就行，不过现在已经搞定了，也不想毁了这个环境重新弄一次，万一我猜错了呢。至于为什么用了brew就不用配了：//64 links created for /usr/local/Cellar/grails/2.4.3  这句话应该是说brew帮我搞定了。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export GRAILS_HOME=/path/to/grails</span><br><span class="line">export PATH=$PATH:$GRAILS_HOME/bin</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/grails/" rel="tag"># grails</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/10/2018-04-10-记一次面试后感/" rel="next" title="记一次面试后感">
+                <i class="fa fa-chevron-left"></i> 记一次面试后感
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/16/2018-08-16-Springboot下quartz定时器遇到重复执行的问题/" rel="prev" title="Springboot下quartz定时器遇到重复执行的问题">
+                Springboot下quartz定时器遇到重复执行的问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/magicavatar.jpg" alt="WhiteMagic2014">
+          <p class="site-author-name" itemprop="name">WhiteMagic2014</p>
+           
+              <p class="site-description motion-element" itemprop="description">This is my space to record something.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#plan-A"><span class="nav-number">1.</span> <span class="nav-text">plan A</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#plan-B"><span class="nav-number">2.</span> <span class="nav-text">plan B</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#plan-C"><span class="nav-number">3.</span> <span class="nav-text">plan C</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后记"><span class="nav-number">4.</span> <span class="nav-text">后记</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
