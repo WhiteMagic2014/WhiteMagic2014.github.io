@@ -24,7 +24,7 @@ function initWidget(waifuPath, apiPath) {
 	$("#waifu-tool .fa-paper-plane").click(function() {
 		var s = document.createElement("script");
 		document.body.appendChild(s);
-		s.src = "https://galaxymimi.com/js/asteroids.js";
+		s.src = live2d_path+"asteroids.js";
 	});
 	$("#waifu-tool .fa-user-circle").click(loadOtherModel);
 	$("#waifu-tool .fa-street-view").click(loadRandModel);

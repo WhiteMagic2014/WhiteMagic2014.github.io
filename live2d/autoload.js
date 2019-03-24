@@ -7,7 +7,7 @@ $("<link>").attr({href: live2d_path + "waifu.css", rel: "stylesheet", type: "tex
 $.ajax({
 	url: live2d_path + "live2d.min.js",
 	dataType: "script",
-	cache: false,
+	cache: true,
 	async: false
 });
 //live2d.min.js的绝对路径
@@ -15,14 +15,19 @@ $.ajax({
 $.ajax({
 	url: live2d_path + "waifu-tips.js",
 	dataType: "script",
-	cache: false,
+	cache: true,
 	async: false
 });
 //waifu-tips.js的绝对路径
 
 //初始化看板娘，会自动加载指定目录下的waifu-tips.json
 $(window).on("load", function() {
-	initWidget(live2d_path + "waifu-tips.json", "https://live2d.fghrsh.net/api");
+//    原作者php
+//    initWidget(live2d_path + "waifu-tips.json", "https://live2d.fghrsh.net/api");
+//    本机测试
+//    initWidget(live2d_path + "waifu-tips.json", "http://127.0.0.1:8080/live2d");
+//    我的java版  
+    initWidget(live2d_path + "waifu-tips.json", "http://45.77.240.191:8080/live2d");
 });
 
 //initWidget第一个参数为waifu-tips.json的绝对路径
