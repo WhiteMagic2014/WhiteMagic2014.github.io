@@ -26,7 +26,7 @@ $(window).on("load", function() {
 //    initWidget(live2d_path + "waifu-tips.json", "https://live2d.fghrsh.net/api");
 //    本机测试
 //    initWidget(live2d_path + "waifu-tips.json", "http://127.0.0.1:8080/live2d");
-//    我的java版  
+//    我的java版
     initWidget(live2d_path + "waifu-tips.json", "http://45.77.240.191:8080/live2d");
 });
 
