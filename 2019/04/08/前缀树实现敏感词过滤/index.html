@@ -1,0 +1,722 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="TrieTree,DFA,NFA,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp; 序&amp;emsp;&amp;emsp;最近有需求做敏感词过滤，网上查询了相关的资料，其中看到了DFA这个名词，哟呵！这词亲切啊！好歹我也是编译原理满学分的人。虽然时间过去挺久了，很多东西都忘记了。词法分析，语法分析，语义分析…这些名词还是历历在目，遥想那年：“最后一排靠门的同学，来回答一下问题” ，“我们的考试，是在炎热的夏天” … 问题思考&amp;emsp;&amp;emsp;好了，打住。从某种">
+<meta name="keywords" content="TrieTree,DFA,NFA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前缀树实现敏感词过滤">
+<meta property="og:url" content="http://yoursite.com/2019/04/08/前缀树实现敏感词过滤/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="&amp;emsp;&amp;emsp; 序&amp;emsp;&amp;emsp;最近有需求做敏感词过滤，网上查询了相关的资料，其中看到了DFA这个名词，哟呵！这词亲切啊！好歹我也是编译原理满学分的人。虽然时间过去挺久了，很多东西都忘记了。词法分析，语法分析，语义分析…这些名词还是历历在目，遥想那年：“最后一排靠门的同学，来回答一下问题” ，“我们的考试，是在炎热的夏天” … 问题思考&amp;emsp;&amp;emsp;好了，打住。从某种">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-04-08T10:07:20.087Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="前缀树实现敏感词过滤">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp; 序&amp;emsp;&amp;emsp;最近有需求做敏感词过滤，网上查询了相关的资料，其中看到了DFA这个名词，哟呵！这词亲切啊！好歹我也是编译原理满学分的人。虽然时间过去挺久了，很多东西都忘记了。词法分析，语法分析，语义分析…这些名词还是历历在目，遥想那年：“最后一排靠门的同学，来回答一下问题” ，“我们的考试，是在炎热的夏天” … 问题思考&amp;emsp;&amp;emsp;好了，打住。从某种">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/04/08/前缀树实现敏感词过滤/">
+
+
+
+
+
+  <title> 前缀树实现敏感词过滤 | Magic Space </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/08/前缀树实现敏感词过滤/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WhiteMagic2014">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/magicavatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                前缀树实现敏感词过滤
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-08T16:48:59+08:00">
+                2019-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;</p>
+<h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>&emsp;&emsp;最近有需求做敏感词过滤，网上查询了相关的资料，其中看到了DFA这个名词，哟呵！这词亲切啊！好歹我也是编译原理满学分的人。虽然时间过去挺久了，很多东西都忘记了。词法分析，语法分析，语义分析…这些名词还是历历在目，遥想那年：“最后一排靠门的同学，来回答一下问题” ，“我们的考试，是在炎热的夏天” …</p>
+<h1 id="问题思考"><a href="#问题思考" class="headerlink" title="问题思考"></a>问题思考</h1><p>&emsp;&emsp;好了，打住。从某种意义上来说：判断敏感词这件事 和 词法分析这个过程 是有些类似的。此法分析的时候使用了NFA,DFA来将源row分解成能够阅读的词。而判明敏感词这件事是确定词的终结状态，终结状态很明显：是敏感词，不是敏感词。同时将 词中的字符 作为输入符号。ok，消化一下..<br>&emsp;&emsp; 解决思路：将敏感词的每个字符视为改变状态的动作，在词结束之前 任何一个字符都不能让自动机达到最终状态。<br>&emsp;&emsp; 接下来思考另一个问题，该用什么数据结构来做这件事。(其实我不假思索就决定要用前缀树来做这事….) 判断敏感词 换个角度可以看做是搜索：搜索一个词的属性。这个属性是 是否为敏感词。说道这里，前缀树来做这种事情不是很适合么？（一切都确定下来了，胜利的方程式已经写下…)</p>
+<h1 id="开始实践"><a href="#开始实践" class="headerlink" title="开始实践"></a>开始实践</h1><h2 id="模型创建"><a href="#模型创建" class="headerlink" title="模型创建"></a>模型创建</h2><p>&emsp;&emsp; 首先我需要一棵前缀树，所以要想富，先种树…<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">* 前缀树节点模型</span><br><span class="line">*/</span><br><span class="line">class TrieNode &#123;</span><br><span class="line">    // 当前结点是否是某一敏感词的最后一个结点</span><br><span class="line">    private boolean isEnd = false;</span><br><span class="line"></span><br><span class="line">    // 用map来存储当前结点的所有子节点</span><br><span class="line">    private Map&lt;Character, TrieNode&gt; subNodes = new HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    // 向指定位置添加子结点树</span><br><span class="line">    public void addSubNode(Character key, TrieNode node) &#123;</span><br><span class="line">        subNodes.put(key, node);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 根据key获得相应的子节点</span><br><span class="line">    public TrieNode getSubNode(Character key) &#123;</span><br><span class="line">        return subNodes.get(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 判断是否是关键字的结尾</span><br><span class="line">    public boolean isKeyWordEnd() &#123;</span><br><span class="line">        return isEnd;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 设置为关键字的结尾</span><br><span class="line">    public void setKeyWordEnd(boolean isEnd) &#123;</span><br><span class="line">        this.isEnd = isEnd;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>&emsp;&emsp; Talk is cheap, show me the code!<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br></pre></td><td class="code"><pre><span class="line">public class SensitiveWordUtil&#123;</span><br><span class="line"></span><br><span class="line">    // 默认敏感词替换符</span><br><span class="line">    private static final String DEFAULT_REPLACEMENT = &quot;****&quot;;</span><br><span class="line"></span><br><span class="line">    public static final String FILE_PATH = &quot;你的敏感词库文件&quot;;</span><br><span class="line"></span><br><span class="line">    // 最大匹配</span><br><span class="line">    public static final String MATCH_MAX = &quot;max&quot;;</span><br><span class="line"></span><br><span class="line">    // 最小匹配</span><br><span class="line">    public static final String MATCH_MIN = &quot;min&quot;;</span><br><span class="line"></span><br><span class="line">    // 根节点</span><br><span class="line">    private TrieNode rootNode = new TrieNode();</span><br><span class="line"></span><br><span class="line">    // 缓存 为了能够方便自己直观的看到现在有哪些</span><br><span class="line">    private Set&lt;String&gt; wordspool = new HashSet&lt;&gt;();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">    *</span><br><span class="line">    * @Description:添加节点</span><br><span class="line">    * @param sensitiveWord</span><br><span class="line">    * @author: chenhaoyu</span><br><span class="line">    * @time:Apr 8, 2019 11:19:02 AM</span><br><span class="line">    */</span><br><span class="line">    public void addWord(String sensitiveWord) &#123;</span><br><span class="line">        StringBuilder sb = new StringBuilder();</span><br><span class="line">        TrieNode tempNode = rootNode;</span><br><span class="line">        // 循环每个字节</span><br><span class="line">        for (int i = 0; i &lt; sensitiveWord.length(); ++i) &#123;</span><br><span class="line">            Character c = sensitiveWord.charAt(i);</span><br><span class="line">            // 过滤特殊字符</span><br><span class="line">            if (isSymbol(c)) &#123;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            sb.append(c);</span><br><span class="line">            // 获得当前字符的节点</span><br><span class="line">            TrieNode node = tempNode.getSubNode(c);</span><br><span class="line"></span><br><span class="line">            // 不存在则初始化该节点</span><br><span class="line">            if (node == null) &#123;</span><br><span class="line">                node = new TrieNode();</span><br><span class="line">                tempNode.addSubNode(c, node);</span><br><span class="line">            &#125;</span><br><span class="line">            tempNode = node;</span><br><span class="line">            if (i == sensitiveWord.length() - 1) &#123;</span><br><span class="line">                // 关键词结束， 设置结束标志</span><br><span class="line">                tempNode.setKeyWordEnd(true);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        //将词写入缓存</span><br><span class="line">        wordspool.add(sb.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">    *</span><br><span class="line">    * @Description:解禁某词</span><br><span class="line">    * @param word</span><br><span class="line">    * @author: chenhaoyu</span><br><span class="line">    * @time:Apr 8, 2019 11:22:57 AM</span><br><span class="line">    */</span><br><span class="line">    public void removeWord(String word) &#123;</span><br><span class="line">        StringBuilder sb = new StringBuilder();</span><br><span class="line">        TrieNode tempNode = rootNode;</span><br><span class="line">        for (int i = 0; i &lt; word.length(); ++i) &#123;</span><br><span class="line">            Character c = word.charAt(i);</span><br><span class="line">            if (isSymbol(c)) &#123;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            sb.append(c);</span><br><span class="line">            TrieNode node = tempNode.getSubNode(c);</span><br><span class="line">            // 不存在则继续循环</span><br><span class="line">            if (node == null) &#123;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">            tempNode = node;</span><br><span class="line">            if (i == word.length() - 1) &#123;</span><br><span class="line">                // 释放结束标志</span><br><span class="line">                tempNode.setKeyWordEnd(false);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        wordspool.remove(sb.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">    * @Description:判断是否是一个符号 这个方法是个神来之笔。可以和谐掉 中间夹着乱码的敏感词，但是还有有些缺陷</span><br><span class="line">    * @param c</span><br><span class="line">    * @return</span><br><span class="line">    * @author: 在哪看的忘记了</span><br><span class="line">    * @time:Apr 8, 2019 11:19:23 AM</span><br><span class="line">    */</span><br><span class="line">    private boolean isSymbol(char c) &#123;</span><br><span class="line">        int ic = (int) c;</span><br><span class="line">        // 0x2E80-0x9FFF 东亚文字范围</span><br><span class="line">        return !((c &gt;= &apos;0&apos; &amp;&amp; c &lt;= &apos;9&apos;) || (c &gt;= &apos;a&apos; &amp;&amp; c &lt;= &apos;z&apos;) || (c &gt;= &apos;A&apos; &amp;&amp; c &lt;= &apos;Z&apos;))</span><br><span class="line">        &amp;&amp; (ic &lt; 0x2E80 || ic &gt; 0x9FFF);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">    *</span><br><span class="line">    * @Description:过滤敏感词</span><br><span class="line">    * @param text 原文本</span><br><span class="line">    * @param type 过滤模式 MATCH_MAX / MATCH_MIN</span><br><span class="line">    * @return</span><br><span class="line">    * @author: chenhaoyu</span><br><span class="line">    * @time:Apr 8, 2019 11:19:37 AM</span><br><span class="line">    */</span><br><span class="line">    public String filter(String text, String type) &#123;</span><br><span class="line">        if (text.trim().length() == 0) &#123;</span><br><span class="line">            return text;</span><br><span class="line">        &#125;</span><br><span class="line">        String replacement = DEFAULT_REPLACEMENT;</span><br><span class="line">        StringBuilder result = new StringBuilder();</span><br><span class="line"></span><br><span class="line">        TrieNode tempNode = rootNode;</span><br><span class="line">        int begin = 0; // 回滚数</span><br><span class="line">        int position = 0; // 当前比较的位置</span><br><span class="line"></span><br><span class="line">        while (position &lt; text.length()) &#123;</span><br><span class="line">            char c = text.charAt(position);</span><br><span class="line">            // 特殊字符跳过</span><br><span class="line">            if (isSymbol(c)) &#123;</span><br><span class="line">                if (tempNode == rootNode) &#123;</span><br><span class="line">                    result.append(c);</span><br><span class="line">                    ++begin;</span><br><span class="line">                &#125;</span><br><span class="line">                ++position;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            tempNode = tempNode.getSubNode(c);</span><br><span class="line"></span><br><span class="line">            // 当前位置的匹配结束</span><br><span class="line">            if (tempNode == null) &#123;</span><br><span class="line">                // 以begin开始的字符串不存在敏感词</span><br><span class="line">                result.append(text.charAt(begin));</span><br><span class="line">                // 跳到下一个字符开始测试</span><br><span class="line">                position = begin + 1;</span><br><span class="line">                begin = position;</span><br><span class="line">                // 回到树初始节点</span><br><span class="line">                tempNode = rootNode;</span><br><span class="line">            &#125; else if (tempNode.isKeyWordEnd()) &#123;</span><br><span class="line">                // 发现敏感词， 从begin到position的位置用replacement替换掉</span><br><span class="line">                result.append(replacement);</span><br><span class="line">                position = position + 1;</span><br><span class="line">                begin = position;</span><br><span class="line">                // 如果是最小匹配 则需要重置回到根节点，最大匹配和忽视掉结尾标记</span><br><span class="line">                if (type.equals(MATCH_MIN)) &#123;</span><br><span class="line">                    tempNode = rootNode;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                ++position;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        result.append(text.substring(begin));</span><br><span class="line">        return result.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">    *</span><br><span class="line">    * @Description:获得当前的所有敏感词</span><br><span class="line">    * @return</span><br><span class="line">    * @author: chenhaoyu</span><br><span class="line">    * @time:Apr 8, 2019 2:48:53 PM</span><br><span class="line">    */</span><br><span class="line">    public Set&lt;String&gt; sensitiveWords() &#123;</span><br><span class="line">        return wordspool;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">    *</span><br><span class="line">    * @Description:根据文件 构造前缀树</span><br><span class="line">    * @author: chenhaoyu</span><br><span class="line">    * @time:Apr 8, 2019 11:20:42 AM</span><br><span class="line">    */</span><br><span class="line">    public void addWordsFromFile(String filepath) &#123;</span><br><span class="line">        File file = new File(filepath);</span><br><span class="line">        if (file.exists() &amp;&amp; file.isFile()) &#123;</span><br><span class="line">                try (FileReader reader = new FileReader(file); BufferedReader br = new BufferedReader(reader);) &#123;</span><br><span class="line">                String str;</span><br><span class="line">                while ((str = br.readLine()) != null) &#123;</span><br><span class="line">                    addWord(str);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="大功告成？"><a href="#大功告成？" class="headerlink" title="大功告成？"></a>大功告成？</h1><p>&emsp;&emsp; 到这里，其实我已经发现了一个问题了….很多理论上的东西我已经不记得了，本来还想着画个DFA的状态图，结果发现…画出了NFA的图之后就进行不下去了，百度回忆了一下。嗯…子集构造法，最小DFA，抹去死状态….告辞！</p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>&emsp;&emsp;整片文就没几个汉字，是我懒了还是不会说话了。我觉得应该是这篇文选题的问题，理论上的东西已经忘记了，只记得个大约摸的操作方法，好在代码还是会写的。我在想啥时候重新开始更新设计模式这个大坑呢？毕竟那边话多…<br>&emsp;&emsp;最后还是要感谢沈老师，要不是那几句魔咒一般的口头禅，我不可能会记住这些东西…还有借我抄笔记的学霸…<br>&emsp;&emsp; <strong>Lastvt</strong> 拜拜~</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/TrieTree/" rel="tag"># TrieTree</a>
+          
+            <a href="/tags/DFA/" rel="tag"># DFA</a>
+          
+            <a href="/tags/NFA/" rel="tag"># NFA</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/20/2018-12-20-java-8-方法引用笔记/" rel="next" title="java 8 方法引用笔记">
+                <i class="fa fa-chevron-left"></i> java 8 方法引用笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/magicavatar.jpg" alt="WhiteMagic2014">
+          <p class="site-author-name" itemprop="name">WhiteMagic2014</p>
+           
+              <p class="site-description motion-element" itemprop="description">This is my space to record something.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#序"><span class="nav-number">1.</span> <span class="nav-text">序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题思考"><span class="nav-number">2.</span> <span class="nav-text">问题思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开始实践"><span class="nav-number">3.</span> <span class="nav-text">开始实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#模型创建"><span class="nav-number">3.1.</span> <span class="nav-text">模型创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码实现"><span class="nav-number">3.2.</span> <span class="nav-text">代码实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#大功告成？"><span class="nav-number">4.</span> <span class="nav-text">大功告成？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结语"><span class="nav-number">5.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+    <script src="/live2d/autoload.js"></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
