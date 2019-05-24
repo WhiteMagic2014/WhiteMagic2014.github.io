@@ -27,7 +27,7 @@ $(window).on("load", function() {
 //    本机测试
 //    initWidget(live2d_path + "waifu-tips.json", "http://127.0.0.1:8080/live2d");
 //    我的java版
-    initWidget(live2d_path + "waifu-tips.json", "http://45.77.240.191:8080/live2d");
+    initWidget(live2d_path + "waifu-tips.json", "https://server.whitemagic2014.com:8443/live2d");
 });
 
 //initWidget第一个参数为waifu-tips.json的绝对路径
