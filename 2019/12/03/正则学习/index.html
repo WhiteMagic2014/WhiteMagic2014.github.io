@@ -1,0 +1,949 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="NFA,正则,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp; 前言&amp;emsp;&amp;emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。 正文简介&amp;amp;派别&amp;emsp;&amp;emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的POSIX派，以及各种编程语言标准库中的PCRE派。 后一个大家接触的较多一些。">
+<meta name="keywords" content="NFA,正则">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正则学习">
+<meta property="og:url" content="http://yoursite.com/2019/12/03/正则学习/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="&amp;emsp;&amp;emsp; 前言&amp;emsp;&amp;emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。 正文简介&amp;amp;派别&amp;emsp;&amp;emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的POSIX派，以及各种编程语言标准库中的PCRE派。 后一个大家接触的较多一些。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-12-03T10:21:14.367Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="正则学习">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp; 前言&amp;emsp;&amp;emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。 正文简介&amp;amp;派别&amp;emsp;&amp;emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的POSIX派，以及各种编程语言标准库中的PCRE派。 后一个大家接触的较多一些。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/12/03/正则学习/">
+
+
+
+
+
+  <title> 正则学习 | Magic Space </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/03/正则学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WhiteMagic2014">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/magicavatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                正则学习
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-03T10:00:43+08:00">
+                2019-12-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。</p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="简介-amp-派别"><a href="#简介-amp-派别" class="headerlink" title="简介&amp;派别"></a>简介&amp;派别</h2><p>&emsp;&emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的<strong>POSIX派</strong>，以及各种编程语言标准库中的<strong>PCRE派</strong>。 后一个大家接触的较多一些。</p>
+<ul>
+<li>POSIX<br>&emsp;&emsp; 最早的时候正则可以说是五花八门，grep(Global Regular Expression Print)，egrep，awk，lex，sed等程序都支持正则，但是每个程序所支持的正则或多或少又和其他的有些不一样。于是在1986年，POSIX（Portable Operating System Interface）标准公诸于世，POSIX制定了不同的操作系统都需要遵守的一套规则，当然，正则表达式也包括其中。</li>
+<li>PCRE<br>&emsp;&emsp;PCRE(Perl Compatible Regular Expressions)是一个Perl库，包括 perl 兼容的正则表达式库。1994年10月Perl 5发布，当时是wwwq兴起的时候，而Perl语言是为了文本处理而发明的，所以Perl基本上成了web开发的首选语言。所以使用广泛的Perl被后来的其他语言所移植，这其中包括了Tcl, Python, .NET , Ruby, PHP, C/C++, Java等等。下文讲的正则表达式也是这个PCRE标准<br><a href="https://liujiacai.net/blog/2014/12/07/regexp-favors/" target="_blank" rel="noopener">更多关于正则派别介</a></li>
+</ul>
+<h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><p>&emsp;&emsp;首先准备好<a href="http://tool.chinaz.com/regex/" target="_blank" rel="noopener">正则检查工具</a>(我觉得正常人类阅读这个东西都会觉得很蛋疼)，接下来就开始一步步看看正则表达式</p>
+<h3 id="引"><a href="#引" class="headerlink" title="引"></a>引</h3><p>&emsp;&emsp;如果你在看一篇文章，你想搜索所有的 <em>hi</em> ，这时候 你可以用正则表达式 <strong>hi</strong>。 这就是一个最基本的正则表达式，他精确的匹配字符<em>hi</em>，如果开启了忽视大小写的选项的话，它可以匹配<em>hi,HI,Hi,hI</em>这四种情况中的任意一种。<br>&emsp;&emsp;然而，上面的表达式却有一个问题，他会匹配所有的 <em>hi</em>，比如 <em>hi</em>story，<em>hi</em>gh 等等，他会把所有包含在其他单词中的<em>hi</em>全都找出来，这显然不是想要的效果。这时候使用:<strong>\bhi\b</strong>,可以达到想要的效果。<br>&emsp;&emsp; <strong>\b</strong> 是一个<strong>元字符</strong>。代表着单词的开头或结尾，也就是单词的分界处。他匹配一个<strong>位置</strong>:它的前一个字符和后一个字符不全是(一个是,一个不是或不存在)<strong>\w</strong>。<br>&emsp;&emsp; 如果你要查询 <em>hi xxxxx magic</em> 这样的句式，而不在乎中间的xxx内容是什么，可以使用 <strong>\bhi\b.*\bmagic\b</strong><br>&emsp;&emsp; 在这里， <strong>.</strong> 是一个<strong>元字符</strong>，匹配:除了换行符以外的任意字符；而 <strong>*</strong> 同是<strong>元字符</strong>，不过它代表的不是字符，也不是位置，而是数量:它指定 <strong>*</strong> 前边的内容可以连续重复使用任意次以使整个表达式得到匹配。 上面出表达式可以这样解释: 首先是单词hi，接下来是任意字符(非换行)，最后以magic单词结尾。<br>&emsp;&emsp; 再看这个例子：<strong>0\d\d-\d\d\d\d\d\d\d\d</strong> 这个表达式匹配:0开头，紧跟2个数字，接下来是一个 “-“ ，后面再跟8个数字（其实就是电话号码）。这里的 <strong>\d</strong> 匹配：一位数字 ，而 - 他就是一个字符。<br>&emsp;&emsp; 这个表达式这样写虽然没错，但是就很重复。这里就需要使用重复来避免，上述的表达式可以写成<strong>0\d{2}-\d{8}</strong>，这里 <strong>{2}</strong> 表示前面的 <strong>\d</strong> <strong>必须</strong>连续重复匹配2次才行，<strong>{8}</strong> 同理。</p>
+<h3 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h3><p>&emsp;&emsp;上面一节中出现了一些元字符，所以应该也有了一些认知，以下是常用的一些元字符</p>
+<table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.</td>
+<td>匹配除换行符外任何字符</td>
+</tr>
+<tr>
+<td>\w</td>
+<td>匹配字母，数字，下划线</td>
+</tr>
+<tr>
+<td>\s</td>
+<td>匹配任意的空白符</td>
+</tr>
+<tr>
+<td>\d</td>
+<td>匹配数字</td>
+</tr>
+<tr>
+<td>\b</td>
+<td>匹配单词的开始或结束</td>
+</tr>
+<tr>
+<td>^</td>
+<td>匹配字符串的开始</td>
+</tr>
+<tr>
+<td>$</td>
+<td>匹配字符串的结束</td>
+</tr>
+</tbody>
+</table>
+<p>更多的例子：</p>
+<ul>
+<li><strong>\ba\w*\b</strong><br>&emsp;&emsp;某个单词开始（\b），以a开头，接下来是任意数量的字母或数字(\w*)，最后结尾（\b）<br>&emsp;&emsp; </li>
+<li><strong>\d+</strong><br>&emsp;&emsp;匹配1个，或者更多连续的数字，在这里 <strong>+</strong> 和 <strong>*</strong> 是类似的功能，<strong>*</strong> 允许0-N次的重复,而 <strong>+</strong> 则是重复1-N次（至少需要有一次）<br>&emsp;&emsp; </li>
+<li><strong>\b\w{6}\b</strong><br>&emsp;&emsp;匹配6个字符的单词<br>&emsp;&emsp; </li>
+<li><strong>^\d{5,12}$</strong><br>&emsp;&emsp;这里用到了元字符 <strong>^</strong> 和 <strong>$</strong>，他们都匹配一个位置，这一点和 <strong>\b</strong> 有点类似，而 <strong>{5,12}</strong> 和前面的 <strong>{2}</strong> 类似，他表示需要重复5-12次，在这个区间外都不匹配，而因为使用了 <strong>^</strong> 和 <strong>$</strong> 所以整个字符串都要用来和 <strong>\d{5,12}</strong> 来匹配，换句话说这个字符串必须是5-12的数字。（如果没有 <strong>^</strong> 和 <strong>$</strong> 那么整个字符串会截取判断，比如一个17位的数字，会被判断为2个符合的数字 前面12位 以及后面 5位）<br>&emsp;&emsp;和忽略大小写类似，有的处理工具会有多行处理的选项，开启后 <strong>^</strong> 和 <strong>$</strong> 的意义就变成了匹配行的开始处和结束处。</li>
+</ul>
+<h4 id="元字符的转义"><a href="#元字符的转义" class="headerlink" title="元字符的转义"></a>元字符的转义</h4><p>&emsp;&emsp; 有时候需要查找元字符本身，比如我就想查找一个 . 号 , 而 <strong>.</strong> 这个表达式代表的是 除换行符外任何字符，这时候就得加上转义符 <strong>\</strong>，当然 \ 自己本身也要转义， 得使用 <strong>\\</strong> 来找到 \</p>
+<h3 id="重复"><a href="#重复" class="headerlink" title="重复"></a>重复</h3><p>&emsp;&emsp; 上面已经出现过很多匹配重复的方法了，比如 <strong>*</strong>, <strong>+</strong> , <strong>{2}</strong> , <strong>{5,12}</strong>，下面则列出所有用来表示重复的语法</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td>重复0或更多次</td>
+</tr>
+<tr>
+<td>+</td>
+<td>重复1或更多次</td>
+</tr>
+<tr>
+<td>?</td>
+<td>重复0或1次, 理解成是否存在也可以</td>
+</tr>
+<tr>
+<td>{n}</td>
+<td>重复n次</td>
+</tr>
+<tr>
+<td>{n,}</td>
+<td>重复n 或 更多次</td>
+</tr>
+<tr>
+<td>{n,m}</td>
+<td>重复 n 至 m 次</td>
+</tr>
+</tbody>
+</table>
+<p>&emsp;&emsp; 几个重复的例子</p>
+<ul>
+<li><p><strong>^\w+</strong><br>&emsp;&emsp; 由于第一位 <strong>^</strong> 的限制，那么这个正则根据选择的情况，会匹配每行的第一个字符串 或者 全局的第一个字符串</p>
+</li>
+<li><p><strong>0\d{2}-?\d{8}</strong><br>&emsp;&emsp;匹配 <em>021-12345678</em> 或者 <em>02112345678</em> 这样的 （电话）号码</p>
+</li>
+</ul>
+<h3 id="字符类"><a href="#字符类" class="headerlink" title="字符类"></a>字符类</h3><p>&emsp;&emsp; 字符类提供了只匹配一个特定集合的方法，可以看做是匹配型元字符的个性化定制。比如说，我想匹配所有的数字 可以用 <strong>\d</strong>，匹配所有的字符可以用 <strong>.</strong> ，这些匹配元字符已经提供了。但如果我想要找到所有的元音，所有的偶数呢？这时候就可以用字符类来自己指定集合。</p>
+<ul>
+<li><p><strong>[aeiou]</strong><br>&emsp;&emsp;字符集由 方括号 <strong>[ ]</strong> 表示，括号内的每个字符都会匹配到，比如这个就是寻找所有元音字母的正则表达式</p>
+</li>
+<li><p><strong>^\d*[24680]$</strong><br>&emsp;&emsp;表示所有偶数：<strong>\d*</strong> 表示任意个数字，但最后一个数字必须是24680中的一个；同理那么奇数就是 <strong>^\d*[13579]$</strong><br>&emsp;&emsp; 同时字符类也可以指定一个范围，比如这个 <strong>[0-9]</strong> 表达式，就和 <strong>\d</strong> 是一样的，他们都表示一位数字。同理 <strong>[a-z0-9A-Z_]</strong> 也等同于 <strong>\w</strong>（仅在英文字母情况下）</p>
+</li>
+</ul>
+<h3 id="分支条件"><a href="#分支条件" class="headerlink" title="分支条件"></a>分支条件</h3><p>&emsp;&emsp; 分支条件用 <strong>|</strong> 来连接几个正则表达式，比如这样 <strong>表达式1|表达式2|…</strong> 。如同这个符号本身，这个就有点像 <strong>或</strong> 条件判断，满足表达式1 或 表达式2 的都会被匹配到。</p>
+<ul>
+<li><p><strong>^\d*[123]$|^\d*[456]$|^\d*[7890]$</strong><br>&emsp;&emsp; 这个表达式虽然这么长，但是他表示的东西很简单 和 <strong>^\d*$</strong> 一样表示任意数字，但是这里主要是解释分支。<br>&emsp;&emsp; 该表达式由 <strong>|</strong> 分成3段，分别表示任何123结尾的数字，456结尾的数字，7890结尾的数字。3个条件由 <strong>或</strong>连接，即为任意数字。</p>
+</li>
+<li><p><strong>\d{3}-?\d{8}|\d{8}</strong><br>&emsp;&emsp;这个表达式匹配 可以带上区号的电话号码。这个号码可以匹配 <em>12345678</em> 或 <em>021-12345678</em> 或 <em>02112345678</em>，但是如果反过来写就会有些不同。<br>&emsp;&emsp; 表达式 <strong>\d{8}|\d{3}-?\d{8}</strong> 与上一个区别在于  是 a|b 和 b|a 的区别,但是这个无法匹配02112345678，这个和if中的判定有些类似，<strong>都是从左向右匹配，如果满足，那么后面的判定则不会执行</strong>。 <em>02112345</em>678 这个数字中前8位已经满足了 <strong>\d{8}</strong> ，所以后面的不会继续执行，这个需要注意。</p>
+</li>
+</ul>
+<h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><p>&emsp;&emsp; 分组也很好理解，比如 要重复单个字符，仅仅在字符后面加上重复符就好了，但是要重复多个字符呢？这时可以用小括号 <strong>()</strong> 来指定<strong>子表达式</strong>，也就是<strong>分组</strong>了。这样就可以对一个小组进行重复操作（当然也可以是其他操作）</p>
+<p>下面是几个例子，可以比较一下区别：</p>
+<ul>
+<li><p><strong>a*</strong><br>&emsp;&emsp; 匹配任意个a字符   <em>aaaaaaa</em></p>
+</li>
+<li><p><strong>ab*</strong><br>&emsp;&emsp; 匹配a后紧跟任意个b的字符  <em>abbbbbb</em></p>
+</li>
+<li><p><strong>(ab)*</strong><br>&emsp;&emsp; 匹配任意个 ab组成的字符    <em>abababababab</em></p>
+</li>
+<li><p><strong>(a|b)*</strong><br>&emsp;&emsp; 匹配任意由a和b 组成的字符 <em>aabbababaabaaaabb</em></p>
+</li>
+<li><p><strong>(\d{1,3}.){3}\d{1,3}</strong><br>&emsp;&emsp; 这是一个简单的ip匹配，首先看小括号内的  <strong>\d{1,3}.</strong> 表示 1-3个数字加上点 也就是，<em>123.</em> 这样的字符 ；括号后跟着 <strong>{3}</strong> 说明前面的子表达式得重复3遍， 那就是 <em>123.123.123.</em> 这样， 最后有跟上了1-3个数字， 最终的效果就是 <em>123.123.123.123</em><br>&emsp;&emsp; 但是这个表达式是有bug的，他虽然能匹配格式，但是他会匹配到格式正确但不合法的ip地址（ipv4要求每一位0-255），比如 <em>666.777.888.999</em>。如果可以使用算术比较的话，可能会很简单的解决这个问题，但是很遗憾，正则表达式中不提供关于数学的任何功能，所以要实现这个功能就要用到<strong>分组</strong>，<strong>选择</strong>，<strong>字符类</strong> 来描述一个正确的ip地址：</p>
+</li>
+<li><strong>((2[0-4]\d|25[0-5]|[01]?\d\d?).){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)</strong><br>&emsp;&emsp;这个表达式乍一看就很吓人，但是他和之前那个简单版本的其实类似，简单版本的核心部分是 <strong>\d{1,3}</strong>，对应的 这个表达式核心部分是 <strong>(2[0-4]\d|25[0-5]|[01]?\d\d?)</strong> 这一子表达式。子表达式中用了分支条件 分别是：<br>– <strong>2[0-4]\d</strong>匹配 200~249<br>– <strong>25[0-5]</strong> 匹配 250-255<br>– <strong>[01]?\d\d?</strong> 匹配 0-199<br>&emsp;&emsp;接下来的理解就很容易了，不多说了。思考2个问题：这3个表达式的顺序是否可以变？这样写太麻烦了，可以下面这样写吗？<br><strong>([0-255].){3}[0-255]</strong></li>
+</ul>
+<h3 id="反义"><a href="#反义" class="headerlink" title="反义"></a>反义</h3><p>&emsp;&emsp; 取反操作也是在代码中很常见的操作，这个没什么多说的直接看下表</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\W</td>
+<td>匹配任意 不是 字母，数字，下划线 的字符</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>匹配任意 不是 空白符 的字符</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>匹配任意 不是 数字 的字符</td>
+</tr>
+<tr>
+<td>\B</td>
+<td>匹配不是 单词开头 或者 结束 的位置</td>
+</tr>
+<tr>
+<td>[^x]</td>
+<td>匹配除了 x 以外 的任意字符</td>
+</tr>
+<tr>
+<td>[^aeiou]</td>
+<td>匹配除了aeiou以外 的任意字符</td>
+</tr>
+</tbody>
+</table>
+<h3 id="后向引用"><a href="#后向引用" class="headerlink" title="后向引用"></a>后向引用</h3><p>&emsp;&emsp; 在使用了小括号指定一个子表达式后，<strong>匹配这个字表达式的文本</strong> 就会被捕获，可以在表达式或者其他程序中做进一步的处理，默认情况下每个分组会自动<strong>从左向右</strong>（以分组的左括号为表示）有一个组号，第一个分组的组号是1，第二个是2…. 组号0代表整个正则表达式。<br>&emsp;&emsp; <strong>后向引用</strong>用于重复搜索前面某一个分组匹配的文本。用 <strong>\1</strong> 代替分组1捕获的文本，比如：</p>
+<ul>
+<li><strong>\b(\w+)\b\s+\1\b</strong><br>&emsp;&emsp;整个表达式匹配重复的表达式，<em>hello hello</em>，<em>ok ok</em> 这样的字符。把他拆成 <strong>\b(\w+)\b</strong> 和 <strong>s+</strong>  和 <strong>\1\b</strong> 这样分开理解可能会好一些，第一段表示任意一个单词，第二段表示至少有一个空格，第三段表示 得和第一段捕获的那个单词一样<br>&emsp;&emsp;当然，也支持自己给分组命名，用了自动分组的话，分组一多表达式一长，那本身不方便的阅读就更吓人了。<br>&emsp;&emsp;可以使用 <strong>(?&lt;命名&gt;表达式)</strong> 或者  <strong>(?’命名’表达式)</strong> 来指定子表达式的组名。比如上一个 <strong>(\w+)</strong> 取名为 myWord可以这样写 <strong>(?&#60;myWord&#62;\w+)</strong> ;而需要使用这个捕获的内容，可以这样写 <strong>\k&#60;myWord&#62;</strong>。所以上面的例子用自命名的方式就会写成这样</li>
+<li><strong>\b(?&#60;myWord&#62;\w+)\b\s+\k&#60;myWord&#62;\b</strong><br>&emsp;&emsp;<br>在使用小括号的时候，有很多特地用途的语法，下面是一些常用的</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>捕获</td>
+<td>(exp)</td>
+<td>匹配exp,并捕获文本到自动命名的组里</td>
+</tr>
+<tr>
+<td></td>
+<td>(?&#60;name&#62;exp)</td>
+<td>匹配exp,并捕获文本到名称为name的组里，也可以写成(?’name’exp)</td>
+</tr>
+<tr>
+<td></td>
+<td>(?:exp)</td>
+<td>匹配exp,不捕获匹配的文本，也不给此分组分配组号</td>
+</tr>
+<tr>
+<td>零宽断言</td>
+<td>(?=exp)</td>
+<td>匹配exp前面的位置</td>
+</tr>
+<tr>
+<td></td>
+<td>(?&lt;=exp)</td>
+<td>匹配exp后面的位置</td>
+</tr>
+<tr>
+<td></td>
+<td>(?!exp)</td>
+<td>匹配后面跟的不是exp的位置</td>
+</tr>
+<tr>
+<td></td>
+<td>(?&lt;!exp)</td>
+<td>匹配前面不是exp的位置</td>
+</tr>
+<tr>
+<td>注释</td>
+<td>(?#comment)</td>
+<td>这种类型的分组不对正则表达式的处理产生任何影响，用于提供注释让人阅读</td>
+</tr>
+</tbody>
+</table>
+<h3 id="零宽断言"><a href="#零宽断言" class="headerlink" title="零宽断言"></a>零宽断言</h3><p>&emsp;&emsp; 这个理解起来可能会有些麻烦。首先他用于查找在某些内容之前或之后的东西（但是并不包含这些内容），比如说查找 <strong>某某说:</strong> 后面跟的内容，也就是说它好像 <strong>\b ^ $</strong> 一样用来指定一个位置，这个位置应该满足一定的条件（即<strong>断言</strong>:用来声明一个应该为真的事实，正则表达式中只有当断言为真才会继续匹配），因此也被称作<strong>零宽断言</strong>  </p>
+<ul>
+<li><strong>(?=exp)</strong><br>&emsp;&emsp;<strong>零宽度正预测先行断言</strong>：它断言自身出现的位置 的后面能够匹配表达式exp。这个解释还是有点抽象，看这个例子<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;吃饭了吗&quot;他笑着打了个招呼。</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>&emsp;&emsp;在这里我想知道 “他笑着打了个招呼” 的内容，可以这样写 <strong>[a-zA-Z0-9\u4e00-\u9fa5]+(?=”他笑着打了个招呼。)</strong> (这里的字符类表示所有的大小写字母数字和汉字) 这里的零宽断言是 <strong>(?=”他笑着打了个招呼。)</strong> 用大白话来解释就是: 我每有一个满足 <strong>[a-zA-Z0-9\u4e00-\u9fa5]+</strong> 的字符我就停下来看一看后面，紧跟的内容是不是和符合表达式 <strong>“他笑着打了个招呼。</strong> （这里是全匹配）。如果后面的东西满足了断言表达式，那么这个位置前面的 符合 <strong>[a-zA-Z0-9\u4e00-\u9fa5]+</strong> 表达式的内容就会被找到，也就是 <em>吃饭了吗</em></p>
+<ul>
+<li><strong>(?&lt;=exp)</strong><br>&emsp;&emsp;<strong>零宽度正回顾后发断言</strong>: 理解了上面那个 <strong>预测先行断言</strong> 那么理解这个 <strong>回顾后发断言</strong> 会好一些。他们是类似的</li>
+</ul>
+<h3 id="负向零宽断言"><a href="#负向零宽断言" class="headerlink" title="负向零宽断言"></a>负向零宽断言</h3><p>&emsp;&emsp; </p>
+<h2 id="扩展一下-NFA"><a href="#扩展一下-NFA" class="headerlink" title="扩展一下 NFA"></a>扩展一下 NFA</h2><p>施工中…</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>施工中…</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://deerchao.cn/tutorials/regex/regex.htm#repeat" target="_blank" rel="noopener">正则表达式30分钟入门教程</a></li>
+<li><a href="https://liujiacai.net/blog/2014/12/07/regexp-favors/" target="_blank" rel="noopener">正则表达式“派别”简述</a></li>
+<li><a href="https://www.cnblogs.com/kirito-c/p/9310908.html" target="_blank" rel="noopener">各编程语言正则库的小差别</a></li>
+<li></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NFA/" rel="tag"># NFA</a>
+          
+            <a href="/tags/正则/" rel="tag"># 正则</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/21/天凉好个秋/" rel="next" title="天凉好个秋">
+                <i class="fa fa-chevron-left"></i> 天凉好个秋
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/magicavatar.jpg" alt="WhiteMagic2014">
+          <p class="site-author-name" itemprop="name">WhiteMagic2014</p>
+           
+              <p class="site-description motion-element" itemprop="description">This is my space to record something.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#正文"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介-amp-派别"><span class="nav-number">2.1.</span> <span class="nav-text">简介&amp;派别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则表达式"><span class="nav-number">2.2.</span> <span class="nav-text">正则表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#引"><span class="nav-number">2.2.1.</span> <span class="nav-text">引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#元字符"><span class="nav-number">2.2.2.</span> <span class="nav-text">元字符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#元字符的转义"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">元字符的转义</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重复"><span class="nav-number">2.2.3.</span> <span class="nav-text">重复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符类"><span class="nav-number">2.2.4.</span> <span class="nav-text">字符类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分支条件"><span class="nav-number">2.2.5.</span> <span class="nav-text">分支条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分组"><span class="nav-number">2.2.6.</span> <span class="nav-text">分组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反义"><span class="nav-number">2.2.7.</span> <span class="nav-text">反义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后向引用"><span class="nav-number">2.2.8.</span> <span class="nav-text">后向引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#零宽断言"><span class="nav-number">2.2.9.</span> <span class="nav-text">零宽断言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#负向零宽断言"><span class="nav-number">2.2.10.</span> <span class="nav-text">负向零宽断言</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展一下-NFA"><span class="nav-number">2.3.</span> <span class="nav-text">扩展一下 NFA</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">3.1.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+    <script src="/live2d/autoload.js"></script>
+
+
+</body>
+</html>
