@@ -112,7 +112,7 @@
 <meta property="og:image" content="http://yoursite.com/images/r2nfa2ex2.png">
 <meta property="og:image" content="http://yoursite.com/images/r2nfa2ex3.png">
 <meta property="og:image" content="http://yoursite.com/images/r2nfa2ex4.png">
-<meta property="og:updated_time" content="2019-12-06T07:21:57.149Z">
+<meta property="og:updated_time" content="2019-12-06T09:50:28.120Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="正则学习">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp; 前言&amp;emsp;&amp;emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。 正文简介&amp;amp;派别&amp;emsp;&amp;emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的POSIX派，以及各种编程语言标准库中的PCRE派。 后一个大家接触的较多一些。">
@@ -714,7 +714,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="引擎"><a href="#引擎" class="headerlink" title="引擎"></a>引擎</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>&emsp;&emsp;上面一章主要写了一下正则表达式的语法，现在换个角度，正则是怎么工作的呢？<br>&emsp;&emsp;如果学习过编译原理的话，就会知道他的另一个名字 <strong>正规式</strong>，是一个表示<a href="https://blog.csdn.net/starter_____/article/details/86659588" target="_blank" rel="noopener"><strong>正规集</strong></a>的工具。 而提到正规集，总会联想到<strong>有穷自动机</strong>。有穷自动机作为一种识别装置，它可以准确的识别正规集，即识别<a href="https://baike.baidu.com/item/%E6%AD%A3%E8%A7%84%E6%96%87%E6%B3%95/8982395" target="_blank" rel="noopener">正规文法</a>所定义的语言和正规式所表示的集合。它又分为2类：NFA 和 DFA。在后文会简单展开一下。<br>&emsp;&emsp;上面说了一堆理论，有啥用呢？其实很多程序(语言)处理正则表达式的引擎就是上文提到的东西，粗见下表（很多程序大家应该都用过），详见<a href="https://blog.csdn.net/iteye_11539/article/details/82476609" target="_blank" rel="noopener">正则表达式的几种引擎</a>。</p>
+<h2 id="引擎"><a href="#引擎" class="headerlink" title="引擎"></a>引擎</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>&emsp;&emsp;上面一章主要写了一下正则表达式的语法，现在换个角度，正则是怎么工作的呢？<br>&emsp;&emsp;如果学习过编译原理的话，就会知道他的另一个名字 <strong>正规式</strong>，是一个表示<a href="https://blog.csdn.net/starter_____/article/details/86659588" target="_blank" rel="noopener"><strong>正规集</strong></a>(正规式或正规文法表示的集合称为正规集)的工具。 而提到正规集，总会联想到<strong>有穷自动机</strong>。有穷自动机作为一种识别装置，它可以准确的识别正规集，即识别<a href="https://baike.baidu.com/item/%E6%AD%A3%E8%A7%84%E6%96%87%E6%B3%95/8982395" target="_blank" rel="noopener">正规文法</a>所定义的语言和正规式所表示的集合。它又分为2类：NFA 和 DFA。在后文会简单展开一下。<br>&emsp;&emsp;上面说了一堆理论，有啥用呢？其实很多程序(语言)处理正则表达式的引擎就是上文提到的东西，粗见下表（很多程序大家应该都用过），详见<a href="https://blog.csdn.net/iteye_11539/article/details/82476609" target="_blank" rel="noopener">正则表达式的几种引擎</a>。</p>
 <table>
 <thead>
 <tr>
@@ -846,7 +846,7 @@
 <li>f(4,a)={4}</li>
 <li>f(4,b)={4}<br>&emsp;&emsp;状态图的画法与DFA类似:<br><img src="/images/nfa1.png" alt="nfa1"><br>&emsp;&emsp;对于Σ*中的任何字符串t，如果存在一条 从<strong>某一个初始节点到某一个终结点</strong>的道路，且道路上所有弧的标记字符连接成的串等于t，那么称t可以被NFA M 接受。其实看这里就可以察觉到了，DFA是NFA的一个特例。</li>
 </ul>
-<h3 id="NFA转化为等价DFA"><a href="#NFA转化为等价DFA" class="headerlink" title="NFA转化为等价DFA"></a>NFA转化为等价DFA</h3><p>&emsp;&emsp;DFA由于每一个状态的后继状态后确定，使得其效率更高（当然也有代价..） 。有穷自动机有一个定理：设L为一个NFA接受的集合，则存在一个接受L的DFA。而常用的转换方法是<strong>子集构造法</strong>。<br>&emsp;&emsp;从上面的介绍NFA 和 DFA两节 假设的转换函数可以看出，NFA的 达到的状态一般 是一个<strong>状态的集合</strong>，而在DFA中 则是一个<strong>确定的状态</strong>。从NFA到DFA的基本想法是让DFA的每一个状态 对应 NFA的一组状态。也就是让DFA使用它的状态，去记录在NFA接收一个字符后可能达到的所有状态，在接收字符串a1a2a3…an 之后，DFA处于这样一个状态：该状态表示这个NFA的一个子集T，T是从NFA的开始状态，沿着a1a2a3…an可以到达的那些状态构成的。<br>ps:子集构造法的过程以及算法展开写一下东西还挺多的（先挖坑，有空再填）。<a href="https://blog.whitemagic2014.com/" target="_blank" rel="noopener">请看下集</a></p>
+<h3 id="NFA转化为等价DFA"><a href="#NFA转化为等价DFA" class="headerlink" title="NFA转化为等价DFA"></a><del>NFA转化为等价DFA</del></h3><p>&emsp;&emsp;DFA由于每一个状态的后继状态后确定，使得其效率更高（当然也有代价..） 。有穷自动机有一个定理：设L为一个NFA接受的集合，则存在一个接受L的DFA。而常用的转换方法是<strong>子集构造法</strong>。<br>&emsp;&emsp;从上面的介绍NFA 和 DFA两节 假设的转换函数可以看出，NFA的 达到的状态一般 是一个<strong>状态的集合</strong>，而在DFA中 则是一个<strong>确定的状态</strong>。从NFA到DFA的基本想法是让DFA的每一个状态 对应 NFA的一组状态。也就是让DFA使用它的状态，去记录在NFA接收一个字符后可能达到的所有状态，在接收字符串a1a2a3…an 之后，DFA处于这样一个状态：该状态表示这个NFA的一个子集T，T是从NFA的开始状态，沿着a1a2a3…an可以到达的那些状态构成的。<br>ps:子集构造法的过程展开写一下东西还挺多的（先挖坑，有空再填）。<a href="https://blog.whitemagic2014.com/" target="_blank" rel="noopener">请看下集</a></p>
 <h3 id="正则表达式-转换-有穷自动机"><a href="#正则表达式-转换-有穷自动机" class="headerlink" title="正则表达式 转换 有穷自动机"></a>正则表达式 转换 有穷自动机</h3><p>&emsp;&emsp;其实节的小标题不太恰当，应该是 <strong>正规式和有穷自动机的等价性</strong>。因为在编译原理中 <strong>正规式</strong> 和 <strong>有穷自动机</strong>是可以互相转化的，但是由M 转化为r 在本文中关系不大，而且篇幅..也挺大的..所以仅写一下看这篇文章的人可能会关注的问题，也就是： <strong>正则表达式 转换为 有穷自动机</strong><br>&emsp;&emsp;在编译原理中，从Σ上一个正规式r，构造Σ上的一个等价的 NFA M 的方法 称为 <strong>语法制导</strong> 。即按照正规式的语法结构指引构造过程，首先将正规式分解成一系列的子表达式，然后使用下面的规则构造NFA。</p>
 <h4 id="字符转化"><a href="#字符转化" class="headerlink" title="字符转化"></a>字符转化</h4><ol>
 <li>对于正规式Φ ，构造的NFA为:<br><img src="/images/r2m11.png" alt="r2m11"></li>
