@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="DFA,NFA,正则,">
+  <meta name="keywords" content="正则,NFA,DFA,">
 
 
 
@@ -88,7 +88,7 @@
 
 
 <meta name="description" content="&amp;emsp;&amp;emsp; 前言&amp;emsp;&amp;emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。 正文简介&amp;amp;派别&amp;emsp;&amp;emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的POSIX派，以及各种编程语言标准库中的PCRE派。 后一个大家接触的较多一些。">
-<meta name="keywords" content="DFA,NFA,正则">
+<meta name="keywords" content="正则,NFA,DFA">
 <meta property="og:type" content="article">
 <meta property="og:title" content="正则学习">
 <meta property="og:url" content="http://yoursite.com/2019/12/03/正则学习/index.html">
@@ -103,7 +103,16 @@
 <meta property="og:image" content="http://yoursite.com/images/r2m21.png">
 <meta property="og:image" content="http://yoursite.com/images/r2m22.png">
 <meta property="og:image" content="http://yoursite.com/images/r2m23.png">
-<meta property="og:updated_time" content="2019-12-05T10:29:14.578Z">
+<meta property="og:image" content="http://yoursite.com/images/r2nfaex1.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfaex2.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfaex3.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfaex4.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfaex5.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfa2ex1.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfa2ex2.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfa2ex3.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfa2ex4.png">
+<meta property="og:updated_time" content="2019-12-06T06:50:29.987Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="正则学习">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp; 前言&amp;emsp;&amp;emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。 正文简介&amp;amp;派别&amp;emsp;&amp;emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的POSIX派，以及各种编程语言标准库中的PCRE派。 后一个大家接触的较多一些。">
@@ -856,8 +865,21 @@
 <h4 id="举个栗子"><a href="#举个栗子" class="headerlink" title="举个栗子"></a>举个栗子</h4><p>&emsp;&emsp;下面直接来看一个简单的栗子，将上面提到的转化方式全部都用一下 </p>
 <ul>
 <li>为 r = (a|b)*abb 构造NFA N</li>
-<li>从左往右分解r，令r1 = a，第一个a。</li>
 </ul>
+<ol>
+<li>从左往右分解r，令r1 = a。 根据上面的字符转化第三条，很容易就画出来<br><img src="/images/r2nfaex1.png" alt="r2nfaex1"></li>
+<li>然后遇到运算符 | 先跳过，遇到了字符 b，令r2 = b。转化同上<br><img src="/images/r2nfaex2.png" alt="r2nfaex2"></li>
+<li>然后令 将 a|b 连起来看。 令 r3 = r1|r2 。 根据运算符转化第1条，如下转化<br><img src="/images/r2nfaex3.png" alt="r2nfaex3"></li>
+<li>接着读取下一个运算符 * 。令 r4 = r3*。 运算符转化第三条 （这边其实跳过了括号的转化，因为他仅表现一个优先级）<br><img src="/images/r2nfaex4.png" alt="r2nfaex4"></li>
+<li>接下来读取到字符 a b b，由于他们都是连接运算，所以比较简单（字符转化第二条）。令 r5 = a。 r6 = b。 r7=b。则有 r8 = r5r6。r9=r8r7。 最后将前半部分和后半部分连接，r10 = r4r9。(这一步图比较简单，所以一步到位画完了)<br><img src="/images/r2nfaex5.png" alt="r2nfaex5"></li>
+</ol>
+<p>&emsp;&emsp;当然 除了这样从左往右分解分解r，还有很多方法分解：</p>
+<ol>
+<li>令 r1 = (a|b)*  , r2 = abb 则有 r3 = r1r2<br><img src="/images/r2nfa2ex1.png" alt="r2nfa2ex1"></li>
+<li>令 r4 = a|b ，则可以令 r1 = r4* 。 字符转化第三条 将 * 转化<br><img src="/images/r2nfa2ex2.png" alt="r2nfa2ex2"></li>
+<li>这一步简单来说，直接将 a|b 拆成2条弧即可<br><img src="/images/r2nfa2ex3.png" alt="r2nfa2ex3"></li>
+<li>接下来对于r2(abb)的处理同上，转化后连接在前半部分即可<br><img src="/images/r2nfa2ex4.png" alt="r2nfa2ex4"><br>&emsp;&emsp; 对于第三步得补充一下，如果要严格根据转化方法的话，应该要令r5=a，r6=b，r4=r5|r6，这样一系列操作，最后转化的样子应该是上一种方式第3步出来的东西。乍一看这两种图看起来不太一样，但是他们确实表示的是同一个r，由于第一种方式转化出了很多 ε弧 ，而ε在连接运算时 是一个恒等符。不恰当的例子  数学上  2+3 = 5 可以写成   2x1x1x1 + 3x1x1x1 = 5  ，但是没人会怎么写，后者可以化简为前者。同样的 有穷自动机也是可以通过消除多余状态来化简的，这一般被用于DFA中。化简的部分与本文关系不大就不多写了…</li>
+</ol>
 <h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>&emsp;&emsp; 总算找了个时间学习了一下正则，同时复习了一下编译原理倒是让我挺意外的。由于使用语言的差别，java有一些正则的语法不支持 比如说<strong>平衡组</strong>。而且我在测试写的内容的时候，发现很多正则测试工具也不能支持。综合考虑就省略了一些正则方面的高级操作。仅写了一些基本常用操作。作为补偿，后面加了关于正则引擎的简单介绍。<br>&emsp;&emsp;这次就到这里，感谢阅读。</p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>&emsp;&emsp; 上文参考了以下内容，感谢原作者的精彩文章。</p>
 <ul>
@@ -893,11 +915,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/DFA/" rel="tag"># DFA</a>
+            <a href="/tags/正则/" rel="tag"># 正则</a>
           
             <a href="/tags/NFA/" rel="tag"># NFA</a>
           
-            <a href="/tags/正则/" rel="tag"># 正则</a>
+            <a href="/tags/DFA/" rel="tag"># DFA</a>
           
         </div>
       
