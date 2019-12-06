@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="正则,NFA,DFA,">
+  <meta name="keywords" content="DFA,NFA,正则,">
 
 
 
@@ -88,7 +88,7 @@
 
 
 <meta name="description" content="&amp;emsp;&amp;emsp; 前言&amp;emsp;&amp;emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。 正文简介&amp;amp;派别&amp;emsp;&amp;emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的POSIX派，以及各种编程语言标准库中的PCRE派。 后一个大家接触的较多一些。">
-<meta name="keywords" content="正则,NFA,DFA">
+<meta name="keywords" content="DFA,NFA,正则">
 <meta property="og:type" content="article">
 <meta property="og:title" content="正则学习">
 <meta property="og:url" content="http://yoursite.com/2019/12/03/正则学习/index.html">
@@ -112,7 +112,7 @@
 <meta property="og:image" content="http://yoursite.com/images/r2nfa2ex2.png">
 <meta property="og:image" content="http://yoursite.com/images/r2nfa2ex3.png">
 <meta property="og:image" content="http://yoursite.com/images/r2nfa2ex4.png">
-<meta property="og:updated_time" content="2019-12-06T06:50:29.987Z">
+<meta property="og:updated_time" content="2019-12-06T07:21:57.149Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="正则学习">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp; 前言&amp;emsp;&amp;emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。 正文简介&amp;amp;派别&amp;emsp;&amp;emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的POSIX派，以及各种编程语言标准库中的PCRE派。 后一个大家接触的较多一些。">
@@ -388,7 +388,7 @@
 <h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="简介-amp-派别"><a href="#简介-amp-派别" class="headerlink" title="简介&amp;派别"></a>简介&amp;派别</h2><p>&emsp;&emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的<strong>POSIX派</strong>，以及各种编程语言标准库中的<strong>PCRE派</strong>。 后一个大家接触的较多一些。</p>
 <ul>
 <li>POSIX<br>&emsp;&emsp; 最早的时候正则可以说是五花八门，grep(Global Regular Expression Print)，egrep，awk，lex，sed等程序都支持正则，但是每个程序所支持的正则或多或少又和其他的有些不一样。于是在1986年，POSIX（Portable Operating System Interface）标准公诸于世，POSIX制定了不同的操作系统都需要遵守的一套规则，当然，正则表达式也包括其中。</li>
-<li>PCRE<br>&emsp;&emsp;PCRE(Perl Compatible Regular Expressions)是一个Perl库，包括 perl 兼容的正则表达式库。1994年10月Perl 5发布，当时是wwwq兴起的时候，而Perl语言是为了文本处理而发明的，所以Perl基本上成了web开发的首选语言。所以使用广泛的Perl被后来的其他语言所移植，这其中包括了Tcl, Python, .NET , Ruby, PHP, C/C++, Java等等。下文讲的正则表达式也是这个PCRE标准<br><a href="https://liujiacai.net/blog/2014/12/07/regexp-favors/" target="_blank" rel="noopener">更多关于正则派别介</a></li>
+<li>PCRE<br>&emsp;&emsp;PCRE(Perl Compatible Regular Expressions)是一个Perl库，包括 perl 兼容的正则表达式库。1994年10月Perl 5发布，当时是www兴起的时候，而Perl语言是为了文本处理而发明的，所以Perl基本上成了web开发的首选语言。所以使用广泛的Perl被后来的其他语言所移植，这其中包括了Tcl, Python, .NET , Ruby, PHP, C/C++, Java等等。下文讲的正则表达式也是这个PCRE标准<br><a href="https://liujiacai.net/blog/2014/12/07/regexp-favors/" target="_blank" rel="noopener">更多关于正则派别介</a></li>
 </ul>
 <h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><p>&emsp;&emsp;首先准备好<a href="http://tool.chinaz.com/regex/" target="_blank" rel="noopener">正则检查工具</a>(我觉得正常人类阅读这个东西都会觉得很蛋疼)，接下来就开始一步步看看正则表达式</p>
 <h3 id="引"><a href="#引" class="headerlink" title="引"></a>引</h3><p>&emsp;&emsp;如果你在看一篇文章，你想搜索所有的 <em>hi</em> ，这时候 你可以用正则表达式 <strong>hi</strong>。 这就是一个最基本的正则表达式，他精确的匹配字符<em>hi</em>，如果开启了忽视大小写的选项的话，它可以匹配<em>hi,HI,Hi,hI</em>这四种情况中的任意一种。<br>&emsp;&emsp;然而，上面的表达式却有一个问题，他会匹配所有的 <em>hi</em>，比如 <em>hi</em>story，<em>hi</em>gh 等等，他会把所有包含在其他单词中的<em>hi</em>全都找出来，这显然不是想要的效果。这时候使用:<strong>\bhi\b</strong>,可以达到想要的效果。<br>&emsp;&emsp; <strong>\b</strong> 是一个<strong>元字符</strong>。代表着单词的开头或结尾，也就是单词的分界处。他匹配一个<strong>位置</strong>:它的前一个字符和后一个字符不全是(一个是,一个不是或不存在)<strong>\w</strong>。<br>&emsp;&emsp; 如果你要查询 <em>hi xxxxx magic</em> 这样的句式，而不在乎中间的xxx内容是什么，可以使用 <strong>\bhi\b.*\bmagic\b</strong><br>&emsp;&emsp; 在这里， <strong>.</strong> 是一个<strong>元字符</strong>，匹配:除了换行符以外的任意字符；而 <strong>*</strong> 同是<strong>元字符</strong>，不过它代表的不是字符，也不是位置，而是数量:它指定 <strong>*</strong> 前边的内容可以连续重复使用任意次以使整个表达式得到匹配。 上面出表达式可以这样解释: 首先是单词hi，接下来是任意字符(非换行)，最后以magic单词结尾。<br>&emsp;&emsp; 再看这个例子：<strong>0\d\d-\d\d\d\d\d\d\d\d</strong> 这个表达式匹配:0开头，紧跟2个数字，接下来是一个 “-“ ，后面再跟8个数字（其实就是电话号码）。这里的 <strong>\d</strong> 匹配：一位数字 ，而 - 他就是一个字符。<br>&emsp;&emsp; 这个表达式这样写虽然没错，但是就很重复。这里就需要使用重复来避免，上述的表达式可以写成<strong>0\d{2}-\d{8}</strong>，这里 <strong>{2}</strong> 表示前面的 <strong>\d</strong> <strong>必须</strong>连续重复匹配2次才行，<strong>{8}</strong> 同理。</p>
@@ -602,7 +602,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="零宽断言"><a href="#零宽断言" class="headerlink" title="零宽断言"></a>零宽断言</h3><p>&emsp;&emsp; 这个理解起来可能会有些麻烦。首先他用于查找在某些内容之前或之后的东西（但是并不包含这些内容），比如说查找 <strong>某某说:</strong> 后面跟的内容，也就是说它好像 <strong>\b ^ $</strong> 一样用来指定一个位置，这个位置应该满足一定的条件（即<strong>断言</strong>:用来声明一个应该为真的事实，正则表达式中只有当断言为真才会继续匹配），因此也被称作<strong>零宽断言</strong>  </p>
+<h3 id="零宽断言"><a href="#零宽断言" class="headerlink" title="零宽断言"></a>零宽断言</h3><p>&emsp;&emsp; 这个理解起来可能会有些麻烦。首先他用于查找在某些内容之前或之后的<strong>位置</strong>（但是并不包含这些内容），比如说查找 <strong>某某说:</strong> 后面跟的内容，也就是说它好像 <strong>\b ^ $</strong> 一样用来指定一个位置，这个位置应该满足一定的条件（即<strong>断言</strong>:用来声明一个应该为真的事实，正则表达式中只有当断言为真才会继续匹配），因此也被称作<strong>零宽断言</strong>  </p>
 <ul>
 <li><strong>(?=exp)</strong><br>&emsp;&emsp;<strong>零宽度正预测先行断言</strong>：它断言自身出现的位置 的后面能够匹配表达式exp。这个解释还是有点抽象，看这个例子<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;吃饭了吗&quot;他笑着打了个招呼。</span><br></pre></td></tr></table></figure>
 </li>
@@ -915,11 +915,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/正则/" rel="tag"># 正则</a>
+            <a href="/tags/DFA/" rel="tag"># DFA</a>
           
             <a href="/tags/NFA/" rel="tag"># NFA</a>
           
-            <a href="/tags/DFA/" rel="tag"># DFA</a>
+            <a href="/tags/正则/" rel="tag"># 正则</a>
           
         </div>
       
