@@ -112,7 +112,7 @@
 <meta property="og:image" content="http://yoursite.com/images/r2nfa2ex2.png">
 <meta property="og:image" content="http://yoursite.com/images/r2nfa2ex3.png">
 <meta property="og:image" content="http://yoursite.com/images/r2nfa2ex4.png">
-<meta property="og:updated_time" content="2019-12-10T05:58:14.981Z">
+<meta property="og:updated_time" content="2019-12-10T09:43:30.973Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="正则学习">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp; 前言&amp;emsp;&amp;emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。 正文简介&amp;amp;派别&amp;emsp;&amp;emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的POSIX派，以及各种编程语言标准库中的PCRE派。 后一个大家接触的较多一些。">
@@ -625,6 +625,10 @@
 </li>
 <li><p><strong>(?&lt;!exp)</strong><br>&emsp;&emsp; 同理，<strong>零宽度负回顾后发断言</strong>：断言一个位置 的前面不能匹配表达式exp。比如 <strong>\b\w+(?&lt;!ing)\b</strong>:匹配不是<em>ing</em>结尾的单词<br>ps:记住<strong>零宽断言</strong>找的是一个<strong>位置</strong>。</p>
 </li>
+</ul>
+<ul>
+<li><strong>^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[^]{8,16}$</strong>    &emsp;&emsp;  ps:这里的 <strong>[^]</strong> 等同于 <strong>[\s\S]</strong></li>
+<li><strong>^(?![A-Z0-9\W]+$)(?![a-z0-9\W]+$)(?![A-Za-z\W]+$)(?![A-Za-z0-9]+$)[a-zA-Z0-9\W]{8,16}$</strong><br>&emsp;&emsp; 上面2个描述的都是 输入密码的校验规则 ，密码长度8-16位，必须包含大小写字母，数字，特殊字符。上面的用的是零宽断言，下面用的是负向零宽断言。他们的关系就好像 if(result.isSuccess()) = if(!result.isFail())  那样，用以判断的条件是相反的。但是看下来的“吓人”程度确实不一样的，平时使用的时候可以通过转化来使表达式稍微“可爱”一些。当然，前提是你确定写的2个条件是完全相反的，否则还是老老实实写自己有把握的那一个。（写相反条件 有可能会漏掉一些情况）</li>
 </ul>
 <h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a><del>注释</del></h3><p> &emsp;&emsp;到现在看下来，上面出现的正则表达式还没有特别复杂的，但是阅读起来已经很麻烦了。所以正则表达式也提供了注释的写法。当然我自己不倾向于把注释直接写在表达式里面，感觉他会让这个表达式更恶心…但是学习还是要了解一下的：</p>
 <ul>
