@@ -87,15 +87,15 @@
 
 
 
-<meta name="description" content="这是一个很随意的小玩具，用来加密（其实并没有加密，仅仅是编码）通话 本体ps:加密对应解密，保留标点加密对应保留标点解密      原文本:                            加密         解密         保留标点加密         保留标点解密          处理后:                 扩展这里支持自定义”编码”，注意不要重复    HEX">
+<meta name="description" content="这是一个很随意的小玩具，用来加密（其实并没有加密，仅仅是编码）通话 本体ps:加密对应解密，保留标点加密对应保留标点解密       原文本:                                                      加密             解密             保留标点加密             保留标点解密          处理后:">
 <meta property="og:type" content="article">
 <meta property="og:title" content="你在说啥">
 <meta property="og:url" content="http://yoursite.com/2020/07/10/%E4%BD%A0%E5%9C%A8%E8%AF%B4%E5%95%A5/index.html">
 <meta property="og:site_name" content="Magic Space">
-<meta property="og:description" content="这是一个很随意的小玩具，用来加密（其实并没有加密，仅仅是编码）通话 本体ps:加密对应解密，保留标点加密对应保留标点解密      原文本:                            加密         解密         保留标点加密         保留标点解密          处理后:                 扩展这里支持自定义”编码”，注意不要重复    HEX">
+<meta property="og:description" content="这是一个很随意的小玩具，用来加密（其实并没有加密，仅仅是编码）通话 本体ps:加密对应解密，保留标点加密对应保留标点解密       原文本:                                                      加密             解密             保留标点加密             保留标点解密          处理后:">
 <meta property="og:locale">
 <meta property="article:published_time" content="2020-07-10T09:55:39.000Z">
-<meta property="article:modified_time" content="2020-10-15T10:32:02.423Z">
+<meta property="article:modified_time" content="2020-12-28T08:15:09.538Z">
 <meta property="article:author" content="WhiteMagic2014">
 <meta name="twitter:card" content="summary">
 
@@ -344,20 +344,26 @@
       
         <p>这是一个很随意的小玩具，用来加密（其实并没有加密，仅仅是编码）通话</p>
 <h2 id="本体"><a href="#本体" class="headerlink" title="本体"></a>本体</h2><p>ps:加密对应解密，保留标点加密对应保留标点解密</p>
+
 <div style="display: flex;">
     <div>原文本:
-        <textarea id="origin" rows="20" cols="50"></textarea>
+        <div>
+            <textarea id="origin" rows="20" cols="50"></textarea>
+        </div>
     </div>
-    <div>
-        <button onclick="encode();">加密</button>
-        <button onclick="decode();">解密</button>
-        <button onclick="encodePunc();">保留标点加密</button>
-        <button onclick="decodePunc();">保留标点解密</button>
+    <div style="display: flex;flex-direction:column; justify-content: center;">
+            <button onclick="encode();">加密</button>
+            <button onclick="decode();">解密</button>
+            <button onclick="encodePunc();">保留标点加密</button>
+            <button onclick="decodePunc();">保留标点解密</button>
     </div>
     <div>处理后:
-        <textarea id="result" rows="20" cols="50"></textarea>
+        <div>
+            <textarea id="result" rows="20" cols="50"></textarea>
+        </div>
     </div>
 </div>
+
 
 <h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p>这里支持自定义”编码”，注意不要重复</p>
 <table>
