@@ -90,7 +90,7 @@
 <meta name="description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;其实这篇文章是不太想写的，因为我自己在平时貌似已经没有什么场景会用邮箱了。但是在比较正式的场合邮件还是”地位稳固”，比如公司内部还是会用企业邮箱，与客户发一些重要文件、资料等。邮件是比较正式的一个东西。&amp;emsp;&amp;emsp;之前再服务器上做过定时发邮件的功能，不过由于是在spring框架下做的，开发的时候其实很简单，几乎没遇到什么问题，甚至感觉自己">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用IMAP协议实现邮件提醒">
-<meta property="og:url" content="http://yoursite.com/2019/05/22/%E4%BD%BF%E7%94%A8IMAP%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E9%82%AE%E4%BB%B6%E6%8F%90%E9%86%92/index.html">
+<meta property="og:url" content="https://github.com/WhiteMagic2014/2019/05/22/%E4%BD%BF%E7%94%A8IMAP%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E9%82%AE%E4%BB%B6%E6%8F%90%E9%86%92/index.html">
 <meta property="og:site_name" content="Magic Space">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;其实这篇文章是不太想写的，因为我自己在平时貌似已经没有什么场景会用邮箱了。但是在比较正式的场合邮件还是”地位稳固”，比如公司内部还是会用企业邮箱，与客户发一些重要文件、资料等。邮件是比较正式的一个东西。&amp;emsp;&amp;emsp;之前再服务器上做过定时发邮件的功能，不过由于是在spring框架下做的，开发的时候其实很简单，几乎没遇到什么问题，甚至感觉自己">
 <meta property="og:locale">
@@ -126,7 +126,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/05/22/使用IMAP协议实现邮件提醒/"/>
+  <link rel="canonical" href="https://github.com/WhiteMagic2014/2019/05/22/使用IMAP协议实现邮件提醒/"/>
 
 
 
@@ -271,12 +271,12 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/22/%E4%BD%BF%E7%94%A8IMAP%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E9%82%AE%E4%BB%B6%E6%8F%90%E9%86%92/">
+    <link itemprop="mainEntityOfPage" href="https://github.com/WhiteMagic2014/2019/05/22/%E4%BD%BF%E7%94%A8IMAP%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E9%82%AE%E4%BB%B6%E6%8F%90%E9%86%92/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/magicavatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -365,7 +365,7 @@
       
 
       
-        <p>&emsp;&emsp;<br>&emsp;&emsp;其实这篇文章是不太想写的，因为我自己在平时貌似已经没有什么场景会用邮箱了。但是在比较正式的场合邮件还是”地位稳固”，比如公司内部还是会用企业邮箱，与客户发一些重要文件、资料等。邮件是比较正式的一个东西。<br>&emsp;&emsp;之前再服务器上做过定时发邮件的功能，不过由于是在spring框架下做的，开发的时候其实很简单，几乎没遇到什么问题，甚至感觉自己没做什么功能就写完了….而至于收邮件，我是没有做过的。这几天写了个桌面插件，（<a target="_blank" rel="noopener" href="https://github.com/WhiteMagic2014/Live2dChatWidget">点我去看看</a>，记得点个星），在想要加点什么功能时，我就想到邮件来件提示。好了不多废话，开始了</p>
+        <p>&emsp;&emsp;<br>&emsp;&emsp;其实这篇文章是不太想写的，因为我自己在平时貌似已经没有什么场景会用邮箱了。但是在比较正式的场合邮件还是”地位稳固”，比如公司内部还是会用企业邮箱，与客户发一些重要文件、资料等。邮件是比较正式的一个东西。<br>&emsp;&emsp;之前再服务器上做过定时发邮件的功能，不过由于是在spring框架下做的，开发的时候其实很简单，几乎没遇到什么问题，甚至感觉自己没做什么功能就写完了….而至于收邮件，我是没有做过的。这几天写了个桌面插件，（<a href="https://github.com/WhiteMagic2014/Live2dChatWidget">点我去看看</a>，记得点个星），在想要加点什么功能时，我就想到邮件来件提示。好了不多废话，开始了</p>
 <h1 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h1><p>&emsp;&emsp;首先要了解邮件的协议，SMTP，IMAP， POP3 是几个大家耳熟能详的的协议了。先简介一下吧，做邮件相关功能，肯定得至少了解一下的。</p>
 <h2 id="协议简介"><a href="#协议简介" class="headerlink" title="协议简介"></a>协议简介</h2><h3 id="SMTP"><a href="#SMTP" class="headerlink" title="SMTP"></a>SMTP</h3><p>&emsp;&emsp; Simple Mail Transfer Protocol.  简单邮件传输协议。 这是一个相对简单的基于文本的协议。 而我们主要用这个协议来<strong>发邮件</strong><br>&emsp;&emsp;它是一组用于从源地址到目的地址传输邮件的规范，通过它来控制邮件的中转方式。SMTP 协议属于 TCP/IP 协议簇，它帮助每台计算机在发送或中转信件时找到下一个目的地。SMTP 服务器就是遵循 SMTP 协议的发送邮件服务器。<br>&emsp;&emsp;SMTP 认证，简单地说就是要求必须在提供了账户名和密码之后才可以登录 SMTP 服务器，这就使得那些垃圾邮件的散播者无可乘之机。<br>&emsp;&emsp;增加 SMTP 认证的目的是为了使用户避免受到垃圾邮件的侵扰。</p>
 <h3 id="POP3"><a href="#POP3" class="headerlink" title="POP3"></a>POP3</h3><p>&emsp;&emsp; Post Office Protocol - Version 3. 邮局协议版本3。 我们用来<strong>收邮件</strong><br>&emsp;&emsp; POP3规定怎样将个人计算机连接到Internet的邮件服务器和下载电子邮件的电子协议。它是因特网电子邮件的第一个离线协议标准,POP3允许用户从服务器上把邮件存储到本地主机（即自己的计算机）上,同时删除保存在邮件服务器上的邮件，而POP3服务器则是遵循POP3协议的接收邮件服务器，用来<strong>接收电子邮件</strong>的。</p>
@@ -472,7 +472,7 @@
 <h3 id="查看提供的服务"><a href="#查看提供的服务" class="headerlink" title="查看提供的服务"></a>查看提供的服务</h3><p>&emsp;&emsp;使用 $ A02 CAPABILITY 即可查看</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> $ A02 CAPABILITY</span><br><span class="line"></span><br><span class="line">* CAPABILITY IMAP4 IMAP4rev1 XLIST MOVE IDLE XAPPLEPUSHSERVICE NAMESPACE CHILDREN ID UIDPLUS</span><br><span class="line">a02 OK CAPABILITY Completed</span><br></pre></td></tr></table></figure>
 <p>&emsp;&emsp;上面是qq邮箱返回的信息，我们可以看到支持IDLE。<br>&emsp;&emsp;有人会问 这个a01 a02是什么东西，不打怎么就报错了，其实你看了协议就知道了。imap的命令以一个 标记tag 开头，可以是a01 a02 等，服务器的应答是对应该tag的处理结果（OK / NO）详情就作为拓展自己看协议吧。</p>
-<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>&emsp;&emsp;写完之后就好像把坑又复习了一遍，看起来一下子就知道了，但中间踩坑排查的过程真的是….刺激…<br>&emsp;&emsp;本文的源码在<a target="_blank" rel="noopener" href="https://github.com/WhiteMagic2014/Live2dChatWidget">这里</a>,不要脸的求个star，(*/ω＼*)</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>&emsp;&emsp;写完之后就好像把坑又复习了一遍，看起来一下子就知道了，但中间踩坑排查的过程真的是….刺激…<br>&emsp;&emsp;本文的源码在<a href="https://github.com/WhiteMagic2014/Live2dChatWidget">这里</a>,不要脸的求个star，(*/ω＼*)</p>
 
       
     </div>
@@ -581,7 +581,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="/images/avatar.gif"
+               src="/images/magicavatar.jpg"
                alt="" />
           <p class="site-author-name" itemprop="name"></p>
            
@@ -626,6 +626,26 @@
         
 
         <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="tencent://message/?Menu=yes&uin=418379149&Service=300&sigT=45a1e5847943b64c6ff3990f8a9e644d2b31356cb0b4ac6b24663a3c8dd0f8aa12a595b1714f9d45" target="_blank" title="418379149">
+                  
+                    <i class="fa fa-fw fa-qq"></i>
+                  
+                  418379149
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/WhiteMagic2014" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
           
         </div>
 
@@ -687,7 +707,7 @@
 
 <div class="theme-info">
   风格 -
-  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
     NexT.Muse
   </a>
 </div>
