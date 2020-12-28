@@ -1,38 +1,1258 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!doctype html>
 
 
-{% block title %} {{ page.title }} | {{ config.title }} {% endblock %}
 
-{% block page_class %}page-post-detail{% endblock %}
+  
 
 
-{% block content %}
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="DFA,NFA,正则," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp; 前言&amp;emsp;&amp;emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。 正文简介&amp;派别&amp;emsp;&amp;emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的POSIX派，以及各种编程语言标准库中的PCRE派。 后一个大家接触的较多一些。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正则学习">
+<meta property="og:url" content="http://yoursite.com/2019/12/03/%E6%AD%A3%E5%88%99%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="&amp;emsp;&amp;emsp; 前言&amp;emsp;&amp;emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。 正文简介&amp;派别&amp;emsp;&amp;emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的POSIX派，以及各种编程语言标准库中的PCRE派。 后一个大家接触的较多一些。">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/images/dfa1.png">
+<meta property="og:image" content="http://yoursite.com/images/nfa1.png">
+<meta property="og:image" content="http://yoursite.com/images/r2m11.png">
+<meta property="og:image" content="http://yoursite.com/images/r2m12.png">
+<meta property="og:image" content="http://yoursite.com/images/r2m13.png">
+<meta property="og:image" content="http://yoursite.com/images/r2m21.png">
+<meta property="og:image" content="http://yoursite.com/images/r2m22.png">
+<meta property="og:image" content="http://yoursite.com/images/r2m23.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfaex1.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfaex2.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfaex3.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfaex4.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfaex5.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfa2ex1.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfa2ex2.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfa2ex3.png">
+<meta property="og:image" content="http://yoursite.com/images/r2nfa2ex4.png">
+<meta property="article:published_time" content="2019-12-03T02:00:43.000Z">
+<meta property="article:modified_time" content="2019-12-10T09:43:30.973Z">
+<meta property="article:author" content="WhiteMagic2014">
+<meta property="article:tag" content="DFA">
+<meta property="article:tag" content="NFA">
+<meta property="article:tag" content="正则">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/dfa1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/12/03/正则学习/"/>
+
+
+
+
+
+  <title> 正则学习 | Magic Space </title>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
 
   <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/03/%E6%AD%A3%E5%88%99%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                正则学习
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-03T10:00:43+08:00">
+                2019-12-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp;正则表达式这个东西其实大家都或多或少接触过，给我的感觉就是:入门很简单，深入怕麻烦，写来一时爽，阅读很恶心。 正好趁着学习分享的机会自己系统性的整理一下。</p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="简介-amp-派别"><a href="#简介-amp-派别" class="headerlink" title="简介&amp;派别"></a>简介&amp;派别</h2><p>&emsp;&emsp;大家平时能接触得到的正则，分为2大类别:类unix系统中使用的<strong>POSIX派</strong>，以及各种编程语言标准库中的<strong>PCRE派</strong>。 后一个大家接触的较多一些。</p>
+<ul>
+<li>POSIX<br>&emsp;&emsp; 最早的时候正则可以说是五花八门，grep(Global Regular Expression Print)，egrep，awk，lex，sed等程序都支持正则，但是每个程序所支持的正则或多或少又和其他的有些不一样。于是在1986年，POSIX（Portable Operating System Interface）标准公诸于世，POSIX制定了不同的操作系统都需要遵守的一套规则，当然，正则表达式也包括其中。</li>
+<li>PCRE<br>&emsp;&emsp;PCRE(Perl Compatible Regular Expressions)是一个Perl库，包括 perl 兼容的正则表达式库。1994年10月Perl 5发布，当时是www兴起的时候，而Perl语言是为了文本处理而发明的，所以Perl基本上成了web开发的首选语言。所以使用广泛的Perl被后来的其他语言所移植，这其中包括了Tcl, Python, .NET , Ruby, PHP, C/C++, Java等等。下文讲的正则表达式也是这个PCRE标准<br><a target="_blank" rel="noopener" href="https://liujiacai.net/blog/2014/12/07/regexp-favors/">更多关于正则派别介</a></li>
+</ul>
+<h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><p>&emsp;&emsp;首先准备好<a target="_blank" rel="noopener" href="http://tool.chinaz.com/regex/">正则检查工具</a>(我觉得正常人类阅读这个东西都会觉得很蛋疼)，接下来就开始一步步看看正则表达式</p>
+<h3 id="引"><a href="#引" class="headerlink" title="引"></a>引</h3><p>&emsp;&emsp;如果你在看一篇文章，你想搜索所有的 <em>hi</em> ，这时候 你可以用正则表达式 <strong>hi</strong>。 这就是一个最基本的正则表达式，他精确的匹配字符<em>hi</em>，如果开启了忽视大小写的选项的话，它可以匹配<em>hi,HI,Hi,hI</em>这四种情况中的任意一种。<br>&emsp;&emsp;然而，上面的表达式却有一个问题，他会匹配所有的 <em>hi</em>，比如 <em>hi</em>story，<em>hi</em>gh 等等，他会把所有包含在其他单词中的<em>hi</em>全都找出来，这显然不是想要的效果。这时候使用:<strong>\bhi\b</strong>,可以达到想要的效果。<br>&emsp;&emsp; <strong>\b</strong> 是一个<strong>元字符</strong>。代表着单词的开头或结尾，也就是单词的分界处。他匹配一个<strong>位置</strong>:它的前一个字符和后一个字符不全是(一个是,一个不是或不存在)<strong>\w</strong>。<br>&emsp;&emsp; 如果你要查询 <em>hi xxxxx magic</em> 这样的句式，而不在乎中间的xxx内容是什么，可以使用 <strong>\bhi\b.<em>\bmagic\b**<br>&emsp;&emsp; 在这里， <strong>.</strong> 是一个<strong>元字符</strong>，匹配:除了换行符以外的任意字符；而 **\</em></strong> 同是<strong>元字符</strong>，不过它代表的不是字符，也不是位置，而是数量:它指定 <strong>*</strong> 前边的内容可以连续重复使用任意次以使整个表达式得到匹配。 上面出表达式可以这样解释: 首先是单词hi，接下来是任意字符(非换行)，最后以magic单词结尾。<br>&emsp;&emsp; 再看这个例子：<strong>0\d\d-\d\d\d\d\d\d\d\d</strong> 这个表达式匹配:0开头，紧跟2个数字，接下来是一个 “-“ ，后面再跟8个数字（其实就是电话号码）。这里的 <strong>\d</strong> 匹配：一位数字 ，而 - 他就是一个字符。<br>&emsp;&emsp; 这个表达式这样写虽然没错，但是就很重复。这里就需要使用重复来避免，上述的表达式可以写成<strong>0\d{2}-\d{8}**，这里 **{2}</strong> 表示前面的 <strong>\d</strong> <strong>必须</strong>连续重复匹配2次才行，**{8}** 同理。</p>
+<h3 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h3><p>&emsp;&emsp;上面一节中出现了一些元字符，所以应该也有了一些认知，以下是常用的一些元字符</p>
+<table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.</td>
+<td>匹配除换行符外任何字符</td>
+</tr>
+<tr>
+<td>\w</td>
+<td>匹配字母，数字，下划线</td>
+</tr>
+<tr>
+<td>\s</td>
+<td>匹配任意的空白符</td>
+</tr>
+<tr>
+<td>\d</td>
+<td>匹配数字</td>
+</tr>
+<tr>
+<td>\b</td>
+<td>匹配单词的开始或结束</td>
+</tr>
+<tr>
+<td>^</td>
+<td>匹配字符串的开始</td>
+</tr>
+<tr>
+<td>$</td>
+<td>匹配字符串的结束</td>
+</tr>
+</tbody></table>
+<p>更多的例子：</p>
+<ul>
+<li><strong>\ba\w*\b</strong><br>&emsp;&emsp;某个单词开始（\b），以a开头，接下来是任意数量的字母或数字(\w*)，最后结尾（\b）<br>&emsp;&emsp; </li>
+<li><strong>\d+</strong><br>&emsp;&emsp;匹配1个，或者更多连续的数字，在这里 <strong>+</strong> 和 <strong>*</strong> 是类似的功能，<strong>*</strong> 允许0-N次的重复,而 <strong>+</strong> 则是重复1-N次（至少需要有一次）<br>&emsp;&emsp; </li>
+<li><strong>\b\w{6}\b</strong><br>&emsp;&emsp;匹配6个字符的单词<br>&emsp;&emsp; </li>
+<li><strong>^\d{5,12}$</strong><br>&emsp;&emsp;这里用到了元字符 <strong>^</strong> 和 <strong>$**，他们都匹配一个位置，这一点和 **\b</strong> 有点类似，而 <strong>{5,12}</strong> 和前面的 <strong>{2}</strong> 类似，他表示需要重复5-12次，在这个区间外都不匹配，而因为使用了 <strong>^</strong> 和 <strong>$</strong> 所以整个字符串都要用来和 <strong>\d{5,12}</strong> 来匹配，换句话说这个字符串必须是5-12的数字。（如果没有 <strong>^</strong> 和 <strong>$</strong> 那么整个字符串会截取判断，比如一个17位的数字，会被判断为2个符合的数字 前面12位 以及后面 5位）<br>&emsp;&emsp;和忽略大小写类似，有的处理工具会有多行处理的选项，开启后 <strong>^</strong> 和 <strong>$</strong> 的意义就变成了匹配行的开始处和结束处。</li>
+</ul>
+<h4 id="元字符的转义"><a href="#元字符的转义" class="headerlink" title="元字符的转义"></a>元字符的转义</h4><p>&emsp;&emsp; 有时候需要查找元字符本身，比如我就想查找一个 . 号 , 而 <strong>.</strong> 这个表达式代表的是 除换行符外任何字符，这时候就得加上转义符 <strong>\</strong>，当然 \ 自己本身也要转义， 得使用 <strong>\\</strong> 来找到 \</p>
+<h3 id="重复"><a href="#重复" class="headerlink" title="重复"></a>重复</h3><p>&emsp;&emsp; 上面已经出现过很多匹配重复的方法了，比如 <strong>*</strong>, <strong>+</strong> , <strong>{2}</strong> , **{5,12}**，下面则列出所有用来表示重复的限定符</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>重复0或更多次</td>
+</tr>
+<tr>
+<td>+</td>
+<td>重复1或更多次</td>
+</tr>
+<tr>
+<td>?</td>
+<td>重复0或1次, 理解成是否存在也可以</td>
+</tr>
+<tr>
+<td>{n}</td>
+<td>重复n次</td>
+</tr>
+<tr>
+<td>{n,}</td>
+<td>重复n 或 更多次</td>
+</tr>
+<tr>
+<td>{n,m}</td>
+<td>重复 n 至 m 次</td>
+</tr>
+</tbody></table>
+<p>&emsp;&emsp; 几个重复的例子</p>
+<ul>
+<li><p><strong>^\w+</strong><br>&emsp;&emsp; 由于第一位 <strong>^</strong> 的限制，那么这个正则根据选择的情况，会匹配每行的第一个字符串 或者 全局的第一个字符串</p>
+</li>
+<li><p><strong>0\d{2}-?\d{8}</strong><br>&emsp;&emsp;匹配 <em>021-12345678</em> 或者 <em>02112345678</em> 这样的 （电话）号码</p>
+</li>
+</ul>
+<h3 id="字符类"><a href="#字符类" class="headerlink" title="字符类"></a>字符类</h3><p>&emsp;&emsp; 字符类提供了只匹配一个特定集合的方法，可以看做是匹配型元字符的个性化定制。比如说，我想匹配所有的数字 可以用 <strong>\d</strong>，匹配所有的字符可以用 <strong>.</strong> ，这些匹配元字符已经提供了。但如果我想要找到所有的元音，所有的偶数呢？这时候就可以用字符类来自己指定集合。</p>
+<ul>
+<li><p><strong>[aeiou]</strong><br>&emsp;&emsp;字符集由 方括号 <strong>[ ]</strong> 表示，括号内的每个字符都会匹配到，比如这个就是寻找所有元音字母的正则表达式</p>
+</li>
+<li><p><strong>^\d*[24680]$</strong><br>&emsp;&emsp;表示所有偶数：<strong>\d*</strong> 表示任意个数字，但最后一个数字必须是24680中的一个；同理那么奇数就是 <strong>^\d*[13579]$</strong><br>&emsp;&emsp; 同时字符类也可以指定一个范围，比如这个 <strong>[0-9]</strong> 表达式，就和 <strong>\d</strong> 是一样的，他们都表示一位数字。同理 <strong>[a-z0-9A-Z_]</strong> 也等同于 <strong>\w</strong>（仅在英文字母情况下）</p>
+</li>
+</ul>
+<h3 id="分支条件"><a href="#分支条件" class="headerlink" title="分支条件"></a>分支条件</h3><p>&emsp;&emsp; 分支条件用 <strong>|</strong> 来连接几个正则表达式，比如这样 <strong>表达式1|表达式2|…</strong> 。如同这个符号本身，这个就有点像 <strong>或</strong> 条件判断，满足表达式1 或 表达式2 的都会被匹配到。</p>
+<ul>
+<li><p><strong>^\d*[123]$|^\d*[456]$|^\d*[7890]$</strong><br>&emsp;&emsp; 这个表达式虽然这么长，但是他表示的东西很简单 和 <strong>^\d*$</strong> 一样表示任意数字，但是这里主要是解释分支。<br>&emsp;&emsp; 该表达式由 <strong>|</strong> 分成3段，分别表示任何123结尾的数字，456结尾的数字，7890结尾的数字。3个条件由 <strong>或</strong>连接，即为任意数字。</p>
+</li>
+<li><p><strong>\d{3}-?\d{8}|\d{8}</strong><br>&emsp;&emsp;这个表达式匹配 可以带上区号的电话号码。这个号码可以匹配 <em>12345678</em> 或 <em>021-12345678</em> 或 <em>02112345678</em>，但是如果反过来写就会有些不同。<br>&emsp;&emsp; 表达式 <strong>\d{8}|\d{3}-?\d{8}</strong> 与上一个区别在于  是 a|b 和 b|a 的区别,但是这个无法匹配02112345678，这个和if中的判定有些类似，<strong>都是从左向右匹配，如果满足，那么后面的判定则不会执行</strong>。 <em>02112345</em>678 这个数字中前8位已经满足了 <strong>\d{8}</strong> ，所以后面的不会继续执行，这个需要注意。</p>
+</li>
+</ul>
+<h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><p>&emsp;&emsp; 分组也很好理解，比如 要重复单个字符，仅仅在字符后面加上重复符就好了，但是要重复多个字符呢？这时可以用小括号 <strong>()</strong> 来指定<strong>子表达式</strong>，也就是<strong>分组</strong>了。这样就可以对一个小组进行重复操作（当然也可以是其他操作）</p>
+<p>下面是几个例子，可以比较一下区别：</p>
+<ul>
+<li><p><strong>a*</strong><br>&emsp;&emsp; 匹配任意个a字符   <em>aaaaaaa</em></p>
+</li>
+<li><p><strong>ab*</strong><br>&emsp;&emsp; 匹配a后紧跟任意个b的字符  <em>abbbbbb</em></p>
+</li>
+<li><p><strong>(ab)*</strong><br>&emsp;&emsp; 匹配任意个 ab组成的字符    <em>abababababab</em></p>
+</li>
+<li><p><strong>(a|b)*</strong><br>&emsp;&emsp; 匹配任意由a和b 组成的字符 <em>aabbababaabaaaabb</em></p>
+</li>
+<li><p><strong>(\d{1,3}.){3}\d{1,3}</strong><br>&emsp;&emsp; 这是一个简单的ip匹配，首先看小括号内的  <strong>\d{1,3}.</strong> 表示 1-3个数字加上点 也就是，<em>123.</em> 这样的字符 ；括号后跟着 <strong>{3}</strong> 说明前面的子表达式得重复3遍， 那就是 <em>123.123.123.</em> 这样， 最后有跟上了1-3个数字， 最终的效果就是 <em>123.123.123.123</em><br>&emsp;&emsp; 但是这个表达式是有bug的，他虽然能匹配格式，但是他会匹配到格式正确但不合法的ip地址（ipv4要求每一位0-255），比如 <em>666.777.888.999</em>。如果可以使用算术比较的话，可能会很简单的解决这个问题，但是很遗憾，正则表达式中不提供关于数学的任何功能，所以要实现这个功能就要用到<strong>分组</strong>，<strong>选择</strong>，<strong>字符类</strong> 来描述一个正确的ip地址：</p>
+</li>
+<li><p><strong>((2[0-4]\d|25[0-5]|[01]?\d\d?).){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)</strong><br>&emsp;&emsp;这个表达式乍一看就很吓人，但是他和之前那个简单版本的其实类似，简单版本的核心部分是 <strong>\d{1,3}**，对应的 这个表达式核心部分是 **(2[0-4]\d|25[0-5]|[01]?\d\d?)</strong> 这一子表达式。子表达式中用了分支条件 分别是：</p>
+</li>
+<li><ul>
+<li><strong>2[0-4]\d</strong>匹配 200~249 </li>
+</ul>
+</li>
+<li><ul>
+<li><strong>25[0-5]</strong> 匹配 250-255</li>
+</ul>
+</li>
+<li><ul>
+<li><strong>[01]?\d\d?</strong> 匹配 0-199<br>&emsp;&emsp;接下来的理解就很容易了，不多说了。思考2个问题：这3个表达式的顺序是否可以变？这样写太麻烦了，可以下面这样写吗？</li>
+</ul>
+</li>
+</ul>
+<p><strong>([0-255].){3}[0-255]</strong></p>
+<h3 id="反义"><a href="#反义" class="headerlink" title="反义"></a>反义</h3><p>&emsp;&emsp; 取反操作也是在代码中很常见的操作，这个没什么多说的直接看下表</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>\W</td>
+<td>匹配任意 不是 字母，数字，下划线 的字符</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>匹配任意 不是 空白符 的字符</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>匹配任意 不是 数字 的字符</td>
+</tr>
+<tr>
+<td>\B</td>
+<td>匹配不是 单词开头 或者 结束 的位置</td>
+</tr>
+<tr>
+<td>[^x]</td>
+<td>匹配除了 x 以外 的任意字符</td>
+</tr>
+<tr>
+<td>[^aeiou]</td>
+<td>匹配除了aeiou以外 的任意字符</td>
+</tr>
+</tbody></table>
+<h3 id="后向引用"><a href="#后向引用" class="headerlink" title="后向引用"></a>后向引用</h3><p>&emsp;&emsp; 在使用了小括号指定一个子表达式后，<strong>匹配这个字表达式的文本</strong> 就会被捕获，可以在表达式或者其他程序中做进一步的处理，默认情况下每个分组会自动<strong>从左向右</strong>（以分组的左括号为表示）有一个组号，第一个分组的组号是1，第二个是2…. 组号0代表整个正则表达式。<br>&emsp;&emsp; <strong>后向引用</strong>用于重复搜索前面某一个分组匹配的文本。用 <strong>\1</strong> 代替分组1捕获的文本，比如：</p>
+<ul>
+<li><strong>\b(\w+)\b\s+\1\b</strong><br>&emsp;&emsp;整个表达式匹配重复的表达式，<em>hello hello</em>，<em>ok ok</em> 这样的字符。把他拆成 <strong>\b(\w+)\b</strong> 和 <strong>s+</strong>  和 <strong>\1\b</strong> 这样分开理解可能会好一些，第一段表示任意一个单词，第二段表示至少有一个空格，第三段表示 得和第一段捕获的那个单词一样<br>&emsp;&emsp;当然，也支持自己给分组命名，用了自动分组的话，分组一多表达式一长，那本身不方便的阅读就更吓人了。<br>&emsp;&emsp;可以使用 <strong>(?&lt;命名&gt;表达式)</strong> 或者  <strong>(?’命名’表达式)</strong> 来指定子表达式的组名。比如上一个 <strong>(\w+)</strong> 取名为 myWord可以这样写 <strong>(?&#60;myWord&#62;\w+)</strong> ;而需要使用这个捕获的内容，可以这样写 **\k&#60;myWord&#62;**。所以上面的例子用自命名的方式就会写成这样</li>
+<li><strong>\b(?&#60;myWord&#62;\w+)\b\s+\k&#60;myWord&#62;\b</strong><br>&emsp;&emsp;</li>
+</ul>
+<h3 id="小括号"><a href="#小括号" class="headerlink" title="小括号"></a>小括号</h3><p>&emsp;&emsp;这边得插一下，上面的的分组和后向引用都用到了小括号。在使用小括号的时候，有很多特定用途的语法，下面是一些常用的：详细的会在后文写</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>捕获</td>
+<td>(exp)</td>
+<td>匹配exp,并捕获文本到自动命名的组里</td>
+</tr>
+<tr>
+<td></td>
+<td>(?&#60;name&#62;exp)</td>
+<td>匹配exp,并捕获文本到名称为name的组里，也可以写成(?’name’exp)</td>
+</tr>
+<tr>
+<td></td>
+<td>(?:exp)</td>
+<td>匹配exp,不捕获匹配的文本，也不给此分组分配组号</td>
+</tr>
+<tr>
+<td>零宽断言</td>
+<td>(?=exp)</td>
+<td>匹配exp前面的位置</td>
+</tr>
+<tr>
+<td></td>
+<td>(?&lt;=exp)</td>
+<td>匹配exp后面的位置</td>
+</tr>
+<tr>
+<td></td>
+<td>(?!exp)</td>
+<td>匹配后面不是exp的位置</td>
+</tr>
+<tr>
+<td></td>
+<td>(?&lt;!exp)</td>
+<td>匹配前面不是exp的位置</td>
+</tr>
+<tr>
+<td>注释</td>
+<td>(?#comment)</td>
+<td>这种类型的分组不对正则表达式的处理产生任何影响，用于提供注释让人阅读</td>
+</tr>
+</tbody></table>
+<h3 id="零宽断言"><a href="#零宽断言" class="headerlink" title="零宽断言"></a>零宽断言</h3><p>&emsp;&emsp; 这个理解起来可能会有些麻烦。首先他用于查找在某些内容之前或之后的<strong>位置</strong>（但是并不包含这些内容），比如说查找 <strong>某某说:</strong> 后面跟的内容，也就是说它好像 <strong>\b ^ $</strong> 一样用来指定一个位置，这个位置应该满足一定的条件（即<strong>断言</strong>:用来声明一个应该为真的事实，正则表达式中只有当断言为真才会继续匹配），因此也被称作<strong>零宽断言</strong>  </p>
+<ul>
+<li><strong>(?=exp)</strong><br>&emsp;&emsp;<strong>零宽度正预测先行断言</strong>：它断言自身出现的位置 的后面能够匹配表达式exp。这个解释还是有点抽象，看这个例子<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;吃饭了吗&quot;他笑着打了个招呼。</span><br></pre></td></tr></table></figure>
+&emsp;&emsp;在这里我想知道 “他笑着打了个招呼” 的内容，可以这样写 <strong>[\u4e00-\u9fa5]+(?=”他笑着打了个招呼。)</strong> (这里的字符类表示汉字) 这里的零宽断言是 <strong>(?=”他笑着打了个招呼。)</strong> 用大白话来解释就是: 我每有一个满足 <strong>[\u4e00-\u9fa5]+</strong> 的字符我就停下来看一看后面，紧跟的内容是不是和符合表达式 <strong>“他笑着打了个招呼。</strong> （这里是全匹配）。如果后面的东西满足了断言表达式，那么这个位置前面的 符合 <strong>[\u4e00-\u9fa5]+</strong> 表达式的内容就会被找到，也就是 <em>吃饭了吗</em></li>
+</ul>
+<ul>
+<li><p><strong>(?&lt;=exp)</strong><br>&emsp;&emsp;<strong>零宽度正回顾后发断言</strong>: 它断言自身出现的位置 的前面能够匹配表达式exp。理解了上面那个 <strong>预测先行断言</strong> 那么理解这个 <strong>回顾后发断言</strong> 会方便一些。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">我说:&quot;吃了&quot;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 与上一个类似 <strong>(?&lt;=我说:”)[\u4e00-\u9fa5]+</strong>  这个表达式在断点处检查其前面是否可以匹配 表达式 <strong>我说:”</strong> （这里是全等）如果匹配，则表示找到那个位置，然后从这个位置开始寻找后面满足 表达式 <strong>[\u4e00-\u9fa5]+</strong> 的内容，这就是我说的 <em>吃了</em>。</p>
+</li>
+<li><p><strong>(?&lt;=&lt;(\w+)&gt;).*(?=&lt;/\1&gt;)</strong><br>&emsp;&emsp; 这是一个同时使用了 以上2种断言的例子，也用到了分组，后向引用。 他匹配 简单html标签(不含属性)内部的内容，如下例中的<em>hello world!</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;span&gt;hello world!&lt;&#x2F;span&gt; </span><br></pre></td></tr></table></figure>
+<h3 id="负向零宽断言"><a href="#负向零宽断言" class="headerlink" title="负向零宽断言"></a>负向零宽断言</h3></li>
+</ul>
+<p>&emsp;&emsp;前面提到的取反 是查找 <strong>不是某个字符或者不在某个字符类里</strong> 的字符的方法。但是如果只是想<strong>确保某个字符没有出现，而不去匹配它</strong>时呢？比如我想找： *a开头后面不是b的单词(匹配apple 不匹配abandon)*，我们也许可以这样写:</p>
+<ul>
+<li><p><strong>\ba[^b]\w*\b</strong><br>&emsp;&emsp;这个匹配到所有<em>a开头后面不是b的单词</em>，但是他似乎也能匹配一些其他东西，比如： <em>a piece</em> of cake 中前半部分。因为 <strong>[^b]</strong> 总得匹配一个字符(会消费一个字符)，例子中 a 和 piece中的空格恰好匹配上了*<em>[^b]<strong>。<br>&emsp;&emsp;这时候 **负向零宽断言</strong> 就可以处理这个问题，因为他匹配一个 <strong>位置</strong>，而不会<strong>消费</strong>字符。如果说把零宽断言理解成  <strong>if(true)</strong>  ，那么这个负向零宽断言就是 <strong>if(false)</strong> 。那么现在可以这样来写这个需求：**\ba(?!b)\w\</em>\b**</p>
+</li>
+<li><p><strong>(?!exp)</strong><br>&emsp;&emsp; 这就是<strong>零宽度负预测先行断言</strong>: 断言一个位置 的后面不能匹配表达式exp。 比如 <strong>\b((?!ab)\w)+\b</strong> : 匹配不含 <em>ab</em> 的单词</p>
+</li>
+<li><p><strong>(?&lt;!exp)</strong><br>&emsp;&emsp; 同理，<strong>零宽度负回顾后发断言</strong>：断言一个位置 的前面不能匹配表达式exp。比如 <strong>\b\w+(?&lt;!ing)\b</strong>:匹配不是<em>ing</em>结尾的单词<br>ps:记住<strong>零宽断言</strong>找的是一个<strong>位置</strong>。</p>
+</li>
+</ul>
+<ul>
+<li><strong>^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[^]{8,16}$</strong>    &emsp;&emsp;  ps:这里的 <strong>[^]</strong> 等同于 <strong>[\s\S]</strong></li>
+<li><strong>^(?![A-Z0-9\W]+$)(?![a-z0-9\W]+$)(?![A-Za-z\W]+$)(?![A-Za-z0-9]+$)[a-zA-Z0-9\W]{8,16}$</strong><br>&emsp;&emsp; 上面2个描述的都是 输入密码的校验规则 ，密码长度8-16位，必须包含大小写字母，数字，特殊字符。上面的用的是零宽断言，下面用的是负向零宽断言。他们的关系就好像 if(result.isSuccess()) = if(!result.isFail())  那样，用以判断的条件是相反的。但是看下来的“吓人”程度确实不一样的，平时使用的时候可以通过转化来使表达式稍微“可爱”一些。当然，前提是你确定写的2个条件是完全相反的，否则还是老老实实写自己有把握的那一个。（写相反条件 有可能会漏掉一些情况）</li>
+</ul>
+<h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a><del>注释</del></h3><p> &emsp;&emsp;到现在看下来，上面出现的正则表达式还没有特别复杂的，但是阅读起来已经很麻烦了。所以正则表达式也提供了注释的写法。当然我自己不倾向于把注释直接写在表达式里面，感觉他会让这个表达式更恶心…但是学习还是要了解一下的：</p>
+<ul>
+<li><strong>(?#注释内容)</strong><br>&emsp;&emsp;同样使用小括号作为注释的一部分…比如之前那个ip地址的正则表达式可以这样加上备注：</li>
+<li><strong>((2[0-4]\d(?#200-249)|25[0-5](?#250-255)|[01]?\d\d?(?#0-199)).){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)</strong><br>&emsp;&emsp;是不是感觉比原来阅读起来更麻烦了…这个就仁者见仁智者见智了。<br>ps:使用注释的时候，确保环境下支持注释。我自己目前没有尝试成功过…</li>
+</ul>
+<h3 id="贪婪与懒惰"><a href="#贪婪与懒惰" class="headerlink" title="贪婪与懒惰"></a>贪婪与懒惰</h3><p>&emsp;&emsp;正则在匹配 有 重复限定符(星号 加号 等等）的表达式时，通常的情况下，会在表达式满足的情况下，请可能匹配更多的字符。比如这个例子:</p>
+<ul>
+<li><strong>a.*b</strong><br>&emsp;&emsp;这个正则匹配a开头，中间任意，以b结尾的的字符串。<em>aabccba</em>  这个字符串他会全部匹配，这就是<strong>贪婪</strong>匹配。<br>&emsp;&emsp;而有时候就需要<strong>懒惰</strong>匹配，也就是匹配<strong>尽可能少</strong>的字符。之前的那些重复限定符都可以加上 <strong>?</strong> 来变成懒惰匹配模式。 比如 <strong>.*?</strong> 就是匹配尽可能少的重复字符串。结合上面的例子：</li>
+<li><strong>a.*?b</strong><br>&emsp;&emsp;启用了懒惰匹配后，现在就匹配 <em>aab</em>ccba中的 前三个字符。也许会有这个问题：为什么不只匹配第2-3个字符呢？ab不是更短么？因为正则表达式有另一条规则，比懒惰／贪婪规则的优先级更高：最先开始的匹配拥有最高的优先权——The match that begins earliest wins。</li>
+</ul>
+<p>懒惰限定符：</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*?</td>
+<td>重复任意次，但尽可能少重复</td>
+</tr>
+<tr>
+<td>+?</td>
+<td>重复1或更多次，但尽可能少重复</td>
+</tr>
+<tr>
+<td>??</td>
+<td>重复0或1次，但尽可能少重复</td>
+</tr>
+<tr>
+<td>{n,}?</td>
+<td>重复n 或 更多次 ，但尽可能少重复</td>
+</tr>
+<tr>
+<td>{n,m}?</td>
+<td>重复 n 至 m 次，但尽可能少重复</td>
+</tr>
+</tbody></table>
+<h3 id="匹配模式"><a href="#匹配模式" class="headerlink" title="匹配模式"></a>匹配模式</h3><p>&emsp;&emsp;上面有提到过，匹配的时候可以选择 忽视大小写，单行，多行这样的匹配模式。以java为例，Pattern 类也提供了几种处理方式，这边仅简单列出，详细的可以在 <em>java.util.regex.Pattern</em> 中查看 </p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>UNIX_LINES</td>
+<td>启动Unix的行模式 ,在这个模式下，只有 \n 才被认作一行的中止，并且与  .   ^   $  进行匹配</td>
+</tr>
+<tr>
+<td>CASE_INSENSITIVE</td>
+<td>默认情况下，大小写不明感的匹配只适用于US-ASCII字符集。这个标志能让表达式忽略大小写进行匹配。要想对Unicode字符进行大小不明感的匹配，只要将UNICODE_CASE与这个标志合起来就行了。</td>
+</tr>
+<tr>
+<td>COMMENTS</td>
+<td>在这种模式下，匹配时会忽略(正则表达式里的)空格字符。注释从#开始，一直到这行结束。可以通过嵌入式的标志来启用Unix行模式。</td>
+</tr>
+<tr>
+<td>MULTILINE</td>
+<td>在这种模式下，’^’和’$’分别匹配一行的开始和结束。此外，’^’仍然匹配字符串的开始，’$’也匹配字符串的结束。默认情况下，这两个表达式仅仅匹配字符串的开始和结束。</td>
+</tr>
+<tr>
+<td>LITERAL</td>
+<td>启动字面量解析模式</td>
+</tr>
+<tr>
+<td>DOTALL</td>
+<td>在这种模式下，表达式’.’可以匹配任意字符，包括表示一行的结束符。默认情况下，表达式’.’不匹配行的结束符。</td>
+</tr>
+<tr>
+<td>UNICODE_CASE</td>
+<td>在这个模式下，如果你还启用了CASE_INSENSITIVE标志，那么它会对Unicode字符进行大小写不明感的匹配。默认情况下，大小写不敏感的匹配只适用于US-ASCII字符集。</td>
+</tr>
+<tr>
+<td>CANON_EQ</td>
+<td>当且仅当两个字符的”正规分解(canonical decomposition)”都完全相同的情况下，才认定匹配。比如用了这个标志之后，表达式”a\u030A”会匹配”?”。默认情况下，不考虑”规范相等性(canonical equivalence)”。</td>
+</tr>
+<tr>
+<td>UNICODE_CHARACTER_CLASS</td>
+<td>启用Predefined字符类和POSIX字符类的Unicode版本。</td>
+</tr>
+</tbody></table>
+<h2 id="引擎"><a href="#引擎" class="headerlink" title="引擎"></a>引擎</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>&emsp;&emsp;上面一章主要写了一下正则表达式的语法，现在换个角度，正则是怎么工作的呢？<br>&emsp;&emsp;如果学习过编译原理的话，就会知道他的另一个名字 <strong>正规式</strong>，是一个表示<a target="_blank" rel="noopener" href="https://blog.csdn.net/starter_____/article/details/86659588"><strong>正规集</strong></a>(正规式或正规文法表示的集合称为正规集)的工具。 而提到正规集，总会联想到<strong>有穷自动机</strong>。有穷自动机作为一种识别装置，它可以准确的识别正规集，即识别<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%AD%A3%E8%A7%84%E6%96%87%E6%B3%95/8982395">正规文法</a>所定义的语言和正规式所表示的集合。它又分为2类：NFA 和 DFA。在后文会简单展开一下。<br>&emsp;&emsp;上面说了一堆理论，有啥用呢？其实很多程序(语言)处理正则表达式的引擎就是上文提到的东西，粗见下表（很多程序大家应该都用过），详见<a target="_blank" rel="noopener" href="https://blog.csdn.net/iteye_11539/article/details/82476609">正则表达式的几种引擎</a>。</p>
+<table>
+<thead>
+<tr>
+<th>引擎</th>
+<th>程序</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DFA</td>
+<td>awk (大多数版本)、egrep(大多数版本)、flex、lex、MySQL、Procmail</td>
+</tr>
+<tr>
+<td>传统型NFA</td>
+<td>GNU Emacs、Java、grep(大多数版本)、less、more、.NET语言、PCRE library、Perl、PHP(所有三套正则库)、Python、Ruby、sed(大多数版本)、vi</td>
+</tr>
+<tr>
+<td>POSIX NFA</td>
+<td>mawk、Mortice Kern Systems’ utilities、GNU Emacs (明确指定时使用)</td>
+</tr>
+<tr>
+<td>DFA/NFA 混合</td>
+<td>GNU awk、GNU grep/egrep、Tcl</td>
+</tr>
+</tbody></table>
+<p>&emsp;&emsp;上次写前缀树实现敏感词过滤的时候，用到了DFA。但是文章中没有展开详细写，再次遇到就趁这个机会写一下吧。</p>
+<h3 id="正规式"><a href="#正规式" class="headerlink" title="正规式"></a>正规式</h3><h4 id="辅助字母表"><a href="#辅助字母表" class="headerlink" title="辅助字母表"></a>辅助字母表</h4><p>&emsp;&emsp;设<a target="_blank" rel="noopener" href="https://blog.csdn.net/u014749668/article/details/82632528">字母表</a>为Σ，辅助字母表Σ’ = { <strong>Φ</strong> , <strong>ε</strong> , <strong>|</strong> , <strong>.</strong> , <strong>*</strong> , <strong>(</strong> , <strong>)</strong> }。<br>先解释一下这个辅助字母表</p>
+<ul>
+<li><strong>Φ</strong> 表示正规集  {} ，里面什么东西都没。</li>
+<li><strong>ε</strong> 表示正规集 {ε} , 里面只有一个一个元素：ε 。 ε表示空字符串。  ε和Φ的关系便于理解，不恰当的类比成  String a = null; 和 String b = “”; </li>
+<li><strong>|</strong>  表示或运算，也有地方是用 <strong>+</strong> 来表示的</li>
+<li><strong>.</strong> 表示连接，一般可以省略</li>
+<li><strong>*</strong> 表示闭包，即任意有限次的自重复连接。也就是上面讲的重复0或多次。</li>
+<li><strong>()</strong> 括号在优先级没有混淆的时候可以省略，优先级为 <strong>*</strong> &gt; <strong>.</strong> &gt; <strong>|</strong>  (都是左结合的)</li>
+</ul>
+<h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>下面是正规式和他表示的正规集的递归定义。</p>
+<ol>
+<li><strong>ε</strong>和<strong>Φ</strong>都是Σ上的正规式，他们表示的正规集分别为 {ε} 和  {} </li>
+<li>任何a∈Σ，a是Σ上的一个正规式，他所表示的的正规集为{a}</li>
+<li>假定e1和e2都是都是Σ上的正规式，他们所表示的正规集分别是L(e1) 和 L(e2)，那么(e1)，e1| e2，e1.e2，e1* 也都是正规式，他们所表示的正规集分别是，L(e1)，L(e1) | L(e2)，L(e1).L(e2)，(L(e1))*</li>
+<li>仅有限次使用上面3步骤而定义的表达式才是Σ上的正规式，仅有这些正规式表示的字集才是Σ上的正规集。</li>
+</ol>
+<p>一个例子：假设 Σ={a,b}，那么Σ上部分的正规式和其对应的子集有：</p>
+<table>
+<thead>
+<tr>
+<th>正规式</th>
+<th>正规集</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a</td>
+<td>{a}</td>
+</tr>
+<tr>
+<td>a&#124;b</td>
+<td>{a,b}</td>
+</tr>
+<tr>
+<td>ab</td>
+<td>{ab}</td>
+</tr>
+<tr>
+<td>(a&#124;b)(a&#124;b)</td>
+<td>{aa,ab,bb,ba}</td>
+</tr>
+<tr>
+<td>a*</td>
+<td>{ε,a,aa,aaa,aaaa,…任意数量a的字符串}</td>
+</tr>
+<tr>
+<td>(a&#124;b)*</td>
+<td>{ε,a,b,aa,ab,ba,bb,….所有由字符a和b组成的字符串}</td>
+</tr>
+<tr>
+<td>(a&#124;b)*(aa&#124;bb)(a&#124;b)*</td>
+<td>Σ*上所有含有连续aa或bb 的字符串</td>
+</tr>
+</tbody></table>
+<h4 id="代数规律"><a href="#代数规律" class="headerlink" title="代数规律"></a>代数规律</h4><p>正规式的运算也满足一些代数规律，设r，s，t为正规式，那么：</p>
+<ol>
+<li>r|s = s|r  或运算的交换律</li>
+<li>r|(s|t) = (r|s)|t  或运算的结合律</li>
+<li>(rs)t = r(st)  连接运算的结合律</li>
+<li>r(s|t) = rs|rt 分配率<br> (s|t)r = sr|tr</li>
+<li>εr = r  ε是连接运算的恒等元素<br> rε = r</li>
+<li>r|r = r  连接运算抽取律</li>
+</ol>
+<h3 id="DFA"><a href="#DFA" class="headerlink" title="DFA"></a>DFA</h3><p>&emsp;&emsp; 全称为deterministic finite automaton，确定的有穷自动机。一个确定的有穷自动机M由5个部分组成：K，Σ，f，S，Z</p>
+<ol>
+<li>K 是一个有穷集合，他的每一个元素称为一个状态</li>
+<li>Σ是一个有穷字母表，他的每一个元素成为一个输入符号</li>
+<li>f是转换函数，如果f(ki,a)=kj (ki∈K，kj∈K)。表示当前状态是 ki，输入字符为a时，将会转换到下一个状态kj。kj称为ki的一个后继状态。</li>
+<li>S∈K，是一个唯一的初始状态</li>
+<li>Z⊂K，是一个结束状态</li>
+</ol>
+<p>现在来看一个简单例子，DFA M记作 = ({S,U,V,Q}，{a,b}，f，S，{Q})，其中f如下定义:</p>
+<ul>
+<li>f(S,a)=U </li>
+<li>f(S,b)=V</li>
+<li>f(U,a)=Q</li>
+<li>f(U,b)=V</li>
+<li>f(V,a)=U</li>
+<li>f(V,b)=Q</li>
+<li>f(Q,a)=Q</li>
+<li>f(Q,b)=Q</li>
+</ul>
+<p>&emsp;&emsp; 一个DFA可以表示成一个状态转换图，如果一个DFA N 含有m个状态，n个输入符号，那么这个状态图会有m个节点，每个节点最多有n和弧射出，整个图含有唯一的初始节点和若干个终节点。初始节点用=&gt; 或者 加以 - 表示，终节点 用双圈 或者 加以 + 表示。如果f(ki,a)=kj，则从ki节点到kj节点 画一条弧，弧上标记a。 那么上面那个M 的状态图可以这样画<br><img src="/images/dfa1.png" alt="dfa1"><br>&emsp;&emsp;对于Σ*中的任何字符串t，如果存在一条从初始节点到某一终结点的路线，并且这条路线上所有弧的标记连接起来等于t，那么称t可以被DFA M 接受。如果初始节点同时也是终节点，那么空字符可以被M接受。<br>&emsp;&emsp;<br>为了描述一个符号串t可以被DFA M接受，需要将上面的转换函数f扩充：</p>
+<ol>
+<li>设C∈K，f(C,ε)=C 即表示如果输入的符号是空，就仍停留在原来的状态上</li>
+<li>一个字符串t (String) 将他表示成 t1t2 的形式 (char) ，在DFA上的运行b定义为 f(C,t1t2) = f( f(C,t1) , t2 )<br>&emsp;&emsp; 比如这样证明字符串 baab 可以被上面的 M 所接受：</li>
+</ol>
+<ul>
+<li>f(S,baab) = f( f(S,b) , aab ) = f(V,aab) = f( f(V,a) , ab ) = f(U,ab) = f( f(U,a) , b ) = f(Q,b) = Q;  而Q是一个终结态，所以该字符串被M接受。<br>&emsp;&emsp; DFA的确定性表现在这个转换函数上，他是一个单值函数，也就是说，对于任何状态 k∈K，和输入符号 a∈Σ，f(k,a) 都唯一确定了下一个状态。从图上看，就是每一个节点所有向外画的弧中，不能有标记重复的弧。</li>
+</ul>
+<h3 id="NFA"><a href="#NFA" class="headerlink" title="NFA"></a>NFA</h3><p>&emsp;&emsp; 全称为nondeterministic finite automaton，不确定的有穷自动机。同样的也由（K，Σ，f，S，Z）5个部分组成。其中 K Σ Z 和DFA定义相同。</p>
+<ul>
+<li>S⊂K，是一个非空初状态集合</li>
+<li>f是转换函数，与DFA类似，也是接受一个字符转换一个状态。不同的是，他不能确定去往哪一个后继状态。<br>依然看一个例子 NFA M 记作 ({0,1,2,3,4}，{a,b}，f，{0}，{2,4})，其中f如下定义：</li>
+<li>f(0,a)={0,3}</li>
+<li>f(0,b)={0,1}</li>
+<li>f(1,b)={2}</li>
+<li>f(2,a)={2}</li>
+<li>f(2,b)={2}</li>
+<li>f(3,a)={4}</li>
+<li>f(4,a)={4}</li>
+<li>f(4,b)={4}<br>&emsp;&emsp;状态图的画法与DFA类似:<br><img src="/images/nfa1.png" alt="nfa1"><br>&emsp;&emsp;对于Σ*中的任何字符串t，如果存在一条 从<strong>某一个初始节点到某一个终结点</strong>的道路，且道路上所有弧的标记字符连接成的串等于t，那么称t可以被NFA M 接受。其实看这里就可以察觉到了，DFA是NFA的一个特例。</li>
+</ul>
+<h3 id="NFA转化为等价DFA"><a href="#NFA转化为等价DFA" class="headerlink" title="NFA转化为等价DFA"></a><del>NFA转化为等价DFA</del></h3><p>&emsp;&emsp;DFA由于每一个状态的后继状态后确定，使得其效率更高（当然也有代价..） 。有穷自动机有一个定理：设L为一个NFA接受的集合，则存在一个接受L的DFA。而常用的转换方法是<strong>子集构造法</strong>。<br>&emsp;&emsp;从上面的介绍NFA 和 DFA两节 假设的转换函数可以看出，NFA的 达到的状态一般 是一个<strong>状态的集合</strong>，而在DFA中 则是一个<strong>确定的状态</strong>。从NFA到DFA的基本想法是让DFA的每一个状态 对应 NFA的一组状态。也就是让DFA使用它的状态，去记录在NFA接收一个字符后可能达到的所有状态，在接收字符串a1a2a3…an 之后，DFA处于这样一个状态：该状态表示这个NFA的一个子集T，T是从NFA的开始状态，沿着a1a2a3…an可以到达的那些状态构成的。<br>ps:子集构造法的过程展开写一下东西还挺多的（先挖坑，有空再填）。<a target="_blank" rel="noopener" href="https://blog.whitemagic2014.com/">请看下集</a></p>
+<h3 id="正则表达式-转换-有穷自动机"><a href="#正则表达式-转换-有穷自动机" class="headerlink" title="正则表达式 转换 有穷自动机"></a>正则表达式 转换 有穷自动机</h3><p>&emsp;&emsp;其实节的小标题不太恰当，应该是 <strong>正规式和有穷自动机的等价性</strong>。因为在编译原理中 <strong>正规式</strong> 和 <strong>有穷自动机</strong>是可以互相转化的，但是由M 转化为r 在本文中关系不大，而且篇幅..也挺大的..所以仅写一下看这篇文章的人可能会关注的问题，也就是： <strong>正则表达式 转换为 有穷自动机</strong><br>&emsp;&emsp;在编译原理中，从Σ上一个正规式r，构造Σ上的一个等价的 NFA M 的方法 称为 <strong>语法制导</strong> 。即按照正规式的语法结构指引构造过程，首先将正规式分解成一系列的子表达式，然后使用下面的规则构造NFA。</p>
+<h4 id="字符转化"><a href="#字符转化" class="headerlink" title="字符转化"></a>字符转化</h4><ol>
+<li>对于正规式Φ ，构造的NFA为:<br><img src="/images/r2m11.png" alt="r2m11"></li>
+<li>对于正规式ε，构造的NFA为：<br><img src="/images/r2m12.png" alt="r2m12"></li>
+<li>对于正规式 a，a∈Z，所构造的NFA：<br><img src="/images/r2m13.png" alt="r2m13"></li>
+</ol>
+<h4 id="运算符转化"><a href="#运算符转化" class="headerlink" title="运算符转化"></a>运算符转化</h4><p> 若s，t为Σ上的正规式，相应的NFA分别记作 N(s) 和 N(t)则</p>
+<ol>
+<li><p>对正规式 r = s|t ，所构造的NFA(r)为：<br><img src="/images/r2m21.png" alt="r2m21"><br>&emsp;&emsp; 其中x是NFA(r)的初始状态，y是终结状态，x到N(s)和N(t)的初始状态 各有一个ε弧；同样的，从N(s)和N(t)的终结状态各有一个ε弧到y。现在N(s)和N(t)的初始状态和终结状态已经不作为N(r)的初始和终结态了。（有点抽象的意思）</p>
+</li>
+<li><p>对正规式 r=st，构造的NFA(r)为：<br><img src="/images/r2m22.png" alt="r2m22"><br>&emsp;&emsp; 其中N(s)的初始态成为了N(r)的初始态，N(t)的终结态成为了N(r)的终结态。而N(s)的终结态 和N(t)的初始状态合并为N(r)的一个中间状态 (头尾相接)</p>
+</li>
+<li><p>对于正规式r=s*，构造的NFA(r)为：<br><img src="/images/r2m23.png" alt="r2m23"><br>&emsp;&emsp; 这是的x和y分别是N(r)的初始和终结状态，从x引ε弧到N(s)的初始态，从N(s)的终结态引ε弧到y；从x到y引ε弧；从N(s)的终结态ε弧到N(s)的初始态(这2个状态称为N(r)的中间状态)。</p>
+</li>
+<li><p>正规式(s) 和 s 的NFA 一样。（括号只是改变运算优先级，本身不参与运算）</p>
+</li>
+</ol>
+<h4 id="举个栗子"><a href="#举个栗子" class="headerlink" title="举个栗子"></a>举个栗子</h4><p>&emsp;&emsp;下面直接来看一个简单的栗子，将上面提到的转化方式全部都用一下 </p>
+<ul>
+<li>为 r = (a|b)*abb 构造NFA N</li>
+</ul>
+<ol>
+<li>从左往右分解r，令r1 = a。 根据上面的字符转化第三条，很容易就画出来<br><img src="/images/r2nfaex1.png" alt="r2nfaex1"></li>
+<li>然后遇到运算符 | 先跳过，遇到了字符 b，令r2 = b。转化同上<br><img src="/images/r2nfaex2.png" alt="r2nfaex2"></li>
+<li>然后令 将 a|b 连起来看。 令 r3 = r1|r2 。 根据运算符转化第1条，如下转化<br><img src="/images/r2nfaex3.png" alt="r2nfaex3"></li>
+<li>接着读取下一个运算符 * 。令 r4 = r3*。 运算符转化第三条 （这边其实跳过了括号的转化，因为他仅表现一个优先级）<br><img src="/images/r2nfaex4.png" alt="r2nfaex4"></li>
+<li>接下来读取到字符 a b b，由于他们都是连接运算，所以比较简单（字符转化第二条）。令 r5 = a。 r6 = b。 r7=b。则有 r8 = r5r6。r9=r8r7。 最后将前半部分和后半部分连接，r10 = r4r9。(这一步图比较简单，所以一步到位画完了)<br><img src="/images/r2nfaex5.png" alt="r2nfaex5"></li>
+</ol>
+<p>&emsp;&emsp;当然 除了这样从左往右分解分解r，还有很多方法分解：</p>
+<ol>
+<li>令 r1 = (a|b)*  , r2 = abb 则有 r3 = r1r2<br><img src="/images/r2nfa2ex1.png" alt="r2nfa2ex1"></li>
+<li>令 r4 = a|b ，则可以令 r1 = r4* 。 字符转化第三条 将 * 转化<br><img src="/images/r2nfa2ex2.png" alt="r2nfa2ex2"></li>
+<li>这一步简单来说，直接将 a|b 拆成2条弧即可<br><img src="/images/r2nfa2ex3.png" alt="r2nfa2ex3"></li>
+<li>接下来对于r2(abb)的处理同上，转化后连接在前半部分即可<br><img src="/images/r2nfa2ex4.png" alt="r2nfa2ex4"><br>&emsp;&emsp; 对于第三步得补充一下，如果要严格根据转化方法的话，应该要令r5=a，r6=b，r4=r5|r6，这样一系列操作，最后转化的样子应该是上一种方式第3步出来的东西。乍一看这两种图看起来不太一样，但是他们确实表示的是同一个r，由于第一种方式转化出了很多 ε弧 ，而ε在连接运算时 是一个恒等符。不恰当的例子  数学上  2+3 = 5 可以写成   2x1x1x1 + 3x1x1x1 = 5  ，但是没人会怎么写，后者可以化简为前者。同样的 有穷自动机也是可以通过消除多余状态来化简的，这一般被用于DFA中。化简的部分与本文关系不大就不多写了…</li>
+</ol>
+<h3 id="简单实现DFA"><a href="#简单实现DFA" class="headerlink" title="简单实现DFA"></a>简单实现DFA</h3><p>&emsp;&emsp; 在这边我自己用java简单实现了一下DFA，下面直接贴代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line">import java.util.List;</span><br><span class="line">import java.util.Map;</span><br><span class="line">import java.util.stream.Collectors;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * </span><br><span class="line"> * @ClassName: DFA</span><br><span class="line"> * @Description: java实现一下DFA K，Σ，f，S，Z</span><br><span class="line"> * </span><br><span class="line"> *               K 是一个有穷集合，他的每一个元素称为一个状态 状态集合 </span><br><span class="line"> *               Σ是一个有穷字母表，他的每一个元素成为一个输入符号 字符集</span><br><span class="line"> *               f是转换函数，如果f(ki,a)&#x3D;kj (ki∈K，kj∈K)。表示当前状态是 ki，输入字符为a时，将会转换到下一个状态kj。kj称为ki的一个后继状态。 </span><br><span class="line"> *               S∈K，是一个唯一的初始状态</span><br><span class="line"> *               Z⊂K，是一个结束状态</span><br><span class="line"> * </span><br><span class="line"> * @author: chenhaoyu</span><br><span class="line"> * @date: Dec 6, 2019 6:07:35 PM</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class DFA &#123;</span><br><span class="line">    List&lt;String&gt; K;</span><br><span class="line">    List&lt;Character&gt; Σ;</span><br><span class="line">    Map&lt;String, List&lt;Func&gt;&gt; funcs;</span><br><span class="line">    String S;</span><br><span class="line">    List&lt;String&gt; Z;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * </span><br><span class="line">     * @param K 一个有穷集合，他的每一个元素称为一个状态 状态集合 </span><br><span class="line">     * @param Σ 一个有穷字母表，他的每一个元素成为一个输入符号 字符集</span><br><span class="line">     * @param funcs 转换函数，如果f(ki,a)&#x3D;kj (ki∈K，kj∈K)。表示当前状态是 ki，输入字符为a时，将会转换到下一个状态kj。kj称为ki的一个后继状态。 </span><br><span class="line">     * @param S∈K，是一个唯一的初始状态</span><br><span class="line">     * @param Z⊂K，是一个结束状态</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public DFA(List&lt;String&gt; K, List&lt;Character&gt; Σ, List&lt;Func&gt; funcs, String S, List&lt;String&gt; Z) &#123;</span><br><span class="line">        this.K &#x3D; K;</span><br><span class="line">        this.Σ &#x3D; Σ;</span><br><span class="line">        this.funcs &#x3D; funcs.stream().collect(Collectors.groupingBy(Func::getKi));</span><br><span class="line">        this.S &#x3D; S;</span><br><span class="line">        this.Z &#x3D; Z;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * </span><br><span class="line">     * @Description:检查字符串是否被该DFA接受</span><br><span class="line">     * @param str</span><br><span class="line">     * @return</span><br><span class="line">     * @author: chenhaoyu</span><br><span class="line">     * @time:Dec 10, 2019 11:05:19 AM</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public boolean checkString(String str) &#123;</span><br><span class="line">        return check(str.toCharArray(),0,S);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;**</span><br><span class="line">     * </span><br><span class="line">     * @Description:内部递归实现</span><br><span class="line">     * @param chArray</span><br><span class="line">     * @param index</span><br><span class="line">     * @param state</span><br><span class="line">     * @return</span><br><span class="line">     * @author: chenhaoyu</span><br><span class="line">     * @time:Dec 10, 2019 11:17:41 AM</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private boolean check(char[] chArray , int index , String state) &#123;</span><br><span class="line">        char ch &#x3D; chArray[index];</span><br><span class="line">        &#x2F;&#x2F; System.out.println(ch); &#x2F;&#x2F; 打印当前char</span><br><span class="line">        if (Σ !&#x3D; null &amp;&amp; !Σ.contains(ch)) &#123;</span><br><span class="line">            System.out.println(&quot;非法字符 &#39;&quot;+ch+&quot;&#39; 不包含在指定的 Σ 字母表中&quot;);</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        Map&lt;Character,String&gt; f &#x3D; funcs.get(state).stream().collect(Collectors.toMap(Func::getCh,Func::getKj));</span><br><span class="line">        String nextState &#x3D; f.get(ch);</span><br><span class="line">        if (index &#x3D;&#x3D; chArray.length-1) &#123;</span><br><span class="line">            if (Z.contains(nextState)) &#123;</span><br><span class="line">                return true;</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                System.out.println(&quot;该字符串\&quot;&quot;+new String(chArray)+&quot;\&quot;不被 此DFA接受&quot;);</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            index ++;</span><br><span class="line">            return check(chArray, index, nextState);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * </span><br><span class="line"> * @ClassName: func</span><br><span class="line"> * @Description: 转换函数bean f(ki,ch)&#x3D;kj (ki∈K，kj∈K)</span><br><span class="line"> * @author: chenhaoyu</span><br><span class="line"> * @date: Dec 6, 2019 6:23:48 PM</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Func &#123;</span><br><span class="line">    &#x2F;&#x2F; 当前状态</span><br><span class="line">    private String ki;</span><br><span class="line">    &#x2F;&#x2F; 接受字符</span><br><span class="line">    private char ch;</span><br><span class="line">    &#x2F;&#x2F; 后继状态</span><br><span class="line">    private String kj;</span><br><span class="line"></span><br><span class="line">    public Func(String ki, char ch, String kj) &#123;</span><br><span class="line">        this.ki &#x3D; ki;</span><br><span class="line">        this.ch &#x3D; ch;</span><br><span class="line">        this.kj &#x3D; kj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public char getCh() &#123;</span><br><span class="line">        return ch;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getKi() &#123;</span><br><span class="line">        return ki;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getKj() &#123;</span><br><span class="line">        return kj;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 试运行一下，在这里就构造DFA那一节中的那个M 为例:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testdfa() &#123;</span><br><span class="line">    &#x2F;&#x2F;构造转换函数</span><br><span class="line">    List&lt;Func&gt; funcs &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">    funcs.add(new Func(&quot;S&quot;, &#39;a&#39;, &quot;U&quot;));</span><br><span class="line">    funcs.add(new Func(&quot;S&quot;, &#39;b&#39;, &quot;V&quot;));</span><br><span class="line">    funcs.add(new Func(&quot;U&quot;, &#39;a&#39;, &quot;Q&quot;));</span><br><span class="line">    funcs.add(new Func(&quot;U&quot;, &#39;b&#39;, &quot;V&quot;));</span><br><span class="line">    funcs.add(new Func(&quot;V&quot;, &#39;a&#39;, &quot;U&quot;));</span><br><span class="line">    funcs.add(new Func(&quot;V&quot;, &#39;b&#39;, &quot;Q&quot;));</span><br><span class="line">    funcs.add(new Func(&quot;Q&quot;, &#39;a&#39;, &quot;Q&quot;));</span><br><span class="line">    funcs.add(new Func(&quot;Q&quot;, &#39;b&#39;, &quot;Q&quot;));</span><br><span class="line">    &#x2F;&#x2F;构造dfa</span><br><span class="line">    DFA dfa &#x3D; new DFA(Arrays.asList(&quot;S&quot;,&quot;U&quot;,&quot;V&quot;,&quot;Q&quot;), Arrays.asList(&#39;a&#39;,&#39;b&#39;), funcs, &quot;S&quot;, Arrays.asList(&quot;Q&quot;));</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;测试1</span><br><span class="line">    System.out.println(dfa.checkString(&quot;abab&quot;));</span><br><span class="line">    &#x2F;&#x2F; console 输出:</span><br><span class="line">    &#x2F;&#x2F; 该字符串&quot;abab&quot;不被 此DFA接受</span><br><span class="line">    &#x2F;&#x2F; false</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;测试2</span><br><span class="line">    System.out.println(dfa.checkString(&quot;ababc&quot;));</span><br><span class="line">    &#x2F;&#x2F; console 输出:</span><br><span class="line">    &#x2F;&#x2F; 非法字符 &#39;c&#39; 不包含在指定的 Σ 字母表中</span><br><span class="line">    &#x2F;&#x2F; false</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;测试3</span><br><span class="line">    System.out.println(dfa.checkString(&quot;abbba&quot;));</span><br><span class="line">    &#x2F;&#x2F; console 输出:</span><br><span class="line">    &#x2F;&#x2F; true</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 由于用的java，于是直接将 转换函数构造成了一个 对象模型，这样便于阅读和理解。同时DFA也根据其概念描述来构造(当然怎么设计DFA的实现还有很多其他方法)，总之阅读上应该没有什么问题。内部方法check用了递归实现，一是效率更高一些，二是写起来比较方便。但是这可能会有潜在的问题：当遇到一个超级长的str的时候，内存可能占用过大。当然一般情况也不会遇到这个问题，真的要解决的话就将递归实现改为循环实现就好了。</p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>&emsp;&emsp; 总算找了个时间学习了一下正则，同时复习了一下编译原理倒是让我挺意外的。由于使用语言的差别，java有一些正则的语法不支持 比如说<strong>平衡组</strong>。而且我在测试写的内容的时候，发现很多正则测试工具也不能支持。综合考虑就省略了一些正则方面的高级操作。仅写了一些基本常用操作。作为补偿，后面加了关于正则引擎的简单介绍。<br>&emsp;&emsp;这次就到这里，感谢阅读。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>&emsp;&emsp; 上文参考了以下内容，感谢原作者的精彩文章。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://deerchao.cn/tutorials/regex/regex.htm#repeat">正则表达式30分钟入门教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://liujiacai.net/blog/2014/12/07/regexp-favors/">正则表达式“派别”简述</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/kirito-c/p/9310908.html">各编程语言正则库的小差别</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/iteye_11539/article/details/82476609">正则表达式的几种引擎</a></li>
+<li>清华大学出版社 &lt;&lt;编译原理 第2版&gt;&gt;</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u014749668/article/details/82632528">编译原理字母表，符号表</a></li>
+<li><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%AD%A3%E8%A7%84%E6%96%87%E6%B3%95/8982395">百度百科-正规文法</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.processon.com/">在线绘图工具processon</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/DFA/" rel="tag"># DFA</a>
+          
+            <a href="/tags/NFA/" rel="tag"># NFA</a>
+          
+            <a href="/tags/%E6%AD%A3%E5%88%99/" rel="tag"># 正则</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/21/%E5%A4%A9%E5%87%89%E5%A5%BD%E4%B8%AA%E7%A7%8B/" rel="next" title="天凉好个秋">
+                <i class="fa fa-chevron-left"></i> 天凉好个秋
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/10/%E4%BD%A0%E5%9C%A8%E8%AF%B4%E5%95%A5/" rel="prev" title="你在说啥">
+                你在说啥 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
 
     <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+      
     </div>
   </div>
 
-{% endblock %}
-
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+          
+          </div>
+          
 
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B-amp-%E6%B4%BE%E5%88%AB"><span class="nav-number">2.1.</span> <span class="nav-text">简介&amp;派别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">正则表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%95"><span class="nav-number">2.2.1.</span> <span class="nav-text">引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%83%E5%AD%97%E7%AC%A6"><span class="nav-number">2.2.2.</span> <span class="nav-text">元字符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%83%E5%AD%97%E7%AC%A6%E7%9A%84%E8%BD%AC%E4%B9%89"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">元字符的转义</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D"><span class="nav-number">2.2.3.</span> <span class="nav-text">重复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E7%B1%BB"><span class="nav-number">2.2.4.</span> <span class="nav-text">字符类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E6%9D%A1%E4%BB%B6"><span class="nav-number">2.2.5.</span> <span class="nav-text">分支条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%BB%84"><span class="nav-number">2.2.6.</span> <span class="nav-text">分组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E4%B9%89"><span class="nav-number">2.2.7.</span> <span class="nav-text">反义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%90%91%E5%BC%95%E7%94%A8"><span class="nav-number">2.2.8.</span> <span class="nav-text">后向引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E6%8B%AC%E5%8F%B7"><span class="nav-number">2.2.9.</span> <span class="nav-text">小括号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%B6%E5%AE%BD%E6%96%AD%E8%A8%80"><span class="nav-number">2.2.10.</span> <span class="nav-text">零宽断言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%9F%E5%90%91%E9%9B%B6%E5%AE%BD%E6%96%AD%E8%A8%80"><span class="nav-number">2.2.11.</span> <span class="nav-text">负向零宽断言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E9%87%8A"><span class="nav-number">2.2.12.</span> <span class="nav-text">注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%AA%E5%A9%AA%E4%B8%8E%E6%87%92%E6%83%B0"><span class="nav-number">2.2.13.</span> <span class="nav-text">贪婪与懒惰</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.14.</span> <span class="nav-text">匹配模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E6%93%8E"><span class="nav-number">2.3.</span> <span class="nav-text">引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">2.3.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E8%A7%84%E5%BC%8F"><span class="nav-number">2.3.2.</span> <span class="nav-text">正规式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%85%E5%8A%A9%E5%AD%97%E6%AF%8D%E8%A1%A8"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">辅助字母表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.3.2.2.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E6%95%B0%E8%A7%84%E5%BE%8B"><span class="nav-number">2.3.2.3.</span> <span class="nav-text">代数规律</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DFA"><span class="nav-number">2.3.3.</span> <span class="nav-text">DFA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NFA"><span class="nav-number">2.3.4.</span> <span class="nav-text">NFA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NFA%E8%BD%AC%E5%8C%96%E4%B8%BA%E7%AD%89%E4%BB%B7DFA"><span class="nav-number">2.3.5.</span> <span class="nav-text">NFA转化为等价DFA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F-%E8%BD%AC%E6%8D%A2-%E6%9C%89%E7%A9%B7%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="nav-number">2.3.6.</span> <span class="nav-text">正则表达式 转换 有穷自动机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E8%BD%AC%E5%8C%96"><span class="nav-number">2.3.6.1.</span> <span class="nav-text">字符转化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6%E8%BD%AC%E5%8C%96"><span class="nav-number">2.3.6.2.</span> <span class="nav-text">运算符转化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BE%E4%B8%AA%E6%A0%97%E5%AD%90"><span class="nav-number">2.3.6.3.</span> <span class="nav-text">举个栗子</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0DFA"><span class="nav-number">2.3.7.</span> <span class="nav-text">简单实现DFA</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">3.</span> <span class="nav-text">结语</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">3.1.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+    <script src="/live2d/autoload.js"></script>
+
+
+</body>
+</html>

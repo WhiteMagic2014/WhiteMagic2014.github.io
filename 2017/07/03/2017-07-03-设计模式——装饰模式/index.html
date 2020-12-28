@@ -1,38 +1,745 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!doctype html>
 
 
-{% block title %} {{ page.title }} | {{ config.title }} {% endblock %}
 
-{% block page_class %}page-post-detail{% endblock %}
+  
 
 
-{% block content %}
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="技术,java,设计模式," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;距离上次更完拖了2周，我也是记得说要2周更的。。。其实吧，本来应该是昨天晚上，今天上午就更完放出来的。谁知昨天接到新任务，要从头做一个蓝牙的demo，我怕会遇到坑所以就先去研究那个东西了，事实上也确实遇到坑了，还好昨晚通宵研究，现在解决了一部分了，剩下的东西不知道还有没有坑，但是还是想先把这个模式更完，毕竟说出去的话就得做到啊，说了这么多废话，开">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式——装饰模式">
+<meta property="og:url" content="http://yoursite.com/2017/07/03/2017-07-03-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="前言&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;距离上次更完拖了2周，我也是记得说要2周更的。。。其实吧，本来应该是昨天晚上，今天上午就更完放出来的。谁知昨天接到新任务，要从头做一个蓝牙的demo，我怕会遇到坑所以就先去研究那个东西了，事实上也确实遇到坑了，还好昨晚通宵研究，现在解决了一部分了，剩下的东西不知道还有没有坑，但是还是想先把这个模式更完，毕竟说出去的话就得做到啊，说了这么多废话，开">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/images/Decorator.png">
+<meta property="article:published_time" content="2017-07-03T02:43:40.000Z">
+<meta property="article:modified_time" content="2017-07-07T18:07:14.000Z">
+<meta property="article:author" content="WhiteMagic2014">
+<meta property="article:tag" content="技术">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="设计模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/Decorator.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/03/2017-07-03-设计模式——装饰模式/"/>
+
+
+
+
+
+  <title> 设计模式——装饰模式 | Magic Space </title>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
 
   <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/03/2017-07-03-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                设计模式——装饰模式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-03T10:43:40+08:00">
+                2017-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp;<br>&emsp;&emsp;距离上次更完拖了2周，我也是记得说要2周更的。。。其实吧，本来应该是昨天晚上，今天上午就更完放出来的。谁知昨天接到新任务，要从头做一个蓝牙的demo，我怕会遇到坑所以就先去研究那个东西了，事实上也确实遇到坑了，还好昨晚通宵研究，现在解决了一部分了，剩下的东西不知道还有没有坑，但是还是想先把这个模式更完，毕竟说出去的话就得做到啊，说了这么多废话，开始吧！<br>&emsp;&emsp;装饰模式，就我个人的感觉看下来，有些微妙。真的有点微妙，因为这个模式确实在有些情况很好用很灵活，但是副作用也很大，让我这个强迫症无比纠结这个那个类到底放在哪。。。</p>
+<h1 id="装饰模式"><a href="#装饰模式" class="headerlink" title="装饰模式"></a>装饰模式</h1><p>&emsp;&emsp;<br>&emsp;&emsp;一如既往的，先来说一下他的定义（headfirst中的定义）<br>&emsp;&emsp;<strong>装饰者模式（Decorator Pattern）：动态的将责任附加到对象上。若要扩展功能，装饰者提供了比继承更有弹性的替代方案。</strong><br>&emsp;&emsp;<strong>工厂模式</strong>帮助我们更好的去实例化pizza对象，<strong>单例模式</strong>帮我们解决了统一补给原料的问题。（记得之前我在工厂模式中说的，工厂适合和装饰者在一块使用么？终于填坑了。。）那装饰模式给我们带来了什么呢？<br>&emsp;&emsp;讲东西还是用例子形象，这里我继续用以前的那个Pizza来说吧（我总感觉在写代码的时候我特别钟爱Pizza。。。）<br>&emsp;&emsp;</p>
+<h2 id="越来越多种类的Pizza"><a href="#越来越多种类的Pizza" class="headerlink" title="越来越多种类的Pizza"></a>越来越多种类的Pizza</h2><p>&emsp;&emsp;经营的pizza店经营的不错，也在推出越来越多种类的pizza，但渐渐的，你似乎发现了一些麻烦。。（以下代码都是在之前<strong>抽象工厂</strong>中写的）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Pizza超类</span><br><span class="line"> * 工厂模式版本，这里我删掉了一些不是本节重点的东西</span><br><span class="line"> *&#x2F;</span><br><span class="line">public abstract class Pizza&#123;</span><br><span class="line">    </span><br><span class="line">    String name;</span><br><span class="line">    </span><br><span class="line">    abstract void prepare();</span><br><span class="line"></span><br><span class="line">    public String getName()&#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * 一个Pizza的子类</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class FishPizza extends Pizza&#123;</span><br><span class="line">    PizzaIngredientFactory ingredientFactory;</span><br><span class="line">    </span><br><span class="line">    public FishPizza(PizzaIngredientFactory ingredientFactory)&#123;</span><br><span class="line">        this.ingredientFactory &#x3D; ingredientFactory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void prepare()&#123;</span><br><span class="line">        System.out.println(&quot;Preparing&quot; + name);</span><br><span class="line">        douth &#x3D; ingredientFactory.createDough();</span><br><span class="line">        sause &#x3D; ingredientFactory.createSause();</span><br><span class="line">        cheese &#x3D; ingredientFactory.createCheese();</span><br><span class="line">        fish &#x3D; ingredientFactory.createFish();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;现在我们分析一下这段代码，有一个pizza超类，所有的pizza都继承自他，比如这里FishPizza继承了Pizza，这是一个很好的想法，可以获得父类Pizza的所有方法（忘记Pizza长什么样子的回抽象工厂那一节去看），不同的pizza也都只要重写父类的抽象方法prepare();就好了，似乎很perfect。<br>&emsp;&emsp;但是，每有一个种类的pizza，意味着你要新开一个xxPizza类，这样光说不明显，反面教材来了。FishPizza就像上面那样；那ChickenPizza显然就是将prepare中的fish变为chicken咯，没问题；继续，新引进的牛肉pizza呢？fish变成beef。可以，继续；哪天你脑门一拍FishChickenPizza!额。。。那就在prepare中即有fish，又要有chicken；好的，鱼牛、鸡牛、鱼鸡牛、鱼牛羊鸡xxxx呢？发现问题的的严重性了么？（其实也没有那么严重，不就是每次都要多写个几十行或者几百行嘛(╯‵□′)╯︵┻━┻），更重要的是：你每次都要重写prepare()方法！随着pizza的种类越来越多，会有一些迷之尴尬。<br>&emsp;&emsp;记得麦兜里面有一个桥段“鱼丸粗面”，电影里麦兜对没有的对象提出复用所以导致了麦兜要的东西都没有复用往往是在代码里很重要的一个部分，为什么要继承？因为可以复用父类的方法。而在上一段提出的方案中，prepare方法的复用率基本为零，这样显然是不好的。</p>
+<p>&emsp;&emsp;</p>
+<h2 id="装饰者登场"><a href="#装饰者登场" class="headerlink" title="装饰者登场"></a>装饰者登场</h2><p>&emsp;&emsp;好了，看了上面这些，应该已经意识到了没法用继承来完全解决问题了：上面的问题有，子类数量爆炸；设计比较微妙；超类加入新功能的时候，那个功能未必适合所有类（一个方法有一半的子类用得到，另一半不应该有这个方法，微妙吧？一个个重写方法会死人的）<br>&emsp;&emsp;那回到做pizza上，该怎么做比较好呢？想想生活中的实际情况（代码永远是对生活的抽象，这句话是我自己说的）做个pizza会怎么做：先不管什么，揉个面团先做个饼！然后看具体情况要什么材料，然后一种一种的往饼上加，而不是套模板，哐当一下子就一整个做完了，遇到了新的组合还要去问别人怎么做（指要写一个新的完整的prepare方法）。<br>&emsp;&emsp;代码也是这样的，这里要以超类（最初的pizza，也就是一个面团）为主体，然后在运行的时候用不同的食材去“装饰”那个面团。好了那下面就用装饰模式来写一下吧！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class SimplePizza extends Pizza&#123;</span><br><span class="line">    public SimplePizza()&#123;</span><br><span class="line">        name &#x3D; &quot; &quot;;&#x2F;&#x2F;没有名字 因为就是个面团</span><br><span class="line">    &#125;</span><br><span class="line">    public void prepare()&#123;</span><br><span class="line">        System.out.println(&quot;揉面团的操作&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;首先写一个基本的面团类，就是什么都没有的pizza，作为主体（最初的被装饰者），这个很简单，不用多说了。然后接下来就要写装饰者了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 装饰接口（抽象类）</span><br><span class="line"> *&#x2F;</span><br><span class="line">public abstract class PizzaDecorator extends Pizza&#123;</span><br><span class="line">    public abstract String getName();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * cheese装饰方法</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class CheeseDecorator extends PizzaDecorator&#123;</span><br><span class="line">    Pizza pizza;</span><br><span class="line">    </span><br><span class="line">    public CheeseDecorator(Pizza pizza)&#123;</span><br><span class="line">        this.pizza &#x3D; pizza;</span><br><span class="line">        prepare()</span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String getName()&#123;</span><br><span class="line">        return pizza.getName() + &quot;加cheese&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void prepare()&#123;</span><br><span class="line">        System.out.println(&quot;对this.pizza 执行一些加cheese的动作&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * fish装饰方法</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class FishDecorator extends PizzaDecorator&#123;</span><br><span class="line">    Pizza pizza;</span><br><span class="line">   </span><br><span class="line">    public FishDecorator(Pizza pizza)&#123;</span><br><span class="line">        this.pizza &#x3D; pizza;</span><br><span class="line">        prepare();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String getName()&#123;</span><br><span class="line">        return pizza.getName() + &quot;加fish&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void prepare()&#123;</span><br><span class="line">        System.out.println(&quot;对this.pizza 执行一些加fish的动作&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> ....</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;首先有个要注意的地方（划重点）：<strong>装饰接口或者是抽象类，他必须和被装饰者有着相同的超类。</strong>既然装饰者和被装饰者对象都有着相同的超类，所以在任何需要原始对象（被修饰过的也行）的场合，就可以用装饰过的对象去替代他。<br>&emsp;&emsp;然后上面只写了2种具体的装饰类，其他的就类似了，xxxDecorator 这个类的构造方法需要接收一个Pizza实例，装饰者可以在所委托被装饰者的行为之前或者之后，加上自己的行为，来打到特地的目的，比如在上面的我写的例子中，我在构造方法中直接执行了重载的prepare，那么在xxxDecorator接收到上一个pizza对象后，就会调用，从而实现装饰的作用。好的下面来看看这些类是使用的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class Test&#123;</span><br><span class="line"></span><br><span class="line">    public static void main(args[] String)&#123;</span><br><span class="line">        Pizza pizza &#x3D; new SimplePizza();</span><br><span class="line">        pizza &#x3D; new CheesePizza(pizza);&#x2F;&#x2F;加cheese</span><br><span class="line">        pizza &#x3D; new FishPizza(pizza);&#x2F;&#x2F;加fish</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在上面的test类中，首先创造了什么都没有的pizza，然后加cheese，CheesePizza就好像他从别人那边拿到了一个面团，他的工作就是在面团放上cheese，然后面团就变成了一个带有cheese的面团；然后同样的 FishPizza就是从CheesePizza那拿到一个带cheese的面团，他的工作就是在上面放上fish于是面团就变成了一个 有 cheese、有fish的面团。通过这个例子可以看出，可以用一个或多个装饰者包装一个对象，对象也可以在任何时候被装饰。<br>&emsp;&emsp;</p>
+<h2 id="I-O"><a href="#I-O" class="headerlink" title="I/O"></a>I/O</h2><p>&emsp;&emsp;这里不得不提一下I/O，java里面的io流，以前上学的时候听到这个东西就爆炸，看看类图，我曹这tm什么玩意！怎么这么多！其实，IO就是用装饰着模式写的。。。比如InputStream 是一个抽象的组件 （pizza），FilterInputStream是抽象装饰者(PizzaDecorator)，BufferedInputStream就是具体的一个装饰者（xxxDecorator），具体的我就不细说了，就提一下，有兴趣的自己去翻jdk api。</p>
+<h2 id="一些小节"><a href="#一些小节" class="headerlink" title="一些小节"></a>一些小节</h2><h3 id="组合和继承"><a href="#组合和继承" class="headerlink" title="组合和继承"></a>组合和继承</h3><p>&emsp;&emsp;在上一小节开始的时候，我说了，不能用继承来解决问题了。这里也用到了继承，但是和一般的继承父类获得功能不一样。在装饰模式中，装饰者和被装饰者需要是一样的类型，所以用继承达到的目的并不是获得“行为”，而是为了“匹配类型”。所以说，装饰者和被装饰者实现同一个接口也是可以的。而获得的新的行为（比如加cheese）是装饰者与其他对象组合而获得的行为，与继承没有关系。如果行为依赖继承，那么只能在编译的时候静态的决定他的行为，换句话说，行为（也就是方法里的功能代码）不是来自超类，就是子类自己覆盖后的。反之，利用对象组合，可以把装饰着混着用，随心所欲的动态组合代码。</p>
+<h3 id="组件类型"><a href="#组件类型" class="headerlink" title="组件类型"></a>组件类型</h3><p>&emsp;&emsp;如果把代码写成针对具体的组件类型，那么装饰者可能会出错，因为经过装饰者模式，类型就改变了，只有在针对抽象编程的时候，才不会因为装饰者而受到影响（可以看我上面的Test方法Pizza pizza = new SimplePizza();这里用的是Pizza的超类）</p>
+<h3 id="弊端"><a href="#弊端" class="headerlink" title="弊端"></a>弊端</h3><p>&emsp;&emsp;大家也可能发现了，刚刚在说io的时候就想吐槽了，每一个装饰者都有一个类，一个个琳琅满目，如果不熟悉可能会对这一对类感到一头雾水（其实不用装饰者可能会更多ㄟ( ▔, ▔ )ㄏ），然而装饰者模式的类都是一个个小类（仅有一部分功能并不能成为一个拥有完整“行为”的对象的类）</p>
+<h3 id="与工厂联动"><a href="#与工厂联动" class="headerlink" title="与工厂联动"></a>与工厂联动</h3><p>&emsp;&emsp;这里就抛出一个概念，工厂是将对象创造的过程封装，而装饰者因为有很多小类 会有一些微妙，所以，可以把装饰者使用的的情况列举，在工厂方法中进行判断，然后根据不同的情况使用对象组合来实现对象的创建。说的直白点就是，只用装饰者是你自己根据判断往面团上丢cheese还是fish；而工厂+装饰者是 自动化流水线，你只要输入你要cheese 还是 其他什么的，工厂就直接给你，嗯就是这样</p>
+<h3 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h3><p>&emsp;&emsp;本应该自己画的，可是真的好累，先用网上找到的挂着，有时间了再补一张上来<br><img src="/images/Decorator.png" alt="img"><br>&emsp;&emsp;</p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>&emsp;&emsp;我曹，我真想哭，写这个彻底超出我的预计时间，现在2017年07月08日01:55:57，，，我曹。。。我tmd，，我原计划12点之前写完，然后继续做蓝牙。谁知道我写着写着写偏了一次，重点放到组合上去了，，，tmd，啊啊啊啊啊！！！！！心累<br>估计到时候还要来一次修改，暂时先这样吧，也算没有鸽吧。。。。下次写什么模式还没有头绪，，，下次再说吧，，我去做蓝牙了。。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/14/2017-06-14-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" rel="next" title="设计模式——单例模式">
+                <i class="fa fa-chevron-left"></i> 设计模式——单例模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/05/2017-07-05-%E6%9D%82%E8%B0%88%E4%B8%80/" rel="prev" title="杂谈一">
+                杂谈一 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
 
     <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+      
     </div>
   </div>
 
-{% endblock %}
-
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+          
+          </div>
+          
 
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">装饰模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B6%8A%E6%9D%A5%E8%B6%8A%E5%A4%9A%E7%A7%8D%E7%B1%BB%E7%9A%84Pizza"><span class="nav-number">2.1.</span> <span class="nav-text">越来越多种类的Pizza</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A3%85%E9%A5%B0%E8%80%85%E7%99%BB%E5%9C%BA"><span class="nav-number">2.2.</span> <span class="nav-text">装饰者登场</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#I-O"><span class="nav-number">2.3.</span> <span class="nav-text">I&#x2F;O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%B0%8F%E8%8A%82"><span class="nav-number">2.4.</span> <span class="nav-text">一些小节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E5%90%88%E5%92%8C%E7%BB%A7%E6%89%BF"><span class="nav-number">2.4.1.</span> <span class="nav-text">组合和继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.4.2.</span> <span class="nav-text">组件类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%8A%E7%AB%AF"><span class="nav-number">2.4.3.</span> <span class="nav-text">弊端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E%E5%B7%A5%E5%8E%82%E8%81%94%E5%8A%A8"><span class="nav-number">2.4.4.</span> <span class="nav-text">与工厂联动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9B%BE"><span class="nav-number">2.4.5.</span> <span class="nav-text">类图</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">3.</span> <span class="nav-text">结语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+    <script src="/live2d/autoload.js"></script>
+
+
+</body>
+</html>

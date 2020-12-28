@@ -1,38 +1,825 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!doctype html>
 
 
-{% block title %} {{ page.title }} | {{ config.title }} {% endblock %}
 
-{% block page_class %}page-post-detail{% endblock %}
+  
 
 
-{% block content %}
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="IMAP," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;其实这篇文章是不太想写的，因为我自己在平时貌似已经没有什么场景会用邮箱了。但是在比较正式的场合邮件还是”地位稳固”，比如公司内部还是会用企业邮箱，与客户发一些重要文件、资料等。邮件是比较正式的一个东西。&amp;emsp;&amp;emsp;之前再服务器上做过定时发邮件的功能，不过由于是在spring框架下做的，开发的时候其实很简单，几乎没遇到什么问题，甚至感觉自己">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用IMAP协议实现邮件提醒">
+<meta property="og:url" content="http://yoursite.com/2019/05/22/%E4%BD%BF%E7%94%A8IMAP%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E9%82%AE%E4%BB%B6%E6%8F%90%E9%86%92/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;其实这篇文章是不太想写的，因为我自己在平时貌似已经没有什么场景会用邮箱了。但是在比较正式的场合邮件还是”地位稳固”，比如公司内部还是会用企业邮箱，与客户发一些重要文件、资料等。邮件是比较正式的一个东西。&amp;emsp;&amp;emsp;之前再服务器上做过定时发邮件的功能，不过由于是在spring框架下做的，开发的时候其实很简单，几乎没遇到什么问题，甚至感觉自己">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-05-22T08:10:35.000Z">
+<meta property="article:modified_time" content="2019-06-12T06:36:16.943Z">
+<meta property="article:author" content="WhiteMagic2014">
+<meta property="article:tag" content="IMAP">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/22/使用IMAP协议实现邮件提醒/"/>
+
+
+
+
+
+  <title> 使用IMAP协议实现邮件提醒 | Magic Space </title>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
 
   <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/22/%E4%BD%BF%E7%94%A8IMAP%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E9%82%AE%E4%BB%B6%E6%8F%90%E9%86%92/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用IMAP协议实现邮件提醒
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-22T16:10:35+08:00">
+                2019-05-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;<br>&emsp;&emsp;其实这篇文章是不太想写的，因为我自己在平时貌似已经没有什么场景会用邮箱了。但是在比较正式的场合邮件还是”地位稳固”，比如公司内部还是会用企业邮箱，与客户发一些重要文件、资料等。邮件是比较正式的一个东西。<br>&emsp;&emsp;之前再服务器上做过定时发邮件的功能，不过由于是在spring框架下做的，开发的时候其实很简单，几乎没遇到什么问题，甚至感觉自己没做什么功能就写完了….而至于收邮件，我是没有做过的。这几天写了个桌面插件，（<a target="_blank" rel="noopener" href="https://github.com/WhiteMagic2014/Live2dChatWidget">点我去看看</a>，记得点个星），在想要加点什么功能时，我就想到邮件来件提示。好了不多废话，开始了</p>
+<h1 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h1><p>&emsp;&emsp;首先要了解邮件的协议，SMTP，IMAP， POP3 是几个大家耳熟能详的的协议了。先简介一下吧，做邮件相关功能，肯定得至少了解一下的。</p>
+<h2 id="协议简介"><a href="#协议简介" class="headerlink" title="协议简介"></a>协议简介</h2><h3 id="SMTP"><a href="#SMTP" class="headerlink" title="SMTP"></a>SMTP</h3><p>&emsp;&emsp; Simple Mail Transfer Protocol.  简单邮件传输协议。 这是一个相对简单的基于文本的协议。 而我们主要用这个协议来<strong>发邮件</strong><br>&emsp;&emsp;它是一组用于从源地址到目的地址传输邮件的规范，通过它来控制邮件的中转方式。SMTP 协议属于 TCP/IP 协议簇，它帮助每台计算机在发送或中转信件时找到下一个目的地。SMTP 服务器就是遵循 SMTP 协议的发送邮件服务器。<br>&emsp;&emsp;SMTP 认证，简单地说就是要求必须在提供了账户名和密码之后才可以登录 SMTP 服务器，这就使得那些垃圾邮件的散播者无可乘之机。<br>&emsp;&emsp;增加 SMTP 认证的目的是为了使用户避免受到垃圾邮件的侵扰。</p>
+<h3 id="POP3"><a href="#POP3" class="headerlink" title="POP3"></a>POP3</h3><p>&emsp;&emsp; Post Office Protocol - Version 3. 邮局协议版本3。 我们用来<strong>收邮件</strong><br>&emsp;&emsp; POP3规定怎样将个人计算机连接到Internet的邮件服务器和下载电子邮件的电子协议。它是因特网电子邮件的第一个离线协议标准,POP3允许用户从服务器上把邮件存储到本地主机（即自己的计算机）上,同时删除保存在邮件服务器上的邮件，而POP3服务器则是遵循POP3协议的接收邮件服务器，用来<strong>接收电子邮件</strong>的。</p>
+<h3 id="IMAP"><a href="#IMAP" class="headerlink" title="IMAP"></a>IMAP</h3><p>&emsp;&emsp;Internet Mail Access Protocol. 交互式邮件存取协议。 我们用来<strong>收邮件</strong><br>&emsp;&emsp;IMAP是跟POP3类似邮件访问标准协议之一。不同的是，开启了IMAP后，您在电子邮件客户端收取的邮件仍然保留在服务器上，同时在客户端上的操作都会反馈到服务器上，如：删除邮件，标记已读等，服务器上的邮件也会做相应的动作。所以无论从浏览器登录邮箱或者客户端软件登录邮箱，看到的邮件以及状态都是一致的。</p>
+<h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><p>&emsp;&emsp;自己看上面3个协议的简介的话，其实已经可以看出来了，这里总结一下。<br>&emsp;&emsp; SMTP 管发 ， POP3/IMAP 管收。所以在想完整的实现一个邮件客户端的时候，一般是这样组合的 ：SMTP+POP3 或 SMTP+IMAP。<br>&emsp;&emsp;而IMAP 和POP3 都负责收件，具体的区别在于：</p>
+<table>
+<thead>
+<tr>
+<th><strong>操作位置</strong></th>
+<th><strong>操作内容</strong></th>
+<th><strong>IMAP</strong></th>
+<th><strong>POP3</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>收件箱</strong></td>
+<td>阅读、标记、移动、删除邮件等</td>
+<td>客户端与邮件更新同步</td>
+<td>仅客户端内</td>
+</tr>
+<tr>
+<td><strong>发件箱</strong></td>
+<td>保存到已发送</td>
+<td>客户端与邮件更新同步</td>
+<td>仅客户端内</td>
+</tr>
+<tr>
+<td><strong>创建文件夹</strong></td>
+<td>新建自定义的文件夹</td>
+<td>客户端与邮件更新同步</td>
+<td>仅客户端内</td>
+</tr>
+<tr>
+<td><strong>草稿</strong></td>
+<td>保存草稿</td>
+<td>客户端与邮件更新同步</td>
+<td>仅客户端内</td>
+</tr>
+<tr>
+<td><strong>垃圾文件夹</strong></td>
+<td>接受误移入垃圾文件夹的邮件</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td><strong>广告邮件</strong></td>
+<td>接受被移入广告文件夹的邮件</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+</tbody></table>
+<p>&emsp;&emsp;总之，IMAP 整体上为用户带来更为便捷和可靠的体验。POP3 更易丢失邮件或多次下载相同的邮件，但 IMAP 通过邮件客户端与webmail 之间的双向同步功能很好地避免了这些问题。</p>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>&emsp;&emsp;我要实现什么样的功能？首先作为来件提示，最最重要的就是，在收到邮件后能否<strong>即时</strong>的通知。其次，并非仅仅监听一个邮箱罢了，作为一个客户端，需要的是能够自己配置想要监听的邮箱。一句话概括：<strong>可配置监听邮箱，即时通知</strong></p>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><p>&emsp;&emsp;需要自定义配置，那么properties很好的可以实现。而即时这个事情其实就有点麻烦了，怎么才能即时？定点x时间去获取一下邮箱内的邮件量，如果收件箱中邮件数量变化，则判断有新邮件？ 这是第一反应，但是当然不能这么做（其实也可以，但这是下下策）：</p>
+<ul>
+<li>1，定点x时间轮询，并不是真正的即时。</li>
+<li>2，可以通过缩小x，提高即时感。但代价却是性能的开销，开发中需要避免无意义的轮询，能回调通知就不要轮询！！！</li>
+<li>3，也就是最重要的一点：在x时间段内，我收件箱删了一封邮件，又收到了一封新的。总数没变，怎么算？有人会杠，那就算一下垃圾箱里有没有多邮件呗？  x时间内，收件箱多了5封，垃圾箱多了2封，其他邮件箱少了4封 …这要考虑的情况就更复杂了<br>&emsp;&emsp;回到第二条，我想到了接受通知，在查阅了一些资料后，我了解到了IDLE。IDLE是RFC 2177中描述的一项IMAP功能，它允许客户端向服务器表明它已准备好接受实时通知。在IMAP4扩展协议中提供了这功能，于是乎，我在POP3与IMAP中选择了IMAP。但是并非所有的IMAP服务提供者都提供了这种功能，比较主流的gmail，qq邮箱，腾讯企业邮箱提供了这一服务。而sina免费邮箱，网易163邮箱没有提供…其余的邮箱自己有兴趣可以测试一下，在本文最后我会给出如何查看提供服务的方法。</li>
+</ul>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>&emsp;&emsp;说了这么多，不废话了，上代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br></pre></td><td class="code"><pre><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.List;</span><br><span class="line">import java.util.Properties;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">import javax.mail.Folder;</span><br><span class="line">import javax.mail.FolderClosedException;</span><br><span class="line">import javax.mail.Message;</span><br><span class="line">import javax.mail.MessagingException;</span><br><span class="line">import javax.mail.Session;</span><br><span class="line">import javax.mail.Store;</span><br><span class="line">import javax.mail.event.ConnectionEvent;</span><br><span class="line">import javax.mail.event.ConnectionListener;</span><br><span class="line">import javax.mail.event.MessageCountAdapter;</span><br><span class="line">import javax.mail.event.MessageCountEvent;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;下面2个是我自己的其他部分的功能，源码去看前面放出的桌面插件</span><br><span class="line">import com.magic.ApiService;</span><br><span class="line">import com.magic.SingleThreadPool;</span><br><span class="line"></span><br><span class="line">import com.sun.mail.iap.ProtocolException;</span><br><span class="line">import com.sun.mail.imap.IMAPFolder;</span><br><span class="line">import com.sun.mail.imap.IdleManager;</span><br><span class="line">import com.sun.mail.imap.protocol.IMAPProtocol;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line">* 所有mail实例的父级抽象类 统一使用imap 协议</span><br><span class="line">* @author chenhaoyu</span><br><span class="line">*&#x2F;</span><br><span class="line">public abstract class Mail implements MailInterface &#123;</span><br><span class="line">    &#x2F;&#x2F; handler 构造方法中直接传递</span><br><span class="line">    protected ApiService handler;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 账号密码</span><br><span class="line">    protected String userName;</span><br><span class="line">    protected String passWord;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 以下 session 和store 等 独立使用 后期自己初始化</span><br><span class="line">    protected Session session;</span><br><span class="line">    protected Store store;</span><br><span class="line">    protected IdleManager idleManager;</span><br><span class="line">    protected List&lt;IMAPFolder&gt; folderObjects;</span><br><span class="line"></span><br><span class="line">    public Mail(ApiService handler, String userName, String passWord, List&lt;String&gt; folders) &#123;</span><br><span class="line">        this.handler &#x3D; handler;</span><br><span class="line">        this.userName &#x3D; userName;</span><br><span class="line">        this.passWord &#x3D; passWord;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            initStore();</span><br><span class="line">            createFoldersListen(folders);</span><br><span class="line">            heartWork();</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            handler.setModelText(&quot;监听&quot; + getMailName() + &quot;失败&quot;, 0);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 初始化session store idleManager folderObjects</span><br><span class="line">    public void initStore() throws Exception &#123;</span><br><span class="line">        String protocol &#x3D; &quot;imap&quot;;&#x2F;&#x2F; 使用的协议</span><br><span class="line">        Properties props &#x3D; getProperties();</span><br><span class="line">        session &#x3D; Session.getInstance(props);</span><br><span class="line">        store &#x3D; session.getStore(protocol);</span><br><span class="line">        &#x2F;&#x2F; 方便调试 加上监听</span><br><span class="line">        store.addConnectionListener(new ConnectionListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void opened(ConnectionEvent e) &#123;</span><br><span class="line">                System.out.println(&quot;邮箱&quot; + getMailName() + &quot; opened&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            @Override</span><br><span class="line">            public void disconnected(ConnectionEvent e) &#123;</span><br><span class="line">                System.out.println(&quot;邮箱&quot; + getMailName() + &quot; disconnected&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            @Override</span><br><span class="line">            public void closed(ConnectionEvent e) &#123;</span><br><span class="line">                System.out.println(&quot;邮箱&quot; + getMailName() + &quot; closed&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        store.connect(userName, passWord);</span><br><span class="line">        idleManager &#x3D; new IdleManager(session, SingleThreadPool.getInstance().threadPool());</span><br><span class="line">        folderObjects &#x3D; new ArrayList&lt;IMAPFolder&gt;();</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    public abstract Properties getProperties();</span><br><span class="line"></span><br><span class="line">    public abstract String getMailName();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 创建监听</span><br><span class="line">    public void createFoldersListen(List&lt;String&gt; folders) throws Exception &#123;</span><br><span class="line">        for (String folderName : folders) &#123;</span><br><span class="line">            IMAPFolder temp &#x3D; (IMAPFolder) store.getFolder(folderName);</span><br><span class="line">            &#x2F;&#x2F; 为了调试加上监听</span><br><span class="line">            temp.addConnectionListener(new ConnectionListener() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void opened(ConnectionEvent e) &#123;</span><br><span class="line">                System.out.println(&quot;文件夹:&quot; + getMailName() + folderName + &quot; opened&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">                @Override</span><br><span class="line">                public void disconnected(ConnectionEvent e) &#123;</span><br><span class="line">                System.out.println(&quot;文件夹:&quot; + getMailName() + folderName + &quot; disconnected&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">                @Override</span><br><span class="line">                public void closed(ConnectionEvent e) &#123;</span><br><span class="line">                System.out.println(&quot;文件夹:&quot; + getMailName() + folderName + &quot; closed&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            temp.open(Folder.READ_ONLY);&#x2F;&#x2F; 在这一步，收件箱所有邮件将被下载到本地</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F; Message message &#x3D; folder.getMessage(size);&#x2F;&#x2F;取得最新的那个邮件</span><br><span class="line">            System.out.println(&quot;Size:&quot; + temp.getMessageCount());</span><br><span class="line">            System.out.println(&quot;unread:&quot; + temp.getUnreadMessageCount());</span><br><span class="line">            System.out.println(&quot;new:&quot; + temp.getNewMessageCount());</span><br><span class="line">            System.out.println();</span><br><span class="line"></span><br><span class="line">            temp.addMessageCountListener(new MessageCountAdapter() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void messagesAdded(MessageCountEvent e) &#123;</span><br><span class="line">                    super.messagesAdded(e);</span><br><span class="line">                    IMAPFolder folder &#x3D; (IMAPFolder) e.getSource();</span><br><span class="line">                    Message[] msgs &#x3D; e.getMessages();</span><br><span class="line">                    for (int i &#x3D; 0; i &lt; msgs.length; i++) &#123;</span><br><span class="line">                        try &#123;</span><br><span class="line">                            handler.setModelTextWithHoldTime(getMailName() + &quot;有新邮件！标题：&quot; + msgs[i].getSubject(), 0, 10);</span><br><span class="line">                            System.out.println(&quot;新邮件主题&quot; + msgs[i].getSubject());</span><br><span class="line">                        &#125; catch (MessagingException e1) &#123;</span><br><span class="line">                            e1.printStackTrace();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    try &#123;</span><br><span class="line">                        idleManager.watch(folder);</span><br><span class="line">                    &#125; catch (MessagingException e2) &#123;</span><br><span class="line">                        e2.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            idleManager.watch(temp);</span><br><span class="line">            folderObjects.add(temp);</span><br><span class="line">            handler.setModelText(getMailName() + &quot; &quot; + folderName + &quot; 已关注&quot;, 0);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">    * 心跳</span><br><span class="line">    *&#x2F;</span><br><span class="line">    public void heartWork() &#123;</span><br><span class="line">        SingleThreadPool.getInstance().scheduledThreadPool().scheduleAtFixedRate(new Runnable() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName() + &quot;————&quot; + getMailName());</span><br><span class="line">                for (IMAPFolder imapFolder : folderObjects) &#123;</span><br><span class="line">                    try &#123;</span><br><span class="line">                        imapFolder.doCommand(new IMAPFolder.ProtocolCommand() &#123;</span><br><span class="line">                            @Override</span><br><span class="line">                            public Object doCommand(IMAPProtocol arg0) throws ProtocolException &#123;</span><br><span class="line">                                arg0.simpleCommand(&quot;NOOP&quot;, null);</span><br><span class="line">                                return null;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;);</span><br><span class="line">                    &#125; catch (FolderClosedException cfe) &#123;</span><br><span class="line">                        cfe.printStackTrace();</span><br><span class="line">                        try &#123;</span><br><span class="line">                            if (!imapFolder.isOpen()) &#123;</span><br><span class="line">                                imapFolder.open(Folder.READ_ONLY);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125; catch (MessagingException e1) &#123;</span><br><span class="line">                            e1.printStackTrace();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; catch (Exception e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                    &#x2F;&#x2F;一定要重新watch</span><br><span class="line">                    try &#123;</span><br><span class="line">                        idleManager.watch(imapFolder);</span><br><span class="line">                    &#125; catch (MessagingException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, 9, 9, TimeUnit.MINUTES);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 关闭 监听 文件夹 store</span><br><span class="line">    @Override</span><br><span class="line">    public void close() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            if (idleManager !&#x3D; null &amp;&amp; idleManager.isRunning()) &#123;</span><br><span class="line">                idleManager.stop();</span><br><span class="line">            &#125;</span><br><span class="line">            for (Folder folder : folderObjects) &#123;</span><br><span class="line">                if (folder !&#x3D; null) &#123;</span><br><span class="line">                    folder.close(false);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (store !&#x3D; null) &#123;</span><br><span class="line">                store.close();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="代码解释"><a href="#代码解释" class="headerlink" title="代码解释"></a>代码解释</h2><p>&emsp;&emsp;在写这个功能的时候，真的遇到了挺多坑。这里就分析一下吧，顺便讲讲那些坑 （代码行标 以上面的代码为基准）</p>
+<h3 id="为什么用抽象类"><a href="#为什么用抽象类" class="headerlink" title="为什么用抽象类"></a>为什么用抽象类</h3><p>&emsp;&emsp; 考虑到会适配多个邮箱，那么其实大部分邮箱的功能是一样的，不同的仅仅是邮箱的账号密码，服务器地址，端口等。作为客户端，账户密码肯定来源用户，那么我就从外部获取。而邮箱服务器配置写个子类实现一下抽象父类的钩子就可以了。比如实现qq邮箱就像下面，是不是很方便呢：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class QQMailPro extends Mail &#123;</span><br><span class="line"></span><br><span class="line">    public QQMailPro(ApiService handler, String userName, String passWord, List&lt;String&gt; folders) &#123;</span><br><span class="line">        super(handler, userName, passWord, folders);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public Properties getProperties() &#123;</span><br><span class="line">        String host &#x3D; &quot;imap.qq.com&quot;;&#x2F;&#x2F; QQ邮箱的imap服务器</span><br><span class="line">        int port &#x3D; 993;&#x2F;&#x2F; 端口</span><br><span class="line">        Properties props &#x3D; new Properties();</span><br><span class="line">        props.put(&quot;mail.imap.ssl.enable&quot;, &quot;true&quot;);</span><br><span class="line">        props.put(&quot;mail.imap.host&quot;, host);</span><br><span class="line">        props.put(&quot;mail.imap.port&quot;, port);</span><br><span class="line">        props.put(&quot;mail.transport.protocol&quot;, &quot;imap&quot;);</span><br><span class="line">        props.put(&quot;mail.imap.usesocketchannels&quot;, &quot;true&quot;);</span><br><span class="line">        return props;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String getMailName() &#123;</span><br><span class="line">        return &quot;QQ邮箱&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="handshake-failure-是什么问题？"><a href="#handshake-failure-是什么问题？" class="headerlink" title="handshake_failure 是什么问题？"></a>handshake_failure 是什么问题？</h3><p>&emsp;&emsp; 我用的是mac os，jdk是1.8.0_121。 第一次运行的时候 直接就甩了这个异常给我。一脸懵，几经波折，好像是ssl上的问题，java的一个bug，需要在官方下载2个jar包替换。相对的jre运行的时候，如果jre版本较早的话，也会出这个问题。反正用最新的jre就不会有事了。</p>
+<ul>
+<li>详见<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36783371/article/details/80665901">Java加密套件强度限制引起的SSL handshake_failure</a></li>
+</ul>
+<h3 id="64行-获得session的实例"><a href="#64行-获得session的实例" class="headerlink" title="64行 获得session的实例"></a>64行 获得session的实例</h3><p>&emsp;&emsp;这个问题一开始没有遇到，当时只适配了一个qq邮箱，而在我适配多个邮箱之后，就出现了一些问题；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">session &#x3D; Session.getDefaultInstance(props);</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;这是我一开始用的方法，在获得多个session实例情况下，后获取的实例连接新邮箱时，会随着邮件服务商不同报出各种问题，于是下载了源码看了看（javax.mail.Session），好家伙，原来有2个方法 getDefaultInstance得到的始终是该方法初次创建的缺省的对象，而getInstance得到的始终是新的对象。所以之前一只获得了相同的对象，而用了不同的邮件账号密码去登录，当然会出错了…</p>
+<h3 id="118行-增加事件监听"><a href="#118行-增加事件监听" class="headerlink" title="118行 增加事件监听"></a>118行 增加事件监听</h3><p>&emsp;&emsp;一开始其实我并不知道idle这个东西，folder的方法中直接就有很多addListener，那感觉就很简单，直接加监听就完事了呗~</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public synchronized void addMessageCountListener(MessageCountListener l);</span><br><span class="line"></span><br><span class="line">public synchronized void addConnectionListener(ConnectionListener l);</span><br><span class="line"></span><br><span class="line">public synchronized void addFolderListener(FolderListener l);</span><br><span class="line"></span><br><span class="line">public synchronized void addMessageChangedListener(MessageChangedListener l);</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;第一个是监听文件夹内邮件增减的监听器，里面监听事件有2个 messagesAdded，messagesRemoved，而且这个监听是IMAPFolder类独有的，这很明显了，我们就该使用这个监听。<br>&emsp;&emsp;顺便说一下，下面3个监听都是IMAPFolder的父类 Folder有的方法。第二个是监听连接事件，比如连接通道的open，失去连接disconnect，关闭连接closed。第三个是文件夹状态的监听，比如文件夹的创建，删除，重命名。第四个是邮件变化的监听，监听的是MessageChangedEvent 这事件对象，对象中用type具体分类不同的变化。有兴趣的可以自己下载源码看看，这里不多展开。<br>&emsp;&emsp;当我乐呵呵的添加了MessageCountListener之后，赶紧发了一封邮件试试。果然没有收到…. 为什么呢，明明添加了监听，缺没有收到通知。于是开始查阅资料…原来需要用imap idle的支持 才能接收到服务器的通知…</p>
+<h3 id="IdleManager的使用"><a href="#IdleManager的使用" class="headerlink" title="IdleManager的使用"></a>IdleManager的使用</h3><p>&emsp;&emsp;接上文，有了头绪就好做很多了。几经查阅了解到，在JavaMail 1.5.2. 版本时，新推出了一个IdleManager。听名字就知道是用来管理idle的，一般来说，用官方推出的manager管理总比自己写好一些，比如线程 和 线程池…下面列出IdleManager中public的方法，对于内部的一些实现有兴趣的可以看看，这边讲一下使用点到为止。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public IdleManager(Session session, Executor es) throws IOException;</span><br><span class="line"></span><br><span class="line">public boolean isRunning();</span><br><span class="line"></span><br><span class="line">public void watch(Folder folder) throws MessagingException;</span><br><span class="line"></span><br><span class="line">public synchronized void stop();</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;第一个是IdleManager的构造方法，第一个参数是邮件会话的session实例，就是上文提到过的那个。说白点就是 你要关注的那个邮箱连接。第二个参数是一个线程池。盲猜一下，应该是用来执行监听任务分配线程的。<br>&emsp;&emsp;第二个方法和第四个一起说，太见名知意了。isRunning毫无疑问就是看看现在这个IdleManager对象有没有的运行，而stop就是停止当前对象。需要注意的一点是，在IdleManager调用stop()方法停止后，是无法重启的。<br>&emsp;&emsp;第三个watch就是关键了，接受的参数就是你需要关注（监听）的那个收件夹。而且需要<strong>注意</strong>： Watch the Folder for new messages and other events using the IMAP IDLE command.这个是源码方法上的注释，最初不知道，后来下载源码看了才知道，给我带来了惨痛的后果，之后会说。<br>&emsp;&emsp;当用IdleManager关注你的folder之后，就可以收到邮件了。然而比较有趣的是：只能收到一封，后面又收不到了。带着操蛋的心情我只能又去看看源码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line">* Watch the Folder for new messages and other events using the IMAP IDLE</span><br><span class="line">* command.</span><br><span class="line">*</span><br><span class="line">* @param    folder    the folder to watch</span><br><span class="line">* @exception    MessagingException    for errors related to the folder</span><br><span class="line">*&#x2F;</span><br><span class="line">public void watch(Folder folder) throws MessagingException &#123;</span><br><span class="line">    if (die)    &#x2F;&#x2F; XXX - should be IllegalStateException?</span><br><span class="line">        throw new MessagingException(&quot;IdleManager is not running&quot;);</span><br><span class="line">    if (!(folder instanceof IMAPFolder))</span><br><span class="line">        throw new MessagingException(&quot;Can only watch IMAP folders&quot;);</span><br><span class="line">    IMAPFolder ifolder &#x3D; (IMAPFolder)folder;</span><br><span class="line">    SocketChannel sc &#x3D; ifolder.getChannel();</span><br><span class="line">    if (sc &#x3D;&#x3D; null) &#123;</span><br><span class="line">        if (folder.isOpen())</span><br><span class="line">            throw new MessagingException(&quot;Folder is not using SocketChannels&quot;);</span><br><span class="line">        else</span><br><span class="line">            throw new MessagingException(&quot;Folder is not open&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if (logger.isLoggable(Level.FINEST))</span><br><span class="line">        logger.log(Level.FINEST, &quot;IdleManager watching &#123;0&#125;&quot;,folderName(ifolder));</span><br><span class="line">    &#x2F;&#x2F; keep trying to start the IDLE command until we&#39;re successful.</span><br><span class="line">    &#x2F;&#x2F; may block if we&#39;re in the middle of aborting an IDLE command.</span><br><span class="line">    int tries &#x3D; 0;</span><br><span class="line">    while (!ifolder.startIdle(this)) &#123;</span><br><span class="line">        if (logger.isLoggable(Level.FINEST))</span><br><span class="line">            logger.log(Level.FINEST, &quot;IdleManager.watch startIdle failed for &#123;0&#125;&quot;, folderName(ifolder));</span><br><span class="line">        tries++;</span><br><span class="line">    &#125;</span><br><span class="line">    if (logger.isLoggable(Level.FINEST)) &#123;</span><br><span class="line">        if (tries &gt; 0)</span><br><span class="line">            logger.log(Level.FINEST,</span><br><span class="line">            &quot;IdleManager.watch startIdle succeeded for &#123;0&#125;&quot; +</span><br><span class="line">            &quot; after &quot; + tries + &quot; tries&quot;,</span><br><span class="line">            folderName(ifolder));</span><br><span class="line">        else</span><br><span class="line">            logger.log(Level.FINEST,</span><br><span class="line">            &quot;IdleManager.watch startIdle succeeded for &#123;0&#125;&quot;,</span><br><span class="line">            folderName(ifolder));</span><br><span class="line">    &#125;</span><br><span class="line">    synchronized (this) &#123;</span><br><span class="line">        toWatch.add(ifolder);</span><br><span class="line">        selector.wakeup();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;接收到的folder，在13行 被强转了 IMAPFolder ifolder = (IMAPFolder)folder;  然后一路看到最后，跳过大部分的抛异常，打log。看到比较关键的地方toWatch.add(ifolder); 他把ifolder添加到了toWatch中，这toWatch又是啥？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private Queue&lt;IMAPFolder&gt; toWatch &#x3D; new ConcurrentLinkedQueue&lt;&gt;();</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;原来是内部私有的一个队列…这问题就很显然了，这么一个流程：一开始open了folder，然后IdleManager.watch了folder，folder被转成IMAPFolder加入队列，收到邮件任务被执行，队列里的任务出队列，队列里没有了任务…说的通俗一点就是 watch方法是个消耗品，触发过监听回调的就不在监听了。于是乎在监听事件中又继续加上watch（代码133行），发了几封测试一下，解决问题。</p>
+<h3 id="心跳大坑"><a href="#心跳大坑" class="headerlink" title="心跳大坑"></a>心跳大坑</h3><p>&emsp;&emsp;这个问题是折腾了我很久的一个问题，其实有几个问题交织在一起，但是他们产生的结果的现象是一样的。<br>&emsp;&emsp;现在确实可以即时的收到邮件，但是！但是！并不能持续长久，过了一会就失效了。作为写过很多socket的人想都不用想，心跳嘛~ easy~。啥是心跳，自己百度。虽说心跳随便发点什么都行（一般来说发空就行），但是也不能乱发啊，万一服务器接收到错误格式的数据直接把你咔嚓了也是有可能的（以前就遇到过一个服务器心跳只接受 heart，多发几次乱七八糟的字符直接暴毙…）<br>&emsp;&emsp;有过翻车经验的我就直接去找imap协议了，网上很多一看就知…NOOP命令：NOOP命令什么也不做，用来向服务器发送自动命令，防止因长时间处于不活动状态而导致连接中断，服务器对该命令的响应始终为肯定。无参数。<br>&emsp;&emsp;于是只要定时给服务器 发noop就可以了 （关键代码155-161，为了看起来方便，下方再贴一下）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ImapFolder.doCommand(new IMAPFolder.ProtocolCommand() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public Object doCommand(IMAPProtocol arg0) throws ProtocolException &#123;</span><br><span class="line">        arg0.simpleCommand(&quot;NOOP&quot;, null);</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;写完心跳我测试了一下，没有成功….<del>这里开始就坑了，测起来太麻烦了，因为一般保持连接默认是30分钟，所以很无奈，只能30分钟测一次。</del>心跳发出去了为什么还是断开了连接？于是我在代码中给所有store和folder和添加了连接监听，开着log挂机测试…结果是啥？并没有断开连接，也就是说，连接还在，但是监听失效？<br>&emsp;&emsp;为了定位问题，我把心跳发送时间间隔缩短至30秒。测试下来，30秒前可以正常收到监听，在心跳出去之后，无法收到…wtf？啥玩意啊？咋回事啊？那咋整啊？心跳本身让监听失效，开什么玩笑？我就发了个noop啊！我已经忘记我是怎么注意到这个问题的关键点了，只能说是灵光一现吧….<br>&emsp;&emsp;记得上面说的那个惨痛的后果么，就是这里了。Watch the Folder for new messages and other events using the IMAP IDLE command。在偶然看源代码的时候注意到了…这个是IdleManager的watch方法的注释。翻译一下：使用imap idle命令监视文件夹中的新邮件和其他事件。  新邮件和其他事件。<strong>其他事件！！！</strong> 所以说我tmd那个noop也是其他事件？结合上一节发现的问题，watch是消耗品。于是推测心跳的command动作让watch被消耗掉了，这一后果就是 连接 还在，但是监听断了。就是这个现象！！于是在ImapFolder.doCommand动作后补上folder的watch（175-179行）。</p>
+<ul>
+<li>测试noop心跳问题：启动，发送noop，发测试件，收到监听，成功！</li>
+<li>再测试心跳连接：启动，挂机1小时，发测试件，收到监听，成功！</li>
+</ul>
+<p>&emsp;&emsp;以为这就完了？并没有！！！在实际使用中，发现过了很长一段时间后，收件提示失效….我已经欲哭无泪了。难道超时时间不是半小时？我的心跳其实压根没用？在几经怀疑人生的情况下，我开始了对照测试：同时启2份代码，一个有9分钟一次的心跳（gmail的超时时间是10分钟，所以心跳设置了9分钟） ；另一个没有心跳，用qq邮箱测试。在过了40分钟后，有心跳的哪一个可以收到通知，而没有心跳的收不到。这不是没问题么？心跳确实生效了啊！<br>&emsp;&emsp;于是又想到了一个问题，线程 与 os休眠的问题。想象以下场景： 我与服务器的超时时间是 10分钟，我每隔9分钟执行一次心跳任务保持连接。在5分钟的时候，电脑休眠了，这时候所有线程被快照保存下来。过了20分钟，电脑恢复使用，线程重新被唤醒，线程以为只过了5分钟继续从5分钟开始走，（这时候由于25分钟没有心跳，连接肯定是断开了。）又过了4分钟，任务线程9分钟被触发发送心跳，但是实际时间已经过了29分钟了，已经断开了。<br>&emsp;&emsp;这个问题我目前不知道怎么解决…但是我得排除一下试试。心如死灰的关闭电脑休眠功能，然后测试，过了很久很久，邮件监听失效，这反而让我有一些高兴，暂且排除os休眠产生的问题（其实我也不确定那样到底会不会出这个问题，但是等遇到了再说吧，心太累了）于是乎开启调试模式，所有监听全开，异常全部打出，挂机….终于！！！在2个小时左右 抛出了异常！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javax.mail.FolderClosedException: * BYE JavaMail Exception: java.io.IOException: **Connection dropped by server?**</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;嗯？？啥 bye？Connection dropped by server？ 最后这个问号啥意思，到底是不是by server 倒是说清楚啊….同时我的folder closed监听被触发。注意是folder 不是store，也就说 连接还在，但是folder被关闭了，为什么会这样 不知道…没办法 只能google一下。最后找到了<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/3948838/javamail-imap-connection-with-gmail-drops-after-a-random-duration">相关资料</a>，一样的问题，不能根本上解决，只能写一个补偿吧…捕获异常，异常关闭后再次打开即可。<strong>注意</strong>不能再监听的closed事件中重新打开，不然在正常关闭的时候有你受的… 补偿代码(162-171行)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">try&#123;</span><br><span class="line">    .....</span><br><span class="line">    &#125;catch (FolderClosedException cfe) &#123;</span><br><span class="line">        cfe.printStackTrace();</span><br><span class="line">        try &#123;</span><br><span class="line">            if (!imapFolder.isOpen()) &#123;</span><br><span class="line">            imapFolder.open(Folder.READ_ONLY);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; catch (MessagingException e1) &#123;</span><br><span class="line">        e1.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2019年06月12日补充<br>&emsp;&emsp;后来仔细想了想，其实在close监听事件中重新打开也没有什么问题。额外设定一个flag标记，当true的时候需要重新打开文件夹，而认为手动关闭的时候将这个flag设false就好了。这样做可以应对一些未知问题引起的异常关闭。</p>
+<h2 id="附件-查看IMAP服务器提供的服务"><a href="#附件-查看IMAP服务器提供的服务" class="headerlink" title="附件 查看IMAP服务器提供的服务"></a>附件 查看IMAP服务器提供的服务</h2><p>&emsp;&emsp;主要其实可以看IMAP4 RFC3501协议，这边就说一下怎么看邮件服务器提供的服务，这里用qq邮箱为例，首先打开shell，用的是telnet</p>
+<h3 id="telnet连接邮件服务器"><a href="#telnet连接邮件服务器" class="headerlink" title="telnet连接邮件服务器"></a>telnet连接邮件服务器</h3><p>&emsp;&emsp;qq邮箱的服务地址是imap.qq.com，imap端口143</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ telnet imap.qq.com 143</span><br><span class="line"></span><br><span class="line">* OK [CAPABILITY IMAP4 IMAP4rev1 ID AUTH&#x3D;LOGIN NAMESPACE] QQMail IMAP4Server ready</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;当你看到 * OK [CAPABILITY IMAP4 IMAP4rev1 ID AUTH=LOGIN NAMESPACE] QQMail IMAP4Server ready 这条说明成功</p>
+<h3 id="登录"><a href="#登录" class="headerlink" title="登录"></a>登录</h3><p>&emsp;&emsp;格式：$ <strong>login 账号 密码</strong> ，有些邮箱用的是授权码，比如这里的qq就是。所以像下面那样</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ A01 login xxxxx@qq.com zxcvbasdfg</span><br><span class="line"></span><br><span class="line">A01 OK Success login ok</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;当你看到 A01 OK Success login ok ，说明登录成功</p>
+<h3 id="查看提供的服务"><a href="#查看提供的服务" class="headerlink" title="查看提供的服务"></a>查看提供的服务</h3><p>&emsp;&emsp;使用 $ A02 CAPABILITY 即可查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> $ A02 CAPABILITY</span><br><span class="line"></span><br><span class="line">* CAPABILITY IMAP4 IMAP4rev1 XLIST MOVE IDLE XAPPLEPUSHSERVICE NAMESPACE CHILDREN ID UIDPLUS</span><br><span class="line">a02 OK CAPABILITY Completed</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;上面是qq邮箱返回的信息，我们可以看到支持IDLE。<br>&emsp;&emsp;有人会问 这个a01 a02是什么东西，不打怎么就报错了，其实你看了协议就知道了。imap的命令以一个 标记tag 开头，可以是a01 a02 等，服务器的应答是对应该tag的处理结果（OK / NO）详情就作为拓展自己看协议吧。</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>&emsp;&emsp;写完之后就好像把坑又复习了一遍，看起来一下子就知道了，但中间踩坑排查的过程真的是….刺激…<br>&emsp;&emsp;本文的源码在<a target="_blank" rel="noopener" href="https://github.com/WhiteMagic2014/Live2dChatWidget">这里</a>,不要脸的求个star，(*/ω＼*)</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IMAP/" rel="tag"># IMAP</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/09/%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB/" rel="next" title="扩展阅读">
+                <i class="fa fa-chevron-left"></i> 扩展阅读
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/27/java%E5%8F%8D%E5%B0%84%E5%B7%A5%E5%85%B7/" rel="prev" title="java反射工具">
+                java反射工具 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
 
     <div class="post-spread">
-      {% if theme.jiathis %}
-        {% include '_partials/share/jiathis.swig' %}
-      {% elseif theme.baidushare %}
-        {% include '_partials/share/baidushare.swig' %}
-      {% elseif theme.add_this_id %}
-        {% include '_partials/share/add-this.swig' %}
-      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
-        {% include '_partials/share/duoshuo_share.swig' %}
-      {% endif %}
+      
     </div>
   </div>
 
-{% endblock %}
-
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+          
+          </div>
+          
 
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text">协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">协议简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SMTP"><span class="nav-number">1.1.1.</span> <span class="nav-text">SMTP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#POP3"><span class="nav-number">1.1.2.</span> <span class="nav-text">POP3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IMAP"><span class="nav-number">1.1.3.</span> <span class="nav-text">IMAP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E5%88%AB"><span class="nav-number">1.2.</span> <span class="nav-text">区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text">问题分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">2.3.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E9%87%8A"><span class="nav-number">2.4.</span> <span class="nav-text">代码解释</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8%E6%8A%BD%E8%B1%A1%E7%B1%BB"><span class="nav-number">2.4.1.</span> <span class="nav-text">为什么用抽象类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#handshake-failure-%E6%98%AF%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="nav-number">2.4.2.</span> <span class="nav-text">handshake_failure 是什么问题？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#64%E8%A1%8C-%E8%8E%B7%E5%BE%97session%E7%9A%84%E5%AE%9E%E4%BE%8B"><span class="nav-number">2.4.3.</span> <span class="nav-text">64行 获得session的实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#118%E8%A1%8C-%E5%A2%9E%E5%8A%A0%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC"><span class="nav-number">2.4.4.</span> <span class="nav-text">118行 增加事件监听</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IdleManager%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">2.4.5.</span> <span class="nav-text">IdleManager的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%83%E8%B7%B3%E5%A4%A7%E5%9D%91"><span class="nav-number">2.4.6.</span> <span class="nav-text">心跳大坑</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E4%BB%B6-%E6%9F%A5%E7%9C%8BIMAP%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8F%90%E4%BE%9B%E7%9A%84%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.5.</span> <span class="nav-text">附件 查看IMAP服务器提供的服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#telnet%E8%BF%9E%E6%8E%A5%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.5.1.</span> <span class="nav-text">telnet连接邮件服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%99%BB%E5%BD%95"><span class="nav-number">2.5.2.</span> <span class="nav-text">登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%8F%90%E4%BE%9B%E7%9A%84%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.5.3.</span> <span class="nav-text">查看提供的服务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E8%AE%B0"><span class="nav-number">3.</span> <span class="nav-text">后记</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+    <script src="/live2d/autoload.js"></script>
+
+
+</body>
+</html>
