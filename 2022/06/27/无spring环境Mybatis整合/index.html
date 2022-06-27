@@ -1,0 +1,778 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="mybatis," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp; 背景mirai-console&amp;emsp;&amp;emsp;最近在学习写mirai console插件，mirai本身是kotlin开发，对于我真是既友好又不友好…不友好的是kotlin真的太抽象了，阅读起来有一定障碍，友好的是有问题至少能用java填坑.. 数据存储&amp;emsp;&amp;emsp;mirai console提供的数据存储PluginData 本身算是为kotlin设计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="无spring环境Mybatis整合">
+<meta property="og:url" content="https://github.com/WhiteMagic2014/2022/06/27/%E6%97%A0spring%E7%8E%AF%E5%A2%83Mybatis%E6%95%B4%E5%90%88/index.html">
+<meta property="og:site_name" content="Magic Space">
+<meta property="og:description" content="&amp;emsp;&amp;emsp; 背景mirai-console&amp;emsp;&amp;emsp;最近在学习写mirai console插件，mirai本身是kotlin开发，对于我真是既友好又不友好…不友好的是kotlin真的太抽象了，阅读起来有一定障碍，友好的是有问题至少能用java填坑.. 数据存储&amp;emsp;&amp;emsp;mirai console提供的数据存储PluginData 本身算是为kotlin设计">
+<meta property="og:locale">
+<meta property="article:published_time" content="2022-06-27T03:01:14.000Z">
+<meta property="article:modified_time" content="2022-06-27T07:53:15.310Z">
+<meta property="article:author" content="WhiteMagic2014">
+<meta property="article:tag" content="mybatis">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://github.com/WhiteMagic2014/2022/06/27/无spring环境Mybatis整合/"/>
+
+
+
+
+
+  <title> 无spring环境Mybatis整合 | Magic Space </title>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Magic Space</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">I am here. As always.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            概览
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://github.com/WhiteMagic2014/2022/06/27/%E6%97%A0spring%E7%8E%AF%E5%A2%83Mybatis%E6%95%B4%E5%90%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/magicavatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Magic Space">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                无spring环境Mybatis整合
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-06-27T11:01:14+08:00">
+                2022-06-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;</p>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h2 id="mirai-console"><a href="#mirai-console" class="headerlink" title="mirai-console"></a>mirai-console</h2><p>&emsp;&emsp;最近在学习写<a href="https://github.com/mamoe/mirai">mirai</a> console插件，mirai本身是kotlin开发，对于我真是既友好又不友好…不友好的是kotlin真的太抽象了，阅读起来有一定障碍，友好的是有问题至少能用java填坑..</p>
+<h2 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h2><p>&emsp;&emsp;mirai console提供的数据存储PluginData 本身算是为kotlin设计的，java使用有些不便（而且虽然已经在计划中，但目前还不支持数据库存储）。数据的存储 以及一些查询等等…我觉得还是数据库更胜一筹的，于是乎还得整合数据库（当然为了插件的便捷性，数据库依然是sqlite）</p>
+<h2 id="mybatis"><a href="#mybatis" class="headerlink" title="mybatis"></a>mybatis</h2><p>&emsp;&emsp;为什么是mybatis不是jpa，不是hibernate？sql归sql，代码归代码，这是我喜欢mybatis的原因。另一个主要原因是：用惯了…</p>
+<h2 id="无spring"><a href="#无spring" class="headerlink" title="无spring"></a>无spring</h2><p>&emsp;&emsp;其实在准备写此插件之前，已经写过一个mirai+spring的项目了<a href="https://github.com/WhiteMagic2014/WMagicBotR">WMagicBotR</a>，那个项目就是 spring+sqlite+mybtis，不得不说spring确实是为开发人员省下很多心，特别是springboot 一键搞定。<br>&emsp;&emsp;然而这些便利是有代价的：</p>
+<ul>
+<li>打包后jar体积庞大（可以通过阉割spring解决）</li>
+<li>不熟悉的kotlin+不熟悉的构建工具gradle，使得一开始使用springboot的过程中，打包后的jar要不打包失败，要不打包后无法被识别为插件很是心累…</li>
+</ul>
+<p>&emsp;&emsp;springboot默认需要一个main方法启动类，而作为mirai console插件，他本身是不该主动启动的，应该在插件被加载的时候才启动。这里就有一个问题需要想明白，这个项目是spring作主还是mirai做主？上一个项目其实是spring做主的，使用mirai获得的bot对象作为一个bean被spring管理着，哪里需要bot在哪里注入就行。但是作为console插件，整个环境下不应该有bot对象，而是通过mcl等其他mirai前端来调用插件的方法，调用者（bot）是不固定的。<br>&emsp;&emsp;失去了 <strong>在任意地方获取bot对象</strong> 整个需求后，作为一个功能性插件，对于spring的需求也便弱化了…</p>
+<h1 id="需求与坑"><a href="#需求与坑" class="headerlink" title="需求与坑"></a>需求与坑</h1><p>&emsp;&emsp;现在总结一下需要做的事，非spring+mybatis+sqlite，这里面还有一些隐藏的小问题（坑），比如说：</p>
+<ul>
+<li>mybatis+sqlite，sqlite文件存放的位置不是固定的url，这就不该使用常规的mybatis-config.xml配置文件了</li>
+<li>mapper的注册方式有4种，package，url，class，resource用哪一种？为了可以让mapper.xml一家人整整齐齐的待在resourses文件夹下，得用resource模式</li>
+<li>可惜 不用config.xml配置文件的方式…貌似不能用resource注册mapper</li>
+<li>开发环境的resource，和打成jar包的resource，他一样吗？<br>&emsp;&emsp;几个问题一环扣一环..接下来就开始一点点解决吧</li>
+</ul>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><p>&emsp;&emsp; 相关详细代码会在本文最后贴出，源码见<a href="https://github.com/WhiteMagic2014/WMagicBotRP">WMagicBotRP</a></p>
+<h2 id="sqlite数据初始化"><a href="#sqlite数据初始化" class="headerlink" title="sqlite数据初始化"></a>sqlite数据初始化</h2><p>&emsp;&emsp;数据初始化的流程比较好理解，检查数据文件是否存在，如果不存在则创建文件。这边就不用mybatis了，为什么呢？如果没有初始化的话，db文件都不存在，相当于mybatis没有数据库连接的url</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 初始化数据文件</span><br><span class="line">private void createDB() &#123;</span><br><span class="line">       &#x2F;&#x2F;SQLite没有datetime值的显式数据类型，这里自己转换一下格式写入</span><br><span class="line">       SimpleDateFormat sdf &#x3D; new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span><br><span class="line">       try &#123;</span><br><span class="line">           Class.forName(&quot;org.sqlite.JDBC&quot;);</span><br><span class="line">       &#125; catch (ClassNotFoundException e1) &#123;</span><br><span class="line">           logger.error(e1.getMessage());</span><br><span class="line">       &#125;</span><br><span class="line">       String url &#x3D; &quot;jdbc:sqlite:&quot; + Path.getPath() + dbFileName;</span><br><span class="line">       try (Connection connection &#x3D; DriverManager.getConnection(url);</span><br><span class="line">            Statement statement &#x3D; connection.createStatement();) &#123;</span><br><span class="line"></span><br><span class="line">           statement.executeUpdate(&quot;DROP TABLE IF EXISTS DBInfo;&quot;);</span><br><span class="line"></span><br><span class="line">           String createDBsql &#x3D; &quot;create table DBInfo(&quot;</span><br><span class="line">                   + &quot;id INTEGER PRIMARY KEY autoincrement,&quot;</span><br><span class="line">                   + &quot;name varchar(255) ,&quot;</span><br><span class="line">                   + &quot;version varchar(20),&quot;</span><br><span class="line">                   + &quot;createDate varchar(20),&quot;</span><br><span class="line">                   + &quot;updateDate varchar(20));&quot;;</span><br><span class="line">           statement.executeUpdate(createDBsql);</span><br><span class="line"></span><br><span class="line">           String initsql &#x3D; &quot;INSERT INTO DBInfo (name,version,createDate,updateDate) VALUES (&quot;</span><br><span class="line">                   + &quot;&#39;MagicBot&#39;,&quot;</span><br><span class="line">                   + &quot;&#39;0.0.1&#39;,&quot;</span><br><span class="line">                   + &quot;&#39;&quot; + sdf.format(new Date()) + &quot;&#39;,&quot;</span><br><span class="line">                   + &quot;&#39;&#39;)&quot;;</span><br><span class="line">           statement.executeUpdate(initsql);</span><br><span class="line">       &#125; catch (Exception e) &#123;</span><br><span class="line">           logger.error(e.getMessage());</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="mybatis的配置"><a href="#mybatis的配置" class="headerlink" title="mybatis的配置"></a>mybatis的配置</h2><h3 id="先看看config-xml"><a href="#先看看config-xml" class="headerlink" title="先看看config.xml"></a>先看看config.xml</h3><p>&emsp;&emsp;上面提过，因为需要动态的获取db文件的地址，这里的配置就不再使用mybatis-config.xml文件了，但是原理是差不多的。所以先来看一下使用配置文件的方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; mybatis官方提供的配置</span><br><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot; ?&gt;</span><br><span class="line">&lt;!DOCTYPE configuration</span><br><span class="line">  PUBLIC &quot;-&#x2F;&#x2F;mybatis.org&#x2F;&#x2F;DTD Config 3.0&#x2F;&#x2F;EN&quot;</span><br><span class="line">  &quot;http:&#x2F;&#x2F;mybatis.org&#x2F;dtd&#x2F;mybatis-3-config.dtd&quot;&gt;</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line"> </span><br><span class="line">  &lt;environments default&#x3D;&quot;development&quot;&gt;</span><br><span class="line">    &lt;environment id&#x3D;&quot;development&quot;&gt;</span><br><span class="line">      &lt;transactionManager type&#x3D;&quot;JDBC&quot;&#x2F;&gt;</span><br><span class="line">      &lt;dataSource type&#x3D;&quot;POOLED&quot;&gt;</span><br><span class="line">        &lt;property name&#x3D;&quot;driver&quot; value&#x3D;&quot;$&#123;driver&#125;&quot;&#x2F;&gt;</span><br><span class="line">        &lt;property name&#x3D;&quot;url&quot; value&#x3D;&quot;$&#123;url&#125;&quot;&#x2F;&gt;</span><br><span class="line">        &lt;property name&#x3D;&quot;username&quot; value&#x3D;&quot;$&#123;username&#125;&quot;&#x2F;&gt;</span><br><span class="line">        &lt;property name&#x3D;&quot;password&quot; value&#x3D;&quot;$&#123;password&#125;&quot;&#x2F;&gt;</span><br><span class="line">      &lt;&#x2F;dataSource&gt;</span><br><span class="line">    &lt;&#x2F;environment&gt;</span><br><span class="line">  &lt;&#x2F;environments&gt;</span><br><span class="line"> </span><br><span class="line"> &#x2F;&#x2F;4种注册mapper的方式就不展开了，有需要可以自己去找一下相关资料</span><br><span class="line">  &lt;mappers&gt;</span><br><span class="line">    &lt;mapper resource&#x3D;&quot;mapper&#x2F;DemoMapper.xml&quot;&#x2F;&gt;</span><br><span class="line">    &lt;mapper url&#x3D;&quot;file:&#x2F;&#x2F;&#x2F;path&#x2F;to&#x2F;your&#x2F;file&#x2F;DemoMapper.xml&quot;&#x2F;&gt;</span><br><span class="line">    &lt;package name&#x3D;&quot;com.examle.mappers&quot;&#x2F;&gt;</span><br><span class="line">    &lt;mapper class&#x3D;&quot;com.examle.mappers.DemoMapper&quot;&#x2F;&gt;</span><br><span class="line">  &lt;&#x2F;mappers&gt;</span><br><span class="line">&lt;&#x2F;configuration&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 这种方式是读取配置文件的构造方式</span><br><span class="line">InputStream inputStream &#x3D; Resources.getResourceAsStream(&quot;mybatis-config.xml&quot;);</span><br><span class="line">SqlSessionFactory sqlSessionFactory &#x3D; new SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="创建Configuration"><a href="#创建Configuration" class="headerlink" title="创建Configuration"></a>创建Configuration</h3><p>&emsp;&emsp;可以看到最外层标签configuration下包含environments以及mappers注册，其中environments中指定了数据源dataSource和事务管理transactionManager。照猫画虎，先手动构建configuration</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 先构建Configuration对象</span><br><span class="line">Configuration config &#x3D; new Configuration();</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 接着构建environment对象，不过再此之前先创建 dataSource</span><br><span class="line">SQLiteConnectionPoolDataSource pool &#x3D; new SQLiteConnectionPoolDataSource();</span><br><span class="line">&#x2F;&#x2F; db文件地址的动态就体现在这里了</span><br><span class="line">pool.setUrl(&quot;jdbc:sqlite:&quot; + Path.getPath() + &quot;data.db&quot;);</span><br><span class="line">&#x2F;&#x2F; 有了dataSource就可以创建environment了</span><br><span class="line">Environment environment &#x3D; new Environment.Builder(&quot;development&quot;)</span><br><span class="line">                   .dataSource(pool)</span><br><span class="line">                   .transactionFactory(new JdbcTransactionFactory())</span><br><span class="line">                   .build();</span><br><span class="line">                   </span><br><span class="line">&#x2F;&#x2F;将environment设置给configuration</span><br><span class="line">config.setEnvironment(environment);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; mapper的注册</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">SqlSessionFactory factory &#x3D; new SqlSessionFactoryBuilder().build(config);</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;第十行，设置transactionFactory的时候，有2种选择JdbcTransactionFactory 以及ManagedTransactionFactory，这就对应了xml配置文件中的 type=”JDBC” 和 type=”MANAGED”，前者的事物由connection对象的具体方法控制，后者则是把事物交给了容器（tomcat,weblogic,grassfish等），作为插件，我们选择JDBC</p>
+<h3 id="mapper的注册"><a href="#mapper的注册" class="headerlink" title="mapper的注册"></a>mapper的注册</h3><p>&emsp;&emsp;在需求与坑那部分，提到需要使用resource方式来注册mapper，但是…麻烦来了，在Configuration中提供的mapper注册方式里，没有resource模式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Configuration 提供的方式，可以看到是class模式和package模式</span><br><span class="line">public void addMappers(String packageName, Class&lt;?&gt; superType) &#123;</span><br><span class="line">  mapperRegistry.addMappers(packageName, superType);</span><br><span class="line">&#125;</span><br><span class="line">public void addMappers(String packageName) &#123;</span><br><span class="line">  mapperRegistry.addMappers(packageName);</span><br><span class="line">&#125;</span><br><span class="line">public &lt;T&gt; void addMapper(Class&lt;T&gt; type) &#123;</span><br><span class="line">  mapperRegistry.addMapper(type);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;这就产生了一点小小的困难，不过没有提供不代表没办法注册，他自己是怎么注册的呢？去Configuration源码中看看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 使用配置文件build调用的方法</span><br><span class="line">public SqlSessionFactory build(InputStream inputStream) &#123;</span><br><span class="line">  return build(inputStream, null, null);</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; 使用配置文件build调用的方法</span><br><span class="line">public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) &#123;</span><br><span class="line">  try &#123;</span><br><span class="line">    XMLConfigBuilder parser &#x3D; new XMLConfigBuilder(inputStream, environment, properties);</span><br><span class="line">    return build(parser.parse());</span><br><span class="line">  &#125; catch (Exception e) &#123;</span><br><span class="line">    throw ExceptionFactory.wrapException(&quot;Error building SqlSession.&quot;, e);</span><br><span class="line">  &#125; finally &#123;</span><br><span class="line">    ErrorContext.instance().reset();</span><br><span class="line">    try &#123;</span><br><span class="line">        if (inputStream !&#x3D; null) &#123;</span><br><span class="line">          inputStream.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; catch (IOException e) &#123;</span><br><span class="line">      &#x2F;&#x2F; Intentionally ignore. Prefer previous error.</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; 自己手动创建Configuration调用的方法</span><br><span class="line">public SqlSessionFactory build(Configuration config) &#123;</span><br><span class="line">  return new DefaultSqlSessionFactory(config);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;可以看到第8行使用了XMLConfigBuilder去解析获取的xml文件，在跟着进去找找，在文件靠下方可以找到以下代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">private void mapperElement(XNode parent) throws Exception &#123;</span><br><span class="line">  if (parent !&#x3D; null) &#123;</span><br><span class="line">    for (XNode child : parent.getChildren()) &#123;</span><br><span class="line">      if (&quot;package&quot;.equals(child.getName())) &#123;</span><br><span class="line">        String mapperPackage &#x3D; child.getStringAttribute(&quot;name&quot;);</span><br><span class="line">        configuration.addMappers(mapperPackage);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        String resource &#x3D; child.getStringAttribute(&quot;resource&quot;);</span><br><span class="line">        String url &#x3D; child.getStringAttribute(&quot;url&quot;);</span><br><span class="line">        String mapperClass &#x3D; child.getStringAttribute(&quot;class&quot;);</span><br><span class="line">        if (resource !&#x3D; null &amp;&amp; url &#x3D;&#x3D; null &amp;&amp; mapperClass &#x3D;&#x3D; null) &#123;</span><br><span class="line">          ErrorContext.instance().resource(resource);</span><br><span class="line">          try(InputStream inputStream &#x3D; Resources.getResourceAsStream(resource)) &#123;</span><br><span class="line">            XMLMapperBuilder mapperParser &#x3D; new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());</span><br><span class="line">            mapperParser.parse();</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; else if (resource &#x3D;&#x3D; null &amp;&amp; url !&#x3D; null &amp;&amp; mapperClass &#x3D;&#x3D; null) &#123;</span><br><span class="line">          ErrorContext.instance().resource(url);</span><br><span class="line">          try(InputStream inputStream &#x3D; Resources.getUrlAsStream(url))&#123;</span><br><span class="line">            XMLMapperBuilder mapperParser &#x3D; new XMLMapperBuilder(inputStream, configuration, url, configuration.getSqlFragments());</span><br><span class="line">            mapperParser.parse();</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; else if (resource &#x3D;&#x3D; null &amp;&amp; url &#x3D;&#x3D; null &amp;&amp; mapperClass !&#x3D; null) &#123;</span><br><span class="line">          Class&lt;?&gt; mapperInterface &#x3D; Resources.classForName(mapperClass);</span><br><span class="line">          configuration.addMapper(mapperInterface);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          throw new BuilderException(&quot;A mapper element may only specify a url, resource or class, but not more than one.&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;这熟悉的package、resource、url、class让人振奋，这段代码中12-16行正是我们所需要的，到此解决了Configuration没有提供resource注册方式的麻烦（有兴趣可以深入再看看）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 我们把找到的代码封装为一个方法 注册xml mapper</span><br><span class="line"> private static void magicMapperLoader(Configuration configuration,List&lt;String&gt; xmlFiles) &#123;</span><br><span class="line">     for (String xmlPath : xmlFiles) &#123;</span><br><span class="line">         ErrorContext.instance().resource(xmlPath);</span><br><span class="line">         try (InputStream inputStream &#x3D; Resources.getResourceAsStream(xmlPath)) &#123;</span><br><span class="line">             XMLMapperBuilder mapperParser &#x3D; new XMLMapperBuilder(inputStream, configuration, xmlPath, configuration.getSqlFragments());</span><br><span class="line">             mapperParser.parse();</span><br><span class="line">         &#125; catch (Exception e) &#123;</span><br><span class="line">             e.printStackTrace();</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="mapper的扫描"><a href="#mapper的扫描" class="headerlink" title="mapper的扫描"></a>mapper的扫描</h3><p>&emsp;&emsp;单个mapper已经可以注册，接下来将我们需要的mapper作为参数导入即可完成注册。这没有什么难度，mapper统一存放在项目的resources资源mapper目录下，获取mapper所有的文件即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public static List&lt;String&gt; getFileXmlRes() &#123;</span><br><span class="line">    String path &#x3D; &quot;mapper&quot;;</span><br><span class="line">    List&lt;String&gt; filenames &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">    try (</span><br><span class="line">            InputStream in &#x3D; Thread.currentThread().getContextClassLoader().getResourceAsStream(path);</span><br><span class="line">            BufferedReader br &#x3D; new BufferedReader(new InputStreamReader(in));</span><br><span class="line">    ) &#123;</span><br><span class="line">        String resource;</span><br><span class="line">        while ((resource &#x3D; br.readLine()) !&#x3D; null) &#123;</span><br><span class="line">            if (resource.endsWith(&quot;xml&quot;)) &#123;</span><br><span class="line">                filenames.add(path + &quot;&#x2F;&quot; + resource);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; catch (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">    return filenames;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;到这里一切都很顺利，运行测试已经通过，然而打包后就出现了一些小小的问题…上面遍历的方法是基于文件系统的。而打包后所有的文件都在jar包内部，资源文件不再属于文件系统，只能指定资源名称将资源作为流读取出来，无法做到遍历获取。<br>&emsp;&emsp;这时候就得针对jar包来做一个专门的读取资源文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public static List&lt;String&gt; getJarXmlRes() &#123;</span><br><span class="line">    List&lt;String&gt; list &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">    String jar &#x3D; MyBatisUtil.class.getProtectionDomain().getCodeSource().getLocation().getFile();</span><br><span class="line">    try (JarFile jf &#x3D; new JarFile(jar);) &#123;</span><br><span class="line">        Enumeration&lt;JarEntry&gt; es &#x3D; jf.entries();</span><br><span class="line">        while (es.hasMoreElements()) &#123;</span><br><span class="line">            String resName &#x3D; es.nextElement().getName();</span><br><span class="line">            if (resName.startsWith(&quot;mapper&quot;) &amp;&amp; resName.endsWith(&quot;xml&quot;)) &#123;</span><br><span class="line">                list.add(resName);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; catch (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">    return list;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;实际情况下根据运行环境的不同，应该使用对应的读取方式。针对这个做一下优化，就完成了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">private static void magicMapperLoader(Configuration configuration) &#123;</span><br><span class="line">    List&lt;String&gt; xmlFiles;</span><br><span class="line">    &#x2F;&#x2F; 根据不同运行环境来扫描xml资源</span><br><span class="line">    String protocol &#x3D; MyBatisUtil.class.getResource(&quot;&quot;).getProtocol();</span><br><span class="line">    if (Objects.equals(protocol, &quot;jar&quot;)) &#123;</span><br><span class="line">        xmlFiles &#x3D; getJarXmlRes();</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        xmlFiles &#x3D; getFileXmlRes();</span><br><span class="line">    &#125;</span><br><span class="line">    for (String xmlPath : xmlFiles) &#123;</span><br><span class="line">        ErrorContext.instance().resource(xmlPath);</span><br><span class="line">        try (InputStream inputStream &#x3D; Resources.getResourceAsStream(xmlPath)) &#123;</span><br><span class="line">            XMLMapperBuilder mapperParser &#x3D; new XMLMapperBuilder(inputStream, configuration, xmlPath, configuration.getSqlFragments());</span><br><span class="line">            mapperParser.parse();</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="SqlSession的获取"><a href="#SqlSession的获取" class="headerlink" title="SqlSession的获取"></a>SqlSession的获取</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; datasource，enviroment等配置</span><br><span class="line">...</span><br><span class="line">&#x2F;&#x2F; mapper的注册</span><br><span class="line">magicMapperLoader(config);</span><br><span class="line">SqlSessionFactory factory &#x3D; new SqlSessionFactoryBuilder().build(config);</span><br><span class="line">SqlSession session &#x3D; factory.openSession(true);</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 获取session的时候要注意一下:autocommit参数默认是false的，不想每次执行完sql自己commit的话，还是设置为自动commit比较方便一些，当然这属于仁者见仁智者见智。</p>
+<h2 id="使用mybatis"><a href="#使用mybatis" class="headerlink" title="使用mybatis"></a>使用mybatis</h2><p>&emsp;&emsp;具体的mapper接口和xml文件就不具体说明了，有没有spring都一样，该怎么写怎么写。就简单说一下没有@Autowised 如何使用定义的接口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; mapper接口,对应的xml就不写了大家都懂</span><br><span class="line">@Mapper</span><br><span class="line">public interface DemoMapper &#123;</span><br><span class="line"> String demoSql();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">SqlSession session &#x3D; ...&#x2F;&#x2F;session建议使用全局的单例</span><br><span class="line">DemoMapper mapper &#x3D; session.getMapper(DemoMapper.class);</span><br><span class="line">String result &#x3D; mapper.demoSql();</span><br></pre></td></tr></table></figure>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>&emsp;&emsp;框架真是带来了很多便利，那么，代价是什么呢？</p>
+<h1 id="附代码"><a href="#附代码" class="headerlink" title="附代码"></a>附代码</h1><p>&emsp;&emsp;更多请见<a href="https://github.com/WhiteMagic2014/WMagicBotRP">WMagicBotRP</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br></pre></td><td class="code"><pre><span class="line">import org.apache.ibatis.builder.xml.XMLMapperBuilder;</span><br><span class="line">import org.apache.ibatis.executor.ErrorContext;</span><br><span class="line">import org.apache.ibatis.io.Resources;</span><br><span class="line">import org.apache.ibatis.mapping.Environment;</span><br><span class="line">import org.apache.ibatis.session.Configuration;</span><br><span class="line">import org.apache.ibatis.session.SqlSession;</span><br><span class="line">import org.apache.ibatis.session.SqlSessionFactory;</span><br><span class="line">import org.apache.ibatis.session.SqlSessionFactoryBuilder;</span><br><span class="line">import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;</span><br><span class="line">import org.sqlite.javax.SQLiteConnectionPoolDataSource;</span><br><span class="line">import java.io.BufferedReader;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.InputStream;</span><br><span class="line">import java.io.InputStreamReader;</span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.Enumeration;</span><br><span class="line">import java.util.List;</span><br><span class="line">import java.util.Objects;</span><br><span class="line">import java.util.jar.JarEntry;</span><br><span class="line">import java.util.jar.JarFile;</span><br><span class="line"></span><br><span class="line">public class MyBatisUtil &#123;</span><br><span class="line"></span><br><span class="line">    private static SqlSessionFactory factory &#x3D; null;</span><br><span class="line"></span><br><span class="line">    public static SqlSession getSqlSession() &#123;</span><br><span class="line">        return factory.openSession(true);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            &#x2F;&#x2F; datasource</span><br><span class="line">            SQLiteConnectionPoolDataSource pool &#x3D; new SQLiteConnectionPoolDataSource();</span><br><span class="line">            pool.setUrl(&quot;jdbc:sqlite:&quot; + Path.getPath() + DBInitHelper.dbFileName);</span><br><span class="line">            &#x2F;&#x2F; environment</span><br><span class="line">            Environment environment &#x3D; new Environment.Builder(&quot;development&quot;)</span><br><span class="line">                    .dataSource(pool)</span><br><span class="line">                    .transactionFactory(new JdbcTransactionFactory())</span><br><span class="line">                    .build();</span><br><span class="line">            &#x2F;&#x2F; config</span><br><span class="line">            Configuration config &#x3D; new Configuration();</span><br><span class="line">            config.setEnvironment(environment);</span><br><span class="line">            &#x2F;&#x2F; 注册mapper</span><br><span class="line">            magicMapperLoader(config);</span><br><span class="line">            &#x2F;&#x2F; build factory</span><br><span class="line">            factory &#x3D; new SqlSessionFactoryBuilder().build(config);</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 注册xml mapper</span><br><span class="line">    private static void magicMapperLoader(Configuration configuration) &#123;</span><br><span class="line">        List&lt;String&gt; xmlFiles;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 根据不同运行环境来扫描xml资源</span><br><span class="line">        String protocol &#x3D; MyBatisUtil.class.getResource(&quot;&quot;).getProtocol();</span><br><span class="line">        if (Objects.equals(protocol, &quot;jar&quot;)) &#123;</span><br><span class="line">            xmlFiles &#x3D; getJarXmlRes();</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            xmlFiles &#x3D; getFileXmlRes();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (String xmlPath : xmlFiles) &#123;</span><br><span class="line">            ErrorContext.instance().resource(xmlPath);</span><br><span class="line">            try (InputStream inputStream &#x3D; Resources.getResourceAsStream(xmlPath)) &#123;</span><br><span class="line">                XMLMapperBuilder mapperParser &#x3D; new XMLMapperBuilder(inputStream, configuration, xmlPath, configuration.getSqlFragments());</span><br><span class="line">                mapperParser.parse();</span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 加载所有 resources 中 mapper下的文件</span><br><span class="line">    &#x2F;&#x2F; jar包运行时无法使用file来遍历 使用这个</span><br><span class="line">    public static List&lt;String&gt; getJarXmlRes() &#123;</span><br><span class="line">        List&lt;String&gt; list &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        String jar &#x3D; MyBatisUtil.class.getProtectionDomain().getCodeSource().getLocation().getFile();</span><br><span class="line">        try (JarFile jf &#x3D; new JarFile(jar);) &#123;</span><br><span class="line">            Enumeration&lt;JarEntry&gt; es &#x3D; jf.entries();</span><br><span class="line">            while (es.hasMoreElements()) &#123;</span><br><span class="line">                String resName &#x3D; es.nextElement().getName();</span><br><span class="line">                if (resName.startsWith(&quot;mapper&quot;) &amp;&amp; resName.endsWith(&quot;xml&quot;)) &#123;</span><br><span class="line">                    list.add(resName);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        return list;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; idea开发时使用 ,获取resources&#x2F;mapper下所有xml文件</span><br><span class="line">    public static List&lt;String&gt; getFileXmlRes() &#123;</span><br><span class="line">        String path &#x3D; &quot;mapper&quot;;</span><br><span class="line">        List&lt;String&gt; filenames &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        try (</span><br><span class="line">                InputStream in &#x3D; getResourceAsStream(path);</span><br><span class="line">                BufferedReader br &#x3D; new BufferedReader(new InputStreamReader(in));</span><br><span class="line">        ) &#123;</span><br><span class="line">            String resource;</span><br><span class="line">            while ((resource &#x3D; br.readLine()) !&#x3D; null) &#123;</span><br><span class="line">                if (resource.endsWith(&quot;xml&quot;)) &#123;</span><br><span class="line">                    filenames.add(path + &quot;&#x2F;&quot; + resource);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        return filenames;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static InputStream getResourceAsStream(String resource) &#123;</span><br><span class="line">        final InputStream in &#x3D; Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);</span><br><span class="line">        return in &#x3D;&#x3D; null ? MyBatisUtil.class.getResourceAsStream(resource) : in;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mybatis/" rel="tag"># mybatis</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/02/01/%E6%97%A0%E9%A2%98/" rel="next" title="二零二一年二月一日">
+                <i class="fa fa-chevron-left"></i> 二零二一年二月一日
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/magicavatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="tencent://message/?Menu=yes&uin=418379149&Service=300&sigT=45a1e5847943b64c6ff3990f8a9e644d2b31356cb0b4ac6b24663a3c8dd0f8aa12a595b1714f9d45" target="_blank" title="418379149">
+                  
+                    <i class="fa fa-fw fa-qq"></i>
+                  
+                  418379149
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/WhiteMagic2014" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mirai-console"><span class="nav-number">1.1.</span> <span class="nav-text">mirai-console</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8"><span class="nav-number">1.2.</span> <span class="nav-text">数据存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mybatis"><span class="nav-number">1.3.</span> <span class="nav-text">mybatis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0spring"><span class="nav-number">1.4.</span> <span class="nav-text">无spring</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E4%B8%8E%E5%9D%91"><span class="nav-number">2.</span> <span class="nav-text">需求与坑</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">3.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sqlite%E6%95%B0%E6%8D%AE%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">3.1.</span> <span class="nav-text">sqlite数据初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mybatis%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.</span> <span class="nav-text">mybatis的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%88%E7%9C%8B%E7%9C%8Bconfig-xml"><span class="nav-number">3.2.1.</span> <span class="nav-text">先看看config.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAConfiguration"><span class="nav-number">3.2.2.</span> <span class="nav-text">创建Configuration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mapper%E7%9A%84%E6%B3%A8%E5%86%8C"><span class="nav-number">3.2.3.</span> <span class="nav-text">mapper的注册</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mapper%E7%9A%84%E6%89%AB%E6%8F%8F"><span class="nav-number">3.2.4.</span> <span class="nav-text">mapper的扫描</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SqlSession%E7%9A%84%E8%8E%B7%E5%8F%96"><span class="nav-number">3.2.5.</span> <span class="nav-text">SqlSession的获取</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8mybatis"><span class="nav-number">3.3.</span> <span class="nav-text">使用mybatis</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">4.</span> <span class="nav-text">结语</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84%E4%BB%A3%E7%A0%81"><span class="nav-number">5.</span> <span class="nav-text">附代码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WhiteMagic2014</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 搭建
+</div>
+
+<div class="theme-info">
+  风格 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+    <script src="/live2d/autoload.js"></script>
+
+
+</body>
+</html>
